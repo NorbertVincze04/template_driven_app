@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "server.ts",
   "scripts": {
-    "start": "tsx index.ts",
-    "dev": "tsx watch index.ts",
+    "start": "tsx server.ts",
+    "dev": "tsx watch server.ts",
     "build": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
