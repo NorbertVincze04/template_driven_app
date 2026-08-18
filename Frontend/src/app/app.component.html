@@ -1,1 +1,9 @@
-<h1>template-driven-app</h1>
+<app-header *ngIf="showBars"></app-header>
+
+<main>
+  <body>
+    <router-outlet></router-outlet>
+  </body>
+</main>
+
+<app-footer *ngIf="showBars"></app-footer>
