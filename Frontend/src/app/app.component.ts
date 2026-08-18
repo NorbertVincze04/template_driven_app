@@ -5,8 +5,8 @@ import {
   Router,
   RouterOutlet,
 } from '@angular/router';
-import { HeaderComponent } from '../app/shared/header/header.component';
-import { FooterComponent } from '../app/shared/footer/footer.component';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { FooterComponent } from './shared/components/footer/footer.component';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
