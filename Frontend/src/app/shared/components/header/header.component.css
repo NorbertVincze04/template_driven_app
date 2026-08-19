@@ -4,7 +4,11 @@
   justify-content: space-between;
   padding: 0 2rem;
   height: 64px;
-  background-color: #f9fafb;
+  background-color: color-mix(
+    in srgb,
+    var(--tenant-primary, #111827) 8%,
+    white
+  );
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;

@@ -3,7 +3,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem 2rem;
-  background-color: #f9fafb;
+  background-color: color-mix(
+    in srgb,
+    var(--tenant-primary, #111827) 8%,
+    white
+  );
   border-top: 1px solid #e5e7eb;
   font-family: var(--tenant-font, inherit);
   height: 5px;
