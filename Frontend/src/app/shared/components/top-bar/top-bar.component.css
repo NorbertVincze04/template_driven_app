@@ -10,9 +10,8 @@
     white
   );
   border-bottom: 1px solid #e5e7eb;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: relative;
+  z-index: 99;
   font-family: var(--tenant-font, inherit);
 }
 
