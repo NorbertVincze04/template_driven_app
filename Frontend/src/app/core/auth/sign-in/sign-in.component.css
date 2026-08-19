@@ -1,0 +1,111 @@
+.sign-in-container {
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  height: auto;
+  width: 400px;
+  padding: 30px;
+  border-radius: 4px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-control {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #007bc0;
+  box-shadow: 0 0 5px rgba(0, 123, 192, 0.5);
+}
+
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container .form-control {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.visibility-toggle {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visibility-toggle:hover {
+  color: #007bc0;
+}
+
+.visibility-toggle:focus {
+  outline: none;
+}
+
+form app-action-button {
+  align-self: center;
+  margin-top: 10px;
+}
+
+.form-error {
+  color: #c00;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.form-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.forgot-link,
+.register-link {
+  color: #007bc0;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.forgot-link:hover,
+.register-link:hover {
+  text-decoration: underline;
+}

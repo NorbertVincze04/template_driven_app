@@ -1,5 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/services/auth.service';
 import { TenantService } from '../../../core/services/tenant.service';
 import { ActionButtonComponent } from '../action-button/action-button.component';
@@ -18,11 +19,12 @@ export class HeaderComponent {
   private readonly tenantService = inject(TenantService);
   private readonly router = inject(Router);
 
-  protected readonly isLoggedIn = computed((): boolean =>
-    this.authService.isLoggedIn(),
+  protected readonly currentUser = toSignal<User | null>(
+    this.authService.currentUser$,
+    { initialValue: null },
   );
-  protected readonly currentUser = computed((): User | null =>
-    this.authService.currentUser(),
+  protected readonly isLoggedIn = computed(
+    (): boolean => this.currentUser() !== null,
   );
   protected readonly tenantConfig = computed((): TenantConfig | null =>
     this.tenantService.config(),
@@ -30,8 +32,8 @@ export class HeaderComponent {
   protected readonly tenantStyles = computed((): Record<string, string> => {
     const config = this.tenantService.config();
     return {
-      '--tenant-primary': config?.primaryColor ?? '#111827',
-      '--tenant-secondary': config?.secondaryColor ?? '#374151',
+      '--tenant-primary': config?.primaryColor || '#111827',
+      '--tenant-secondary': config?.secondaryColor || '#374151',
       '--tenant-font': config?.fontFamily
         ? `'${config.fontFamily}', sans-serif`
         : 'inherit',

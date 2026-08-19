@@ -19,8 +19,8 @@ export class FooterComponent {
   protected readonly tenantStyles = computed((): Record<string, string> => {
     const config = this.tenantService.config();
     return {
-      '--tenant-primary': config?.primaryColor ?? '#111827',
-      '--tenant-secondary': config?.secondaryColor ?? '#374151',
+      '--tenant-primary': config?.primaryColor || '#111827',
+      '--tenant-secondary': config?.secondaryColor || '#374151',
       '--tenant-font': config?.fontFamily
         ? `'${config.fontFamily}', sans-serif`
         : 'inherit',

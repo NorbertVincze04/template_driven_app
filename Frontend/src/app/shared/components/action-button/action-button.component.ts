@@ -37,8 +37,8 @@ export class ActionButtonComponent {
   protected readonly tenantStyles = computed((): Record<string, string> => {
     const config = this.tenantService.config();
     return {
-      '--tenant-primary': config?.primaryColor ?? '#007bc0',
-      '--tenant-secondary': config?.secondaryColor ?? '#0366a0',
+      '--tenant-primary': config?.primaryColor || '#111827',
+      '--tenant-secondary': config?.secondaryColor || '#374151',
       '--tenant-font': config?.fontFamily
         ? `'${config.fontFamily}', sans-serif`
         : 'inherit',
