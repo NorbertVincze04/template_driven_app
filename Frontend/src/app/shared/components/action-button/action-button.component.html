@@ -2,21 +2,20 @@
   [type]="buttonType"
   (click)="onAction()"
   [disabled]="config.disabled || isLoading"
-  [ngClass]="'btn-' + (config.variant || 'primary')"
+  [class]="'btn-' + (config.variant || 'primary')"
+  [style]="tenantStyles()"
 >
-  <span *ngIf="isLoading" class="spinner"></span>
+  @if (isLoading) {
+    <span class="spinner"></span>
+  }
 
-  <ng-container
-    *ngIf="icon; then iconTemplate; else labelTemplate"
-  ></ng-container>
-
-  <ng-template #iconTemplate>
+  @if (icon) {
     <ng-container *ngTemplateOutlet="icon"></ng-container>
     <span>{{ displayLabel }}</span>
-  </ng-template>
-
-  <ng-template #labelTemplate>
-    <i *ngIf="config.icon" [class]="config.icon"></i>
+  } @else {
+    @if (config.icon) {
+      <i [class]="config.icon"></i>
+    }
     {{ displayLabel }}
-  </ng-template>
+  }
 </button>

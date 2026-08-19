@@ -1,1 +1,57 @@
-<header><p>header works!</p></header>
+<header class="header" [style]="tenantStyles()">
+  <!-- Left -->
+  <div class="header-left">
+    <a routerLink="/home" class="logo-link">
+      @if (tenantConfig()?.logoUrl) {
+        <img
+          [src]="tenantConfig()!.logoUrl!"
+          [alt]="tenantConfig()?.name || 'Logo'"
+          class="logo-img"
+        />
+      } @else {
+        <span class="logo-text">{{ tenantConfig()?.name || "MyApp" }}</span>
+      }
+    </a>
+  </div>
+
+  <!-- Right -->
+  <div class="header-right">
+    @if (tenantConfig()?.layout?.header?.showAboutUs !== false) {
+      <a routerLink="/about-us" class="nav-link">About Us</a>
+    }
+    @if (tenantConfig()?.layout?.header?.showPricing !== false) {
+      <a routerLink="/pricing" class="nav-link">Pricing</a>
+    }
+
+    @if (isLoggedIn()) {
+      <button class="icon-btn" aria-label="Notifications">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+      </button>
+      <button class="profile-btn" aria-label="User profile">
+        <img
+          [src]="currentUser()?.profileImageUrl || 'assets/default-avatar.png'"
+          [alt]="currentUser()?.name || 'Profile'"
+          class="profile-img"
+        />
+      </button>
+    } @else {
+      <app-action-button
+        [config]="{ label: 'Login', variant: 'primary' }"
+        (action)="onLoginClick()"
+      ></app-action-button>
+    }
+  </div>
+</header>

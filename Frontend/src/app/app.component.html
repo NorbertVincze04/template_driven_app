@@ -1,9 +1,13 @@
-<app-header *ngIf="showBars"></app-header>
+@if (showHeader) {
+  <app-header></app-header>
+}
+
+<app-top-bar></app-top-bar>
 
 <main>
-  <body>
-    <router-outlet></router-outlet>
-  </body>
+  <router-outlet></router-outlet>
 </main>
 
-<app-footer *ngIf="showBars"></app-footer>
+@if (showFooter) {
+  <app-footer></app-footer>
+}

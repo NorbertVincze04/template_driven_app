@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -8,23 +8,37 @@ import {
 import { HeaderComponent } from './shared/components/header/header.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { Subject, filter, takeUntil } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { TenantService } from './core/services/tenant.service';
+import { TopBarComponent } from './shared/components/top-bar/top-bar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, TopBarComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   showBars = true;
+  private readonly tenantService = inject(TenantService);
   private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {}
+
+  get showHeader(): boolean {
+    return (
+      this.showBars && (this.tenantService.config()?.layout?.showHeader ?? true)
+    );
+  }
+
+  get showFooter(): boolean {
+    return (
+      this.showBars && (this.tenantService.config()?.layout?.showFooter ?? true)
+    );
+  }
 
   ngOnInit() {
     this.router.events

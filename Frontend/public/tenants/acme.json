@@ -1,0 +1,21 @@
+{
+  "tenantId": "acme",
+  "name": "Acme Corp",
+  "logoUrl": "",
+  "primaryColor": "#6366f1",
+  "secondaryColor": "#4f46e5",
+  "fontFamily": "Poppins",
+  "layout": {
+    "showHeader": true,
+    "showFooter": true,
+    "header": {
+      "showAboutUs": true,
+      "showPricing": false
+    },
+    "footer": {
+      "showInstagram": true,
+      "showFacebook": false,
+      "showHelpCenter": true
+    }
+  }
+}

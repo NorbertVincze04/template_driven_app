@@ -1,0 +1,41 @@
+import { DOCUMENT } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, catchError, map, tap } from 'rxjs';
+import { TenantConfig } from '../models/tenant.model';
+
+@Injectable({ providedIn: 'root' })
+export class TenantService {
+  private readonly document = inject(DOCUMENT);
+  private readonly http = inject(HttpClient);
+  private readonly _config = signal<TenantConfig | null>(null);
+
+  readonly config = this._config.asReadonly();
+
+  loadFromAssets(tenantId: string): Observable<void> {
+    return this.http.get<TenantConfig>(`tenants/${tenantId}.json`).pipe(
+      catchError(() => this.http.get<TenantConfig>('tenants/default.json')),
+      tap((config) => this.setTenant(config)),
+      map(() => undefined),
+    );
+  }
+
+  setTenant(config: TenantConfig): void {
+    this._config.set(config);
+    if (config.fontFamily) {
+      this.loadGoogleFont(config.fontFamily);
+    }
+  }
+
+  private loadGoogleFont(fontName: string): void {
+    const id = `tenant-font-${fontName.replace(/\s+/g, '-').toLowerCase()}`;
+    if (this.document.getElementById(id)) {
+      return;
+    }
+    const link = this.document.createElement('link');
+    link.id = id;
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontName)}:wght@400;500;600;700&display=swap`;
+    this.document.head.appendChild(link);
+  }
+}

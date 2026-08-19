@@ -1,0 +1,21 @@
+{
+  "tenantId": "default",
+  "name": "Default Tenant",
+  "logoUrl": "",
+  "primaryColor": "#235827",
+  "secondaryColor": "#984151",
+  "fontFamily": "Montserrat",
+  "layout": {
+    "showHeader": true,
+    "showFooter": true,
+    "header": {
+      "showAboutUs": true,
+      "showPricing": true
+    },
+    "footer": {
+      "showInstagram": true,
+      "showFacebook": true,
+      "showHelpCenter": true
+    }
+  }
+}
