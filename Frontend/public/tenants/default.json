@@ -7,6 +7,7 @@
   "fontFamily": "Montserrat",
   "layout": {
     "showHeader": true,
+    "showTopBar": true,
     "showFooter": true,
     "header": {
       "showAboutUs": true,

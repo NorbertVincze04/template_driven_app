@@ -11,6 +11,7 @@ export interface TenantFooterLayout {
 
 export interface TenantLayout {
   showHeader?: boolean;
+  showTopBar?: boolean;
   showFooter?: boolean;
   header?: TenantHeaderLayout;
   footer?: TenantFooterLayout;

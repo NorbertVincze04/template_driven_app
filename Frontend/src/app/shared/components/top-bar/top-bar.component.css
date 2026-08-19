@@ -1,0 +1,18 @@
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2rem;
+  height: 64px;
+  background-color: #f2f2f3;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-family: var(--tenant-font, inherit);
+}
+
+h1 {
+  color: var(--tenant-primary, #111827);
+  letter-spacing: -0.02em;
+}

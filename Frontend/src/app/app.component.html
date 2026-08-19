@@ -2,7 +2,9 @@
   <app-header></app-header>
 }
 
-<app-top-bar></app-top-bar>
+@if (showTopBar) {
+  <app-top-bar></app-top-bar>
+}
 
 <main>
   <router-outlet></router-outlet>

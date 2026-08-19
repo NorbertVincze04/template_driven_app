@@ -40,6 +40,12 @@ export class AppComponent {
     );
   }
 
+  get showTopBar(): boolean {
+    return (
+      this.showBars && (this.tenantService.config()?.layout?.showTopBar ?? true)
+    );
+  }
+
   ngOnInit() {
     this.router.events
       .pipe(
