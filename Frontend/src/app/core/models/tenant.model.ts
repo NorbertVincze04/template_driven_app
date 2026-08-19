@@ -24,5 +24,6 @@ export interface TenantConfig {
   primaryColor?: string;
   secondaryColor?: string;
   fontFamily?: string;
+  fontFamilySecondary?: string;
   layout?: TenantLayout;
 }

@@ -5,6 +5,7 @@
   "primaryColor": "#235827",
   "secondaryColor": "#984151",
   "fontFamily": "Montserrat",
+  "fontFamilySecondary": "Playfair Display",
   "layout": {
     "showHeader": true,
     "showTopBar": true,

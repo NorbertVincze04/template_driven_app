@@ -25,6 +25,9 @@ export class TenantService {
     if (config.fontFamily) {
       this.loadGoogleFont(config.fontFamily);
     }
+    if (config.fontFamilySecondary) {
+      this.loadGoogleFont(config.fontFamilySecondary);
+    }
   }
 
   private loadGoogleFont(fontName: string): void {

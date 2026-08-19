@@ -1,5 +1,9 @@
 .register-container {
-  background-color: rgb(255, 255, 255);
+  background-color: color-mix(
+    in srgb,
+    var(--tenant-primary, #111827) 8%,
+    white
+  );
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   height: auto;
   width: 400px;
@@ -14,7 +18,8 @@
 h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--tenant-primary, #6b7280);
+  font-family: var(--tenant-font, inherit);
 }
 
 form {
@@ -32,6 +37,7 @@ label {
   margin-bottom: 5px;
   font-weight: 500;
   color: #555;
+  font-family: var(--tenant-font, inherit);
 }
 
 .form-control {
@@ -43,8 +49,9 @@ label {
 
 .form-control:focus {
   outline: none;
-  border-color: #007bc0;
-  box-shadow: 0 0 5px rgba(0, 123, 192, 0.5);
+  border-color: var(--tenant-primary, #6b7280);
+  box-shadow: 0 0 5px
+    color-mix(in srgb, var(--tenant-primary, #111827) 50%, white);
 }
 
 .password-input-container {
@@ -72,7 +79,7 @@ label {
 }
 
 .visibility-toggle:hover {
-  color: #007bc0;
+  color: var(--tenant-primary, #6b7280);
 }
 
 .visibility-toggle:focus {
@@ -88,12 +95,14 @@ form app-action-button {
   color: #c00;
   font-size: 0.9rem;
   margin-top: 6px;
+  font-family: var(--tenant-font-secondary, inherit);
 }
 
 .form-error {
   color: #c00;
   text-align: center;
   margin-top: 12px;
+  font-family: var(--tenant-font, inherit);
 }
 
 .form-links {
@@ -103,7 +112,7 @@ form app-action-button {
 }
 
 .register-link {
-  color: #007bc0;
+  color: var(--tenant-primary, #6b7280);
   text-decoration: none;
   cursor: pointer;
 }

@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   ActionButtonComponent,
   ActionConfig,
@@ -17,7 +17,12 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [ActionButtonComponent, ReactiveFormsModule, CommonModule],
+  imports: [
+    ActionButtonComponent,
+    ReactiveFormsModule,
+    CommonModule,
+    RouterLink,
+  ],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css',
 })
@@ -101,6 +106,9 @@ export class SignInComponent {
       '--tenant-secondary': config?.secondaryColor || '#374151',
       '--tenant-font': config?.fontFamily
         ? `'${config.fontFamily}', sans-serif`
+        : 'inherit',
+      '--tenant-font-secondary': config?.fontFamilySecondary
+        ? `'${config.fontFamilySecondary}', serif`
         : 'inherit',
     };
   });

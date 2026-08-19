@@ -26,7 +26,11 @@ button:disabled {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--tenant-secondary, #374151);
+  background-color: color-mix(
+    in srgb,
+    var(--tenant-primary, #111827) 70%,
+    rgb(0, 0, 0)
+  );
 }
 
 .btn-secondary {
@@ -36,11 +40,8 @@ button:disabled {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: color-mix(
-    in srgb,
-    var(--tenant-primary, #111827) 10%,
-    transparent
-  );
+  background-color: var(--tenant-primary, #111827);
+  color: white;
 }
 
 .spinner {
