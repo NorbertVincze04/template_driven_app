@@ -6,10 +6,43 @@
   "secondaryColor": "#984151",
   "fontFamily": "Montserrat",
   "fontFamilySecondary": "Playfair Display",
+  "heroSection": {
+    "badgeText": "Over 3 million ready-to-work creatives!",
+    "title": "The world's destination for design",
+    "subtitle": "Get inspired by the work of millions of top-rated designers and agencies around the world.",
+    "ctaText": "Get started",
+    "gallery": [
+      {
+        "name": "Vladimir Gruev",
+        "role": "Digital Designer",
+        "imageUrl": "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=560&q=80",
+        "tags": ["Brand", "Design"]
+      },
+      {
+        "name": "Dan Mall",
+        "role": "Design Educator",
+        "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=560&q=80",
+        "tags": ["Product", "UX"]
+      },
+      {
+        "name": "Elif Kamesoglu",
+        "role": "Brand Designer",
+        "imageUrl": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=560&q=80",
+        "tags": ["Brand", "Illustration", "Web"]
+      },
+      {
+        "name": "Helen Tran",
+        "role": "Lead Product Designer",
+        "imageUrl": "https://images.unsplash.com/photo-1481214110143-ed630356e1bb?auto=format&fit=crop&w=560&q=80",
+        "tags": ["Leadership", "Product", "UX"]
+      }
+    ]
+  },
   "layout": {
     "showHeader": true,
     "showTopBar": true,
     "showFooter": true,
+    "showHeroSection": true,
     "header": {
       "showAboutUs": true,
       "showPricing": true
