@@ -40,11 +40,56 @@
       }
     ]
   },
+  "contactDetails": {
+    "sectionLabel": "Contact",
+    "title": "Let's build your next creative project",
+    "description": "Tell us what you are designing and our tenant team will pair you with the right specialists.",
+    "email": "hello@defaulttenant.com",
+    "phone": "+1 415 555 0123",
+    "address": {
+      "line1": "100 Market Street",
+      "line2": "Suite 900",
+      "city": "San Francisco",
+      "state": "CA",
+      "postalCode": "94103",
+      "country": "USA"
+    },
+    "socialMediaLinks": [
+      {
+        "label": "Instagram",
+        "url": "https://instagram.com"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://linkedin.com"
+      },
+      {
+        "label": "Dribbble",
+        "url": "https://dribbble.com"
+      }
+    ],
+    "mapEmbedUrl": "https://www.google.com/maps?q=San+Francisco,+CA&output=embed",
+    "operatingHours": [
+      {
+        "days": "Mon - Fri",
+        "hours": "09:00 - 18:00",
+        "timezone": "PST"
+      },
+      {
+        "days": "Sat",
+        "hours": "10:00 - 14:00",
+        "timezone": "PST"
+      }
+    ],
+    "ctaText": "Schedule a call",
+    "ctaLink": "/contact"
+  },
   "layout": {
     "showHeader": true,
     "showTopBar": false,
     "showFooter": true,
     "showHeroSection": true,
+    "showContactDetails": true,
     "header": {
       "showAboutUs": true,
       "showPricing": true
@@ -55,12 +100,21 @@
       "showHelpCenter": true
     },
     "hero": {
-      "variant": "hero-profile",
+      "variant": "profile-gallery",
       "showBadge": true,
       "showTitle": true,
       "showSubtitle": true,
       "showCtaButton": true,
       "showProfileGallery": true
+    },
+    "contactDetails": {
+      "showEmail": true,
+      "showPhone": true,
+      "showAddress": true,
+      "showSocialMediaLinks": true,
+      "showMap": false,
+      "showOperatingHours": true,
+      "showCTAButton": true
     }
   }
 }

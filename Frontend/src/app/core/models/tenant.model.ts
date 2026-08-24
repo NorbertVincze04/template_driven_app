@@ -14,9 +14,45 @@ export interface TenantLayout {
   showTopBar?: boolean;
   showFooter?: boolean;
   showHeroSection?: boolean;
+  showContactDetails?: boolean;
   header?: TenantHeaderLayout;
   footer?: TenantFooterLayout;
   hero?: TenantHeroLayout;
+  contactDetails?: TenantContactDetailsLayout;
+}
+
+export interface TenantSocialLink {
+  label: string;
+  url: string;
+}
+
+export interface TenantAddress {
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+}
+
+export interface TenantOperatingHours {
+  timezone?: string;
+  days?: string;
+  hours?: string;
+}
+
+export interface TenantContactDetailsContent {
+  sectionLabel?: string;
+  title?: string;
+  description?: string;
+  email?: string;
+  phone?: string;
+  address?: TenantAddress;
+  socialMediaLinks?: TenantSocialLink[];
+  mapEmbedUrl?: string;
+  operatingHours?: TenantOperatingHours[];
+  ctaText?: string;
+  ctaLink?: string;
 }
 
 export interface TenantProfileGalleryItem {
@@ -46,6 +82,7 @@ export interface TenantConfig {
   fontFamilySecondary?: string;
   layout?: TenantLayout;
   heroSection?: TenantHeroSection;
+  contactDetails?: TenantContactDetailsContent;
 }
 
 export interface TenantHeroLayout {
@@ -55,4 +92,14 @@ export interface TenantHeroLayout {
   showSubtitle?: boolean;
   showCtaButton?: boolean;
   showProfileGallery?: boolean;
+}
+
+export interface TenantContactDetailsLayout {
+  showEmail?: boolean;
+  showPhone?: boolean;
+  showAddress?: boolean;
+  showSocialMediaLinks?: boolean;
+  showMap?: boolean;
+  showOperatingHours?: boolean;
+  showCTAButton?: boolean;
 }

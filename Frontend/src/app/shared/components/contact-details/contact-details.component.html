@@ -1,0 +1,72 @@
+<section class="contact" [style]="tenantStyles()">
+  <div
+    class="contact-grid"
+    [class.single-column]="layout().showMap === false || !contact().mapEmbedUrl"
+  >
+    <div class="contact-card">
+      <p class="contact-label">{{ contact().sectionLabel }}</p>
+      <h2 class="contact-title">{{ contact().title }}</h2>
+      <p class="contact-description">{{ contact().description }}</p>
+
+      @if (layout().showEmail !== false) {
+        <a class="contact-link" [href]="'mailto:' + contact().email">
+          {{ contact().email }}
+        </a>
+      }
+
+      @if (layout().showPhone !== false) {
+        <a
+          class="contact-link"
+          [href]="'tel:' + (contact().phone || '').replaceAll(' ', '')"
+        >
+          {{ contact().phone }}
+        </a>
+      }
+
+      @if (layout().showAddress !== false && fullAddress()) {
+        <p class="contact-meta">{{ fullAddress() }}</p>
+      }
+
+      @if (layout().showOperatingHours !== false && operatingHours().length) {
+        <div class="hours">
+          <h3>Operating hours</h3>
+          @for (hour of operatingHours(); track $index) {
+            <p>
+              <strong>{{ hour.days }}</strong> {{ hour.hours }}
+              @if (hour.timezone) {
+                <span>({{ hour.timezone }})</span>
+              }
+            </p>
+          }
+        </div>
+      }
+
+      @if (layout().showSocialMediaLinks !== false && socialLinks().length) {
+        <div class="social">
+          @for (link of socialLinks(); track link.url) {
+            <a [href]="link.url" target="_blank" rel="noopener noreferrer">
+              {{ link.label }}
+            </a>
+          }
+        </div>
+      }
+
+      @if (layout().showCTAButton !== false) {
+        <a class="contact-cta" [href]="contact().ctaLink">{{
+          contact().ctaText
+        }}</a>
+      }
+    </div>
+
+    @if (layout().showMap !== false && contact().mapEmbedUrl) {
+      <div class="map-card">
+        <iframe
+          [attr.src]="contact().mapEmbedUrl"
+          title="Tenant office map"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    }
+  </div>
+</section>
