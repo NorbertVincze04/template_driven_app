@@ -112,7 +112,7 @@
       "showPhone": true,
       "showAddress": true,
       "showSocialMediaLinks": true,
-      "showMap": false,
+      "showMap": true,
       "showOperatingHours": true,
       "showCTAButton": true
     }

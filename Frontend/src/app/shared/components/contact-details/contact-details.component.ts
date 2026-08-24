@@ -1,4 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import {
   TenantContactDetailsContent,
   TenantContactDetailsLayout,
@@ -16,6 +17,7 @@ import { TenantService } from '../../../core/services/tenant.service';
 })
 export class ContactDetailsComponent {
   private readonly tenantService = inject(TenantService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   protected readonly tenantStyles = computed((): Record<string, string> => {
     const config = this.tenantService.config();
@@ -70,6 +72,23 @@ export class ContactDetailsComponent {
       ctaText: details?.ctaText || 'Book a call',
       ctaLink: details?.ctaLink || '#',
     };
+  });
+
+  protected readonly safeMapEmbedUrl = computed((): SafeResourceUrl | null => {
+    const mapEmbedUrl = this.contact().mapEmbedUrl;
+    if (!mapEmbedUrl) {
+      return null;
+    }
+
+    try {
+      const url = new URL(mapEmbedUrl);
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        return null;
+      }
+      return this.sanitizer.bypassSecurityTrustResourceUrl(url.toString());
+    } catch {
+      return null;
+    }
   });
 
   protected readonly socialLinks = computed(

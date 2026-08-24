@@ -1,7 +1,7 @@
 <section class="contact" [style]="tenantStyles()">
   <div
     class="contact-grid"
-    [class.single-column]="layout().showMap === false || !contact().mapEmbedUrl"
+    [class.single-column]="layout().showMap === false || !safeMapEmbedUrl()"
   >
     <div class="contact-card">
       <p class="contact-label">{{ contact().sectionLabel }}</p>
@@ -58,10 +58,10 @@
       }
     </div>
 
-    @if (layout().showMap !== false && contact().mapEmbedUrl) {
+    @if (layout().showMap !== false && safeMapEmbedUrl()) {
       <div class="map-card">
         <iframe
-          [attr.src]="contact().mapEmbedUrl"
+          [src]="safeMapEmbedUrl()"
           title="Tenant office map"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
