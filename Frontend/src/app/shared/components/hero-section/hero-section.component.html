@@ -1,12 +1,17 @@
 <section class="hero" [style]="tenantStyles()">
-  <div class="hero-top">
-    <p class="hero-badge">{{ heroContent().badgeText }}</p>
-    <h1>{{ heroContent().title }}</h1>
-    <p class="hero-subtitle">{{ heroContent().subtitle }}</p>
-    <button type="button" class="hero-cta">{{ heroContent().ctaText }}</button>
-  </div>
+  @switch (heroVariant()) {
+    @case ("hero-background") {
+      <app-hero-background
+        [content]="heroContent()"
+        [layout]="heroLayout()"
+      ></app-hero-background>
+    }
 
-  @if (hasGallery()) {
-    <app-profile-gallery></app-profile-gallery>
+    @default {
+      <app-profile-gallery
+        [content]="heroContent()"
+        [layout]="heroLayout()"
+      ></app-profile-gallery>
+    }
   }
 </section>

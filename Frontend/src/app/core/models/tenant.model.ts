@@ -32,6 +32,8 @@ export interface TenantHeroSection {
   subtitle?: string;
   ctaText?: string;
   profileGallery?: TenantProfileGalleryItem[];
+  backgroundImageUrl?: string;
+  backgroundImageAlt?: string;
 }
 
 export interface TenantConfig {
@@ -47,6 +49,7 @@ export interface TenantConfig {
 }
 
 export interface TenantHeroLayout {
+  variant?: 'profile-gallery' | 'hero-background';
   showBadge?: boolean;
   showTitle?: boolean;
   showSubtitle?: boolean;
