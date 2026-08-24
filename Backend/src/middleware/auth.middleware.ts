@@ -35,6 +35,13 @@ export function authMiddleware(
       });
     }
 
+    if (!req.shop || user.shopId !== req.shop.id) {
+      return res.status(403).json({
+        success: false,
+        message: "Token does not belong to this salon.",
+      });
+    }
+
     req.user = user;
     next();
   } catch (error) {

@@ -11,6 +11,7 @@ export function createApp() {
   app.use(
     cors({
       origin: CORS_ORIGIN,
+      allowedHeaders: ["Content-Type", "Authorization", "X-Tenant-Slug"],
     }),
   );
 

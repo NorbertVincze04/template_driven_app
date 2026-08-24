@@ -7,6 +7,9 @@ dotenv.config();
 // configure app
 export const PORT = Number(process.env.PORT || 3000);
 export const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:4200";
-export const JWT_SECRET = process.env.JWT_SECRET;
+export const JWT_SECRET = process.env.JWT_SECRET ?? "";
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET must be configured.");
+}
 export const JWT_EXPIRES_IN = (process.env.JWT_EXPIRES_IN ||
   "1d") as SignOptions["expiresIn"];

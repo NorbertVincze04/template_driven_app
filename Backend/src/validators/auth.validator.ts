@@ -2,7 +2,6 @@ export interface RegisterRequest {
   fullName: string;
   email: string;
   password: string;
-  secretKey: string;
 }
 
 export interface LoginRequest {
@@ -25,10 +24,6 @@ export function validateRegisterRequest(data: any): {
   if (!data.password || typeof data.password !== "string") {
     errors.push("password is required");
   }
-  if (!data.secretKey || typeof data.secretKey !== "string") {
-    errors.push("secretKey is required");
-  }
-
   return {
     valid: errors.length === 0,
     errors,

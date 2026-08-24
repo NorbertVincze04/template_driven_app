@@ -18,6 +18,7 @@ import {
   tap,
 } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { TenantService } from './tenant.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -26,7 +27,10 @@ export class AuthService {
 
   private authUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private tenantService: TenantService,
+  ) {
     if (isPlatformBrowser(inject(PLATFORM_ID))) {
       const storedUser = localStorage.getItem(environment.CURRENT_USER_STORAGE);
       if (storedUser) {
@@ -62,10 +66,16 @@ export class AuthService {
     email: string;
     password: string;
   }): Observable<boolean> {
-    return this.http.post<any>(`${this.authUrl}/register`, userData).pipe(
-      map((response) => !!response.success),
-      this.throwApiError(),
-    );
+    return this.http
+      .post<any>(`${this.authUrl}/register`, userData, {
+        headers: {
+          'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+        },
+      })
+      .pipe(
+        map((response) => !!response.success),
+        this.throwApiError(),
+      );
   }
 
   login(
@@ -73,17 +83,25 @@ export class AuthService {
     password: string,
   ): Observable<{ isTempPassword: boolean }> {
     return this.http
-      .post<any>(`${this.authUrl}/login`, {
-        email,
-        password,
-      })
+      .post<any>(
+        `${this.authUrl}/login`,
+        {
+          email,
+          password,
+        },
+        {
+          headers: {
+            'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+          },
+        },
+      )
       .pipe(
         tap((response) => {
           if (response.success) {
             const userWithToken: User = {
               name: response.payload.fullName,
               email: response.payload.email,
-              type: response.payload.type,
+              type: response.payload.role,
               token: response.payload.token,
               password: '',
               tenantId: response.payload.tenantId,

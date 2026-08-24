@@ -22,9 +22,14 @@ export class AuthController {
         });
       }
 
-      const { fullName, email, password, secretKey } = req.body;
+      const { fullName, email, password } = req.body;
 
-      const user = await AuthService.registerUser(fullName, email, password);
+      const user = await AuthService.registerUser(
+        fullName,
+        email,
+        password,
+        req.shop!,
+      );
 
       return res.json({
         success: true,
@@ -33,7 +38,7 @@ export class AuthController {
     } catch (error: any) {
       console.error("Register failed:", error);
 
-      if (error.message.includes("already exists")) {
+      if (error.message.includes("already exists") || error.code === "23505") {
         return res.status(409).json({
           success: false,
           message: error.message,
@@ -63,7 +68,7 @@ export class AuthController {
 
       const { email, password } = req.body;
 
-      const result = await AuthService.loginUser(email, password);
+      const result = await AuthService.loginUser(email, password, req.shop!);
 
       return res.json({
         success: true,

@@ -2,14 +2,19 @@ import type { UserRecord } from "../types/user.types.ts";
 import { pool } from "../db.ts";
 
 export class UserRepository {
-  static async findByEmail(email: string): Promise<UserRecord | null> {
+  static async findByEmail(
+    shopId: string,
+    email: string,
+  ): Promise<UserRecord | null> {
     const { rows } = await pool.query<UserRecord>(
       `
-      SELECT id, full_name, email, password_hash, type
-      FROM users
-      WHERE email = $1
+            SELECT u.id, u.shop_id, s.slug AS shop_slug, u.full_name,
+              u.email, u.password_hash, u.role
+            FROM users u
+            INNER JOIN shops s ON s.id = u.shop_id
+            WHERE u.shop_id = $1 AND u.email = $2 AND u.is_active = TRUE
       `,
-      [email],
+      [shopId, email],
     );
 
     return rows[0] || null;
@@ -19,30 +24,31 @@ export class UserRepository {
     fullName: string,
     email: string,
     passwordHash: string,
-    type: "admin" | "user" = "user",
+    shopId: string,
+    role: "ADMIN" | "BARBER" | "CUSTOMER" = "CUSTOMER",
   ): Promise<UserRecord> {
     const { rows } = await pool.query<UserRecord>(
       `
       INSERT INTO users
-        (full_name, email, password_hash, type)
+        (shop_id, full_name, email, password_hash, role)
       VALUES
-        ($1, $2, $3, $4)
-      RETURNING id, full_name, email, password_hash, type
+        ($1, $2, $3, $4, $5)
+      RETURNING id, shop_id, full_name, email, password_hash, role
       `,
-      [fullName, email, passwordHash, type],
+      [shopId, fullName, email, passwordHash, role],
     );
 
     return rows[0];
   }
 
   // used when registering a new user
-  static async existsByEmail(email: string): Promise<boolean> {
+  static async existsByEmail(shopId: string, email: string): Promise<boolean> {
     const { rows } = await pool.query(
       `
       SELECT id FROM users
-      WHERE email = $1
+      WHERE shop_id = $1 AND email = $2
       `,
-      [email],
+      [shopId, email],
     );
 
     return rows.length > 0;
