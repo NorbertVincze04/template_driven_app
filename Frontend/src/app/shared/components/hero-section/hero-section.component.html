@@ -1,0 +1,17 @@
+<section class="hero" [style]="tenantStyles()">
+  @switch (heroVariant()) {
+    @case ("hero-background") {
+      <app-hero-background
+        [content]="heroContent()"
+        [layout]="heroLayout()"
+      ></app-hero-background>
+    }
+
+    @default {
+      <app-profile-gallery
+        [content]="heroContent()"
+        [layout]="heroLayout()"
+      ></app-profile-gallery>
+    }
+  }
+</section>

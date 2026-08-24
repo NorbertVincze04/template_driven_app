@@ -1,0 +1,30 @@
+<div class="hero-variant hero-background">
+  <div class="hero-media" [class.has-image]="!!content.backgroundImageUrl">
+    @if (content.backgroundImageUrl) {
+      <img
+        [src]="content.backgroundImageUrl"
+        [alt]="content.backgroundImageAlt || 'Hero background image'"
+        loading="eager"
+      />
+    }
+    <div class="hero-backdrop"></div>
+  </div>
+
+  <div class="hero-top">
+    @if (layout.showBadge && content.badgeText) {
+      <p class="hero-badge">{{ content.badgeText }}</p>
+    }
+
+    @if (layout.showTitle && content.title) {
+      <h1>{{ content.title }}</h1>
+    }
+
+    @if (layout.showSubtitle && content.subtitle) {
+      <p class="hero-subtitle">{{ content.subtitle }}</p>
+    }
+
+    @if (layout.showCtaButton && content.ctaText) {
+      <button type="button" class="hero-cta">{{ content.ctaText }}</button>
+    }
+  </div>
+</div>

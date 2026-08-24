@@ -1,0 +1,50 @@
+<div class="hero-variant profile-gallery-hero">
+  <div class="hero-top">
+    @if (layout.showBadge && content.badgeText) {
+      <p class="hero-badge">{{ content.badgeText }}</p>
+    }
+
+    @if (layout.showTitle && content.title) {
+      <h1>{{ content.title }}</h1>
+    }
+
+    @if (layout.showSubtitle && content.subtitle) {
+      <p class="hero-subtitle">{{ content.subtitle }}</p>
+    }
+
+    @if (layout.showCtaButton && content.ctaText) {
+      <button type="button" class="hero-cta">{{ content.ctaText }}</button>
+    }
+  </div>
+
+  @if (layout.showProfileGallery && hasGallery()) {
+    <div class="gallery-wrapper">
+      <div class="gallery-track">
+        @for (
+          profile of content.profileGallery || [];
+          track trackByName($index, profile)
+        ) {
+          <button
+            type="button"
+            class="gallery-card"
+            (click)="onProfileClick(profile)"
+            [attr.aria-label]="'Open profile for ' + profile.name"
+          >
+            <img [src]="profile.imageUrl" [alt]="profile.name" loading="lazy" />
+            <div class="card-overlay">
+              <h3>{{ profile.name }}</h3>
+              <p>{{ profile.role }}</p>
+              <div class="card-tags">
+                @for (tag of profile.tags || []; track tag) {
+                  <span>{{ tag }}</span>
+                }
+              </div>
+            </div>
+          </button>
+        }
+      </div>
+    </div>
+  } @else {
+    <h2 class="empty-gallery-title">No Barbers Yet</h2>
+  }
+</div>
