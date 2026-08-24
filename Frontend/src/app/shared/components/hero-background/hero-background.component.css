@@ -1,7 +1,7 @@
 .hero-background {
   position: relative;
   min-height: min(72vh, 780px);
-  padding: clamp(2rem, 5vw, 5rem) 1.25rem;
+  padding: clamp(2rem, 4vw, 4rem) 1rem;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -11,6 +11,7 @@
 .hero-media {
   position: absolute;
   inset: 0;
+  clip-path: inset(0);
   background:
     radial-gradient(
       circle at 15% 10%,
@@ -34,6 +35,8 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  position: fixed;
+  inset: 0;
 }
 
 .hero-backdrop {
@@ -42,8 +45,8 @@
   background:
     linear-gradient(
       180deg,
-      rgba(10, 16, 34, 0.2) 0%,
-      rgba(10, 16, 34, 0.72) 100%
+      rgba(10, 16, 34, 0.28) 0%,
+      rgba(10, 16, 34, 0.92) 100%
     ),
     linear-gradient(
       90deg,
