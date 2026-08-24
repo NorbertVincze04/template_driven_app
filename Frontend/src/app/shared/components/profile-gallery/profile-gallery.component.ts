@@ -2,18 +2,18 @@ import { Component, computed, inject } from '@angular/core';
 import {
   TenantConfig,
   TenantHeroSection,
+  TenantProfileGalleryItem,
 } from '../../../core/models/tenant.model';
 import { TenantService } from '../../../core/services/tenant.service';
-import { ProfileGalleryComponent } from '../profile-gallery/profile-gallery.component';
 
 @Component({
-  selector: 'app-hero-section',
+  selector: 'app-profile-gallery',
   standalone: true,
-  imports: [ProfileGalleryComponent],
-  templateUrl: './hero-section.component.html',
-  styleUrl: './hero-section.component.css',
+  imports: [],
+  templateUrl: './profile-gallery.component.html',
+  styleUrl: './profile-gallery.component.css',
 })
-export class HeroSectionComponent {
+export class ProfileGalleryComponent {
   private readonly tenantService = inject(TenantService);
 
   protected readonly tenantConfig = computed((): TenantConfig | null =>
@@ -37,10 +37,6 @@ export class HeroSectionComponent {
   protected readonly heroContent = computed((): TenantHeroSection => {
     const hero = this.tenantService.config()?.heroSection;
     return {
-      badgeText: hero?.badgeText || 'text',
-      title: hero?.title || 'text',
-      subtitle: hero?.subtitle || 'text',
-      ctaText: hero?.ctaText || 'text',
       profileGallery: hero?.profileGallery || [],
     };
   });
@@ -48,4 +44,13 @@ export class HeroSectionComponent {
   protected readonly hasGallery = computed(
     (): boolean => (this.heroContent().profileGallery?.length || 0) > 0,
   );
+
+  protected trackByName(_: number, item: TenantProfileGalleryItem): string {
+    return item.name;
+  }
+
+  protected onProfileClick(profile: TenantProfileGalleryItem): void {
+    // Hook for future profile routing once a dedicated profile page is added.
+    console.info('Open profile:', profile.name);
+  }
 }

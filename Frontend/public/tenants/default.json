@@ -11,7 +11,7 @@
     "title": "The world's destination for design",
     "subtitle": "Get inspired by the work of millions of top-rated designers and agencies around the world.",
     "ctaText": "Get started",
-    "gallery": [
+    "profileGallery": [
       {
         "name": "Vladimir Gruev",
         "role": "Digital Designer",
@@ -51,6 +51,13 @@
       "showInstagram": true,
       "showFacebook": true,
       "showHelpCenter": true
+    },
+    "hero": {
+      "showBadge": true,
+      "showTitle": true,
+      "showSubtitle": true,
+      "showCtaButton": true,
+      "showProfileGallery": true
     }
   }
 }

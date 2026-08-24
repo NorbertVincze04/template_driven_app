@@ -1,0 +1,30 @@
+@if (hasGallery()) {
+  <div class="gallery-wrapper">
+    <div class="gallery-track">
+      @for (
+        profile of heroContent().profileGallery;
+        track trackByName($index, profile)
+      ) {
+        <button
+          type="button"
+          class="gallery-card"
+          (click)="onProfileClick(profile)"
+          [attr.aria-label]="'Open profile for ' + profile.name"
+        >
+          <img [src]="profile.imageUrl" [alt]="profile.name" loading="lazy" />
+          <div class="card-overlay">
+            <h3>{{ profile.name }}</h3>
+            <p>{{ profile.role }}</p>
+            <div class="card-tags">
+              @for (tag of profile.tags || []; track tag) {
+                <span>{{ tag }}</span>
+              }
+            </div>
+          </div>
+        </button>
+      }
+    </div>
+  </div>
+} @else {
+  <h2 class="empty-gallery-title">No Barbers Yet</h2>
+}

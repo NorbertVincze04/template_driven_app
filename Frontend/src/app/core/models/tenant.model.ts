@@ -16,9 +16,10 @@ export interface TenantLayout {
   showHeroSection?: boolean;
   header?: TenantHeaderLayout;
   footer?: TenantFooterLayout;
+  hero?: TenantHeroLayout;
 }
 
-export interface TenantHeroGalleryItem {
+export interface TenantProfileGalleryItem {
   name: string;
   role: string;
   imageUrl: string;
@@ -30,7 +31,7 @@ export interface TenantHeroSection {
   title?: string;
   subtitle?: string;
   ctaText?: string;
-  gallery?: TenantHeroGalleryItem[];
+  profileGallery?: TenantProfileGalleryItem[];
 }
 
 export interface TenantConfig {
@@ -43,4 +44,12 @@ export interface TenantConfig {
   fontFamilySecondary?: string;
   layout?: TenantLayout;
   heroSection?: TenantHeroSection;
+}
+
+export interface TenantHeroLayout {
+  showBadge?: boolean;
+  showTitle?: boolean;
+  showSubtitle?: boolean;
+  showCtaButton?: boolean;
+  showProfileGallery?: boolean;
 }
