@@ -1,13 +1,20 @@
 <footer class="footer" [style]="tenantStyles()">
   <!-- Left -->
   <div class="footer-left">
-    <p class="powered-by">powered by VNI</p>
+    <p class="powered-by">
+      Copyright &#64; Brand Name 2026 | Developed by
+      <a href="" class="powered-by-link">VNI</a>
+    </p>
   </div>
 
   <!-- Right -->
   <div class="footer-right">
     @if (tenantConfig()?.layout?.footer?.showHelpCenter !== false) {
       <a routerLink="/help" class="help-btn">Help Center</a>
+    }
+
+    @if (tenantConfig()?.layout?.footer?.showTerms !== false) {
+      <a routerLink="/terms" class="help-btn">Terms of Service</a>
     }
 
     @if (tenantConfig()?.layout?.footer?.showInstagram !== false) {

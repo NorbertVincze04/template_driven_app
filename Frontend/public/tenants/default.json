@@ -1,54 +1,54 @@
 {
   "tenantId": "default",
-  "name": "Default Tenant",
+  "name": "Salon Luxe",
   "logoUrl": "",
-  "primaryColor": "#235827",
-  "secondaryColor": "#984151",
+  "primaryColor": "#8B4513",
+  "secondaryColor": "#D4A574",
   "fontFamily": "Montserrat",
   "fontFamilySecondary": "Playfair Display",
   "heroSection": {
-    "badgeText": "Over 3 million ready-to-work creatives!",
-    "title": "The world's destination for design",
-    "subtitle": "Get inspired by the work of millions of top-rated designers and agencies around the world.",
-    "ctaText": "Get started",
-    "backgroundImageUrl": "https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=1800&q=80",
-    "backgroundImageAlt": "Designer workspace with creative tools",
+    "badgeText": "Award-winning stylists & premium beauty services",
+    "title": "Elevate Your Look with Expert Hair Care",
+    "subtitle": "Discover our team of talented stylists dedicated to creating the perfect look for you. From cuts and color to treatments and styling, we're here to make you feel beautiful.",
+    "ctaText": "Book Your Appointment",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1562258917-fb4dc9e4c2a6?auto=format&fit=crop&w=1800&q=80",
+    "backgroundImageAlt": "Professional hair salon interior with styling stations",
     "profileGallery": [
       {
-        "name": "Vladimir Gruev",
-        "role": "Digital Designer",
-        "imageUrl": "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=560&q=80",
-        "tags": ["Brand", "Design"]
+        "name": "Sarah Chen",
+        "role": "Senior Hair Stylist",
+        "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=560&q=80",
+        "tags": ["Cuts", "Color", "Styling"]
       },
       {
-        "name": "Dan Mall",
-        "role": "Design Educator",
-        "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=560&q=80",
-        "tags": ["Product", "UX"]
+        "name": "Marcus Johnson",
+        "role": "Master Colorist",
+        "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=560&q=80",
+        "tags": ["Color", "Highlights", "Balayage"]
       },
       {
-        "name": "Elif Kamesoglu",
-        "role": "Brand Designer",
-        "imageUrl": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=560&q=80",
-        "tags": ["Brand", "Illustration", "Web"]
+        "name": "Jessica Rodriguez",
+        "role": "Specialist in Extensions",
+        "imageUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=560&q=80",
+        "tags": ["Extensions", "Volume", "Texture"]
       },
       {
-        "name": "Helen Tran",
-        "role": "Lead Product Designer",
-        "imageUrl": "https://images.unsplash.com/photo-1481214110143-ed630356e1bb?auto=format&fit=crop&w=560&q=80",
-        "tags": ["Leadership", "Product", "UX"]
+        "name": "Emma Williams",
+        "role": "Bridal & Event Styling",
+        "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=560&q=80",
+        "tags": ["Bridal", "Events", "Updos"]
       }
     ]
   },
   "contactDetails": {
     "sectionLabel": "Contact",
-    "title": "Let's build your next creative project",
-    "description": "Tell us what you are designing and our tenant team will pair you with the right specialists.",
-    "email": "hello@defaulttenant.com",
+    "title": "Ready for Your New Look?",
+    "description": "Visit us for a consultation with one of our expert stylists. We'd love to help you achieve your dream hair and create a personalized beauty plan.",
+    "email": "hello@salonluxe.com",
     "phone": "+1 415 555 0123",
     "address": {
-      "line1": "100 Market Street",
-      "line2": "Suite 900",
+      "line1": "285 Fashion Drive",
+      "line2": "Suite 100",
       "city": "San Francisco",
       "state": "CA",
       "postalCode": "94103",
@@ -81,7 +81,7 @@
         "timezone": "PST"
       }
     ],
-    "ctaText": "Schedule a call",
+    "ctaText": "Schedule an Appointment",
     "ctaLink": "/contact"
   },
   "layout": {
@@ -97,7 +97,8 @@
     "footer": {
       "showInstagram": true,
       "showFacebook": true,
-      "showHelpCenter": true
+      "showHelpCenter": true,
+      "showTerms": true
     },
     "hero": {
       "variant": "profile-gallery",

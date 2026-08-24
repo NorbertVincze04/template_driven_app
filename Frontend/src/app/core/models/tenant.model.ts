@@ -1,14 +1,3 @@
-export interface TenantHeaderLayout {
-  showAboutUs?: boolean;
-  showPricing?: boolean;
-}
-
-export interface TenantFooterLayout {
-  showInstagram?: boolean;
-  showFacebook?: boolean;
-  showHelpCenter?: boolean;
-}
-
 export interface TenantLayout {
   showHeader?: boolean;
   showTopBar?: boolean;
@@ -19,6 +8,18 @@ export interface TenantLayout {
   footer?: TenantFooterLayout;
   hero?: TenantHeroLayout;
   contactDetails?: TenantContactDetailsLayout;
+}
+
+export interface TenantHeaderLayout {
+  showAboutUs?: boolean;
+  showPricing?: boolean;
+}
+
+export interface TenantFooterLayout {
+  showInstagram?: boolean;
+  showFacebook?: boolean;
+  showHelpCenter?: boolean;
+  showTerms?: boolean;
 }
 
 export interface TenantSocialLink {

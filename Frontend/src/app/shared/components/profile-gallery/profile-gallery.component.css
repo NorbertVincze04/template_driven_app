@@ -1,6 +1,6 @@
 .profile-gallery-hero {
   --hero-bg: linear-gradient(180deg, #fffef9, #f4f7ff 70%, #eff4ff);
-  padding: clamp(2rem, 4vw, 4rem) 0 0;
+  padding: clamp(2rem, 5vw, 5rem) 1.25rem;
   background: var(--hero-bg);
   overflow: hidden;
 }
@@ -9,7 +9,6 @@
   text-align: center;
   max-width: 900px;
   margin: 0 auto;
-  padding: 0 1rem;
 }
 
 .hero-badge {
