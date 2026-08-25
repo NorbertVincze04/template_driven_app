@@ -74,7 +74,11 @@
   display: inline-flex;
   padding: 0.45rem 1rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--theme-surface) 88%, var(--tenant-primary));
+  background: color-mix(
+    in srgb,
+    var(--theme-surface) 88%,
+    var(--tenant-primary)
+  );
   color: var(--tenant-primary);
   font-size: 0.82rem;
   font-weight: 700;
@@ -168,7 +172,7 @@ h1::before {
   transform: translateY(0);
 }
 
-:host-context(html[data-theme='dark']) .hero-badge {
+:host-context(html[data-theme="dark"]) .hero-badge {
   background: color-mix(
     in srgb,
     var(--theme-surface) 84%,
@@ -179,21 +183,21 @@ h1::before {
     color-mix(in srgb, var(--tenant-primary) 28%, var(--theme-surface));
 }
 
-:host-context(html[data-theme='dark']) .hero-cta {
+:host-context(html[data-theme="dark"]) .hero-cta {
   background: var(--tenant-primary);
   color: #111827;
   box-shadow: 0 10px 24px color-mix(in srgb, var(--tenant-primary) 34%, black);
 }
 
-:host-context(html[data-theme='dark']) .hero-cta:hover {
+:host-context(html[data-theme="dark"]) .hero-cta:hover {
   box-shadow: 0 14px 30px color-mix(in srgb, var(--tenant-primary) 46%, black);
 }
 
-:host-context(html[data-theme='dark']) .hero-secondary-btn {
+:host-context(html[data-theme="dark"]) .hero-secondary-btn {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-:host-context(html[data-theme='dark']) .hero-secondary-btn:hover {
+:host-context(html[data-theme="dark"]) .hero-secondary-btn:hover {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.5);
 }
