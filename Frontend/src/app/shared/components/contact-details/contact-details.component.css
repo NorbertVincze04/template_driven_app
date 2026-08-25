@@ -4,15 +4,19 @@
   background:
     radial-gradient(
       circle at 10% 0%,
-      color-mix(in srgb, var(--tenant-primary) 16%, white),
+      color-mix(in srgb, var(--tenant-primary) 16%, var(--theme-surface)),
       transparent 45%
     ),
     radial-gradient(
       circle at 90% 100%,
-      color-mix(in srgb, var(--tenant-secondary) 18%, white),
+      color-mix(in srgb, var(--tenant-secondary) 18%, var(--theme-surface)),
       transparent 50%
     ),
-    linear-gradient(180deg, #ffffff 0%, #f7f8fa 100%);
+    linear-gradient(
+      180deg,
+      var(--theme-surface) 0%,
+      var(--theme-surface-soft) 100%
+    );
   font-family: var(--tenant-font, inherit);
 }
 
@@ -52,7 +56,7 @@
 .map-card {
   border-radius: 1.25rem;
   border: 1px solid color-mix(in srgb, var(--tenant-primary) 16%, #d6dce0);
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--theme-card-bg);
   backdrop-filter: blur(4px);
 }
 
@@ -66,7 +70,7 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tenant-secondary) 84%, black);
+  color: color-mix(in srgb, var(--tenant-secondary) 84%, var(--theme-contrast));
 }
 
 .contact-title {
@@ -74,12 +78,12 @@
   font-family: var(--tenant-font-secondary, var(--tenant-font, inherit));
   font-size: clamp(1.6rem, 2.4vw, 2.4rem);
   line-height: 1.15;
-  color: #0f172a;
+  color: var(--theme-text);
 }
 
 .contact-description {
   margin: 0.85rem 0 1.2rem;
-  color: #334155;
+  color: var(--theme-text-soft);
   max-width: 58ch;
 }
 
@@ -88,40 +92,44 @@
   width: fit-content;
   margin: 0.25rem 0;
   font-weight: 600;
-  color: color-mix(in srgb, var(--tenant-primary) 88%, black);
+  color: color-mix(in srgb, var(--tenant-primary) 88%, var(--theme-contrast));
   text-decoration: none;
 }
 
 .contact-link:hover {
-  color: color-mix(in srgb, var(--tenant-secondary) 80%, black);
+  color: color-mix(in srgb, var(--tenant-secondary) 80%, var(--theme-contrast));
 }
 
 .contact-meta {
   margin: 1rem 0;
-  color: #475569;
+  color: var(--theme-muted);
 }
 
 .hours {
   margin-top: 1rem;
   padding: 0.85rem 1rem;
   border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--tenant-primary) 8%, white);
+  background: color-mix(
+    in srgb,
+    var(--tenant-primary) 8%,
+    var(--theme-surface)
+  );
 }
 
 .hours h3 {
   margin: 0 0 0.45rem;
   font-size: 0.92rem;
   letter-spacing: 0.02em;
-  color: #1e293b;
+  color: var(--theme-text);
 }
 
 .hours p {
   margin: 0.3rem 0;
-  color: #334155;
+  color: var(--theme-text-soft);
 }
 
 .hours span {
-  color: #64748b;
+  color: var(--theme-muted);
 }
 
 .social {
@@ -137,13 +145,13 @@
   border-radius: 999px;
   padding: 0.35rem 0.85rem;
   font-size: 0.84rem;
-  color: #1f2937;
-  background: white;
+  color: var(--theme-text);
+  background: var(--theme-surface);
 }
 
 .social a:hover {
   border-color: color-mix(in srgb, var(--tenant-primary) 44%, #94a3b8);
-  color: color-mix(in srgb, var(--tenant-primary) 88%, black);
+  color: color-mix(in srgb, var(--tenant-primary) 88%, var(--theme-contrast));
 }
 
 .contact-cta {

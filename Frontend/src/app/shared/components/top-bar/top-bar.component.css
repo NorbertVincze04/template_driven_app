@@ -7,9 +7,9 @@
   background-color: color-mix(
     in srgb,
     var(--tenant-primary, #111827) 15%,
-    white
+    var(--theme-surface)
   );
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--theme-border);
   position: relative;
   z-index: 99;
   font-family: var(--tenant-font, inherit);

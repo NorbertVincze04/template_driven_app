@@ -1,6 +1,42 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --theme-bg: #f5f7fb;
+  --theme-surface: #ffffff;
+  --theme-surface-alt: #eef3ff;
+  --theme-surface-soft: #f7f9ff;
+  --theme-card-bg: rgba(255, 255, 255, 0.88);
+  --theme-border: #d8dee8;
+  --theme-text: #0f172a;
+  --theme-text-soft: #334155;
+  --theme-muted: #64748b;
+  --theme-contrast: #000000;
+  --theme-danger: #b91c1c;
+  --theme-hero-image-fallback: #0f152f;
+}
+
+html[data-theme="dark"] {
+  --theme-bg: #0b1220;
+  --theme-surface: #121a2b;
+  --theme-surface-alt: #17243d;
+  --theme-surface-soft: #0f1a2f;
+  --theme-card-bg: rgba(18, 26, 43, 0.9);
+  --theme-border: #25334e;
+  --theme-text: #e2e8f0;
+  --theme-text-soft: #b4c0d3;
+  --theme-muted: #93a4be;
+  --theme-contrast: #ffffff;
+  --theme-danger: #f87171;
+  --theme-hero-image-fallback: #080c17;
+}
+
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   scrollbar-width: none;
+}
+
+body {
+  background: var(--theme-bg);
+  color: var(--theme-text);
 }

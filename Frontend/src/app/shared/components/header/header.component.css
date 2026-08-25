@@ -7,9 +7,9 @@
   background-color: color-mix(
     in srgb,
     var(--tenant-primary, #111827) 8%,
-    white
+    var(--theme-surface)
   );
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--theme-border);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -51,7 +51,7 @@
 .nav-link {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--theme-text-soft);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -67,7 +67,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--theme-muted);
   padding: 0.25rem;
   border-radius: 50%;
   transition:
@@ -99,7 +99,7 @@
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--theme-border);
   transition: border-color 0.2s ease;
 }
 

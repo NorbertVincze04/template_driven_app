@@ -15,19 +15,24 @@
   background:
     radial-gradient(
       circle at 15% 10%,
-      color-mix(in srgb, var(--tenant-secondary) 30%, #fff) 0,
+      color-mix(in srgb, var(--tenant-secondary) 30%, var(--theme-surface)) 0,
       transparent 45%
     ),
     radial-gradient(
       circle at 80% 85%,
-      color-mix(in srgb, var(--tenant-primary) 32%, #fff) 0,
+      color-mix(in srgb, var(--tenant-primary) 32%, var(--theme-surface)) 0,
       transparent 42%
     ),
-    linear-gradient(135deg, #fbf6ec 0%, #ebf2ff 60%, #f7f9ff 100%);
+    linear-gradient(
+      135deg,
+      var(--theme-surface) 0%,
+      var(--theme-surface-alt) 60%,
+      var(--theme-surface-soft) 100%
+    );
 }
 
 .hero-media.has-image {
-  background: #0f152f;
+  background: var(--theme-hero-image-fallback);
 }
 
 .hero-media img {
@@ -66,8 +71,8 @@
   display: inline-flex;
   padding: 0.45rem 1rem;
   border-radius: 999px;
-  background: color-mix(in srgb, #fff 20%, transparent);
-  color: #fff;
+  background: color-mix(in srgb, var(--theme-surface) 20%, transparent);
+  color: var(--tenant-primary);
   font-size: 0.82rem;
   font-weight: 700;
   margin-bottom: 1rem;
@@ -93,8 +98,8 @@ h1 {
   margin-top: 1.6rem;
   border: 0;
   border-radius: 999px;
-  background: #fff;
-  color: var(--tenant-primary);
+  background: var(--tenant-primary);
+  color: color-mix(in srgb, var(--tenant-primary) 15%, white);
   padding: 0.85rem 1.6rem;
   font-size: 0.95rem;
   font-weight: 700;
@@ -113,4 +118,25 @@ h1 {
 .hero-cta:active {
   transform: translateY(0);
   opacity: 0.94;
+}
+
+html[data-theme="dark"] .hero-badge {
+  background: color-mix(
+    in srgb,
+    var(--theme-surface) 84%,
+    var(--tenant-primary)
+  );
+  color: var(--tenant-primary);
+  border: 1px solid
+    color-mix(in srgb, var(--tenant-primary) 28%, var(--theme-surface));
+}
+
+html[data-theme="dark"] .hero-cta {
+  background: var(--tenant-primary);
+  color: color-mix(in srgb, var(--tenant-primary) 15%, white);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--tenant-primary) 34%, black);
+}
+
+html[data-theme="dark"] .hero-cta:hover {
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--tenant-primary) 46%, black);
 }

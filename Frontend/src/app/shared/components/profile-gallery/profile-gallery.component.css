@@ -1,5 +1,10 @@
 .profile-gallery-hero {
-  --hero-bg: linear-gradient(180deg, #fffef9, #f4f7ff 70%, #eff4ff);
+  --hero-bg: linear-gradient(
+    180deg,
+    var(--theme-surface),
+    var(--theme-surface-alt) 70%,
+    var(--theme-surface-soft)
+  );
   padding: clamp(2rem, 5vw, 5rem) 1.25rem;
   background: var(--hero-bg);
   overflow: hidden;
@@ -15,7 +20,11 @@
   display: inline-flex;
   padding: 0.45rem 1rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--tenant-secondary) 22%, #fff);
+  background: color-mix(
+    in srgb,
+    var(--tenant-secondary) 22%,
+    var(--theme-surface)
+  );
   color: var(--tenant-primary);
   font-size: 0.82rem;
   font-weight: 700;
@@ -32,7 +41,7 @@ h1 {
 }
 
 .hero-subtitle {
-  color: #2d3555;
+  color: var(--theme-text-soft);
   margin: 1.2rem auto 0;
   max-width: 720px;
   font-size: clamp(1rem, 1.2vw, 1.2rem);
@@ -91,7 +100,7 @@ h1 {
   border: 0;
   border-radius: 22px;
   overflow: hidden;
-  background: #dde3f6;
+  background: var(--theme-surface-alt);
   box-shadow: 0 12px 24px rgba(17, 24, 39, 0.12);
   flex: 0 0 auto;
   padding: 0;
@@ -111,7 +120,8 @@ h1 {
   opacity: 0.92;
 }
 .gallery-card:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--tenant-primary) 50%, #fff);
+  outline: 2px solid
+    color-mix(in srgb, var(--tenant-primary) 50%, var(--theme-surface));
   outline-offset: 2px;
 }
 .gallery-card img {

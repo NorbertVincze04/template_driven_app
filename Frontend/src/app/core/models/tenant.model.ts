@@ -73,12 +73,19 @@ export interface TenantHeroSection {
   backgroundImageAlt?: string;
 }
 
+export type TenantThemeMode = 'light' | 'dark';
+
+export interface TenantStyle {
+  mode?: TenantThemeMode;
+}
+
 export interface TenantConfig {
   tenantId: string;
   name: string;
   logoUrl?: string;
   primaryColor?: string;
   secondaryColor?: string;
+  style?: TenantStyle;
   fontFamily?: string;
   fontFamilySecondary?: string;
   layout?: TenantLayout;

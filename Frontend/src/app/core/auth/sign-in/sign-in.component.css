@@ -2,8 +2,9 @@
   background-color: color-mix(
     in srgb,
     var(--tenant-primary, #111827) 8%,
-    white
+    var(--theme-surface)
   );
+  border: 1px solid var(--theme-border);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   height: auto;
   width: 400px;
@@ -36,13 +37,15 @@ form {
 label {
   margin-bottom: 5px;
   font-weight: 500;
-  color: #555;
+  color: var(--theme-text-soft);
   font-family: var(--tenant-font, inherit);
 }
 
 .form-control {
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
   border-radius: 4px;
   font-size: 1rem;
 }
@@ -51,7 +54,7 @@ label {
   outline: none;
   border-color: var(--tenant-primary, #6b7280);
   box-shadow: 0 0 5px
-    color-mix(in srgb, var(--tenant-primary, #111827) 50%, white);
+    color-mix(in srgb, var(--tenant-primary, #111827) 50%, var(--theme-surface));
 }
 
 .password-input-container {
@@ -70,7 +73,7 @@ label {
   right: 10px;
   background: none;
   border: none;
-  color: #666;
+  color: var(--theme-muted);
   cursor: pointer;
   padding: 5px;
   display: flex;
@@ -92,7 +95,7 @@ form app-action-button {
 }
 
 .form-error {
-  color: #c00;
+  color: var(--theme-danger);
   text-align: center;
   margin-top: 10px;
   font-family: var(--tenant-font, inherit);

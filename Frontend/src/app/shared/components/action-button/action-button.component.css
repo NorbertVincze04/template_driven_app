@@ -14,8 +14,8 @@ button {
 }
 
 button:disabled {
-  background-color: #d1d5db;
-  color: #9ca3af;
+  background-color: var(--theme-border);
+  color: var(--theme-muted);
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -41,7 +41,7 @@ button:disabled {
 
 .btn-secondary:hover:not(:disabled) {
   background-color: var(--tenant-primary, #111827);
-  color: white;
+  color: var(--theme-surface);
 }
 
 .spinner {

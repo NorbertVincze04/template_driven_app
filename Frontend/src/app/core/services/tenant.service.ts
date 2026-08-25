@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, catchError, map, tap } from 'rxjs';
-import { TenantConfig } from '../models/tenant.model';
+import { TenantConfig, TenantThemeMode } from '../models/tenant.model';
 
 @Injectable({ providedIn: 'root' })
 export class TenantService {
@@ -22,6 +22,8 @@ export class TenantService {
 
   setTenant(config: TenantConfig): void {
     this._config.set(config);
+    this.applyThemeMode(config.style?.mode);
+
     if (config.fontFamily) {
       this.loadGoogleFont(config.fontFamily);
     }
@@ -40,5 +42,11 @@ export class TenantService {
     link.rel = 'stylesheet';
     link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontName)}:wght@400;500;600;700&display=swap`;
     this.document.head.appendChild(link);
+  }
+
+  private applyThemeMode(mode?: TenantThemeMode): void {
+    const normalizedMode: TenantThemeMode = mode === 'dark' ? 'dark' : 'light';
+    this.document.documentElement.setAttribute('data-theme', normalizedMode);
+    this.document.documentElement.style.colorScheme = normalizedMode;
   }
 }
