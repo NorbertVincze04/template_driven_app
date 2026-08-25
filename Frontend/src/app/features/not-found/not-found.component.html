@@ -1,1 +1,22 @@
-<h1>The page was not found!</h1>
+<section class="hero-background" [ngStyle]="tenantStyles()">
+  <div class="hero-media">
+    <div class="hero-backdrop"></div>
+  </div>
+
+  <div class="hero-top">
+    <div class="hero-badge">404 • Page Not Found</div>
+
+    <h1>Looks like you're lost.</h1>
+
+    <p class="hero-subtitle">
+      The page you're looking for doesn't exist, may have been moved, or you
+      don't have permission to access it.
+    </p>
+
+    <div class="hero-actions">
+      <button class="hero-cta" routerLink="/home">Back to Home</button>
+
+      <button class="hero-secondary-btn" (click)="goBack()">Go Back</button>
+    </div>
+  </div>
+</section>

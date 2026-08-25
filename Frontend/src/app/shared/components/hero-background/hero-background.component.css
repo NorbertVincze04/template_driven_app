@@ -71,7 +71,11 @@
   display: inline-flex;
   padding: 0.45rem 1rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--theme-surface) 20%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--theme-surface) 86%,
+    var(--tenant-primary)
+  );
   color: var(--tenant-primary);
   font-size: 0.82rem;
   font-weight: 700;
@@ -99,7 +103,7 @@ h1 {
   border: 0;
   border-radius: 999px;
   background: var(--tenant-primary);
-  color: color-mix(in srgb, var(--tenant-primary) 15%, white);
+  color: color-mix(in srgb, var(--theme-contrast) 90%, var(--tenant-primary));
   padding: 0.85rem 1.6rem;
   font-size: 0.95rem;
   font-weight: 700;
@@ -120,7 +124,7 @@ h1 {
   opacity: 0.94;
 }
 
-html[data-theme="dark"] .hero-badge {
+:host-context(html[data-theme="dark"]) .hero-badge {
   background: color-mix(
     in srgb,
     var(--theme-surface) 84%,
@@ -131,12 +135,12 @@ html[data-theme="dark"] .hero-badge {
     color-mix(in srgb, var(--tenant-primary) 28%, var(--theme-surface));
 }
 
-html[data-theme="dark"] .hero-cta {
+:host-context(html[data-theme="dark"]) .hero-cta {
   background: var(--tenant-primary);
-  color: color-mix(in srgb, var(--tenant-primary) 15%, white);
+  color: color-mix(in srgb, var(--theme-contrast) 90%, var(--tenant-primary));
   box-shadow: 0 10px 24px color-mix(in srgb, var(--tenant-primary) 34%, black);
 }
 
-html[data-theme="dark"] .hero-cta:hover {
+:host-context(html[data-theme="dark"]) .hero-cta:hover {
   box-shadow: 0 14px 30px color-mix(in srgb, var(--tenant-primary) 46%, black);
 }
