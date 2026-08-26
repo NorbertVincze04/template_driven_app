@@ -20,6 +20,14 @@ import {
 import { environment } from '../../../environments/environment';
 import { TenantService } from './tenant.service';
 
+export interface Appointment {
+  id: string;
+  status: string;
+  date: string;
+  serviceName: string;
+  hour: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -71,6 +79,7 @@ export class AuthService {
     fullName: string;
     email: string;
     password: string;
+    phoneNumber?: string;
   }): Observable<boolean> {
     return this.http
       .post<any>(`${this.authUrl}/register`, userData, {
@@ -111,6 +120,8 @@ export class AuthService {
               token: response.payload.token,
               password: '',
               tenantId: response.payload.shopSlug,
+              phoneNumber: response.payload.phoneNumber,
+              profileImageUrl: response.payload.profileImageUrl,
             };
 
             this.currentUserSubject.next(userWithToken);
@@ -131,6 +142,55 @@ export class AuthService {
   logout(): void {
     this.currentUserSubject.next(null);
     localStorage.removeItem(environment.CURRENT_USER_STORAGE);
+  }
+
+  updateProfile(profile: {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    profileImageData: string | null;
+    profileImagePositionX: number;
+    profileImagePositionY: number;
+  }): Observable<User> {
+    return this.http
+      .patch<any>(`${environment.apiUrl}/users/me`, profile, {
+        headers: {
+          'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+        },
+      })
+      .pipe(
+        map((response) => {
+          const updatedUser: User = {
+            ...this.currentUserSubject.value!,
+            name: response.payload.fullName,
+            email: response.payload.email,
+            phoneNumber: response.payload.phoneNumber,
+            profileImageUrl: response.payload.profileImageUrl,
+            profileImagePositionX: response.payload.profileImagePositionX,
+            profileImagePositionY: response.payload.profileImagePositionY,
+          };
+          this.currentUserSubject.next(updatedUser);
+          localStorage.setItem(
+            environment.CURRENT_USER_STORAGE,
+            JSON.stringify(updatedUser),
+          );
+          return updatedUser;
+        }),
+        this.throwApiError(),
+      );
+  }
+
+  getMyAppointments(): Observable<Appointment[]> {
+    return this.http
+      .get<any>(`${environment.apiUrl}/appointments/mine`, {
+        headers: {
+          'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+        },
+      })
+      .pipe(
+        map((response) => response.payload || []),
+        this.throwApiError(),
+      );
   }
 
   isTokenValid(user: User | null): boolean {

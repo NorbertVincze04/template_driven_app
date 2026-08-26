@@ -20,6 +20,32 @@
     </div>
 
     <div class="form-group">
+      <label for="phoneNumber">Phone number</label>
+      <input
+        id="phoneNumber"
+        formControlName="phoneNumber"
+        placeholder="07..."
+        class="form-control"
+        type="tel"
+        autocomplete="tel"
+        inputmode="numeric"
+        minlength="10"
+        maxlength="10"
+      />
+      <div
+        *ngIf="phoneNumber?.invalid && (phoneNumber?.touched || submitted)"
+        class="field-error"
+      >
+        <span *ngIf="phoneNumber?.errors?.['required']"
+          >Phone number is required.</span
+        >
+        <span *ngIf="phoneNumber?.errors?.['pattern']"
+          >Use 10 digits, for example 07...</span
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
       <label for="email">Email</label>
       <input
         id="email"

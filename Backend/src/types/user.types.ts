@@ -15,6 +15,10 @@ export interface UserRecord {
   shop_slug: string;
   full_name: string;
   email: string;
+  phone_number: string | null;
+  profile_image_url: string | null;
+  profile_image_position_x: number;
+  profile_image_position_y: number;
   password_hash: string;
   role: "ADMIN" | "BARBER" | "CUSTOMER";
 }

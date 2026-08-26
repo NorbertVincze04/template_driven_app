@@ -33,6 +33,10 @@ export class RegisterComponent {
   signUpForm = new FormGroup(
     {
       fullName: new FormControl('', [Validators.required]),
+      phoneNumber: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^0[237]\d{8}$/),
+      ]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
         Validators.required,
@@ -89,6 +93,10 @@ export class RegisterComponent {
     return this.signUpForm.get('email');
   }
 
+  get phoneNumber() {
+    return this.signUpForm.get('phoneNumber');
+  }
+
   get password() {
     return this.signUpForm.get('password');
   }
@@ -122,6 +130,7 @@ export class RegisterComponent {
     this.authService
       .register({
         fullName: this.fullName?.value || '',
+        phoneNumber: this.phoneNumber?.value || '',
         email: this.email?.value || '',
         password: this.password?.value || '',
       })

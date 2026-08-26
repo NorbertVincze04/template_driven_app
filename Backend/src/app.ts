@@ -5,6 +5,8 @@ import { CORS_ORIGINS } from "./config.ts";
 import { authRouter } from "./routes/auth.routes.ts";
 import { tenantRouter } from "./routes/tenant.routes.ts";
 import { errorHandler } from "./middleware/error.middleware.ts";
+import { userRouter } from "./routes/user.routes.ts";
+import { appointmentRouter } from "./routes/appointment.routes.ts";
 
 export function createApp() {
   const app = express(); // create express server
@@ -21,11 +23,13 @@ export function createApp() {
     }),
   );
 
-  app.use(express.json()); // middleware to parse JSON request bodies
+  app.use(express.json({ limit: "5mb" })); // profile images are sent as resized data URLs
   app.use(morgan("dev"));
 
   app.use("/api/auth", authRouter);
   app.use("/api/tenant", tenantRouter);
+  app.use("/api/users", userRouter);
+  app.use("/api/appointments", appointmentRouter);
   app.use(errorHandler);
 
   return app;

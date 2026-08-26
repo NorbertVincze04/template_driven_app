@@ -6,6 +6,7 @@ import { SignInComponent } from './core/auth/sign-in/sign-in.component';
 import { HelpCenterComponent } from './features/help-center/help-center.component';
 import { TermsOfServiceComponent } from './features/terms-of-service/terms-of-service.component';
 import { UserProfileComponent } from './features/user-profile/user-profile.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,7 @@ export const routes: Routes = [
   {
     path: 'user-profile',
     component: UserProfileComponent,
+    canActivate: [AuthGuard],
     data: { showBars: true },
   },
   {

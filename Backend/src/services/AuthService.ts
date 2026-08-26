@@ -10,6 +10,7 @@ export class AuthService {
     email: string,
     password: string,
     shop: ShopRecord,
+    phoneNumber: string,
   ): Promise<{
     id: string;
     fullName: string;
@@ -17,6 +18,10 @@ export class AuthService {
     role: string;
     shopId: string;
     shopSlug: string;
+    phoneNumber: string | null;
+    profileImageUrl: string | null;
+    profileImagePositionX: number;
+    profileImagePositionY: number;
   }> {
     const normalizedEmail = email.trim().toLowerCase();
     const existingUser = await UserRepository.existsByEmail(
@@ -34,6 +39,8 @@ export class AuthService {
       normalizedEmail,
       passwordHash,
       shop.id,
+      "CUSTOMER",
+      phoneNumber?.trim() || null,
     );
 
     return {
@@ -43,6 +50,10 @@ export class AuthService {
       role: user.role,
       shopId: shop.id,
       shopSlug: shop.slug,
+      phoneNumber: user.phone_number,
+      profileImageUrl: user.profile_image_url,
+      profileImagePositionX: user.profile_image_position_x,
+      profileImagePositionY: user.profile_image_position_y,
     };
   }
 
@@ -57,6 +68,10 @@ export class AuthService {
     role: string;
     shopId: string;
     shopSlug: string;
+    phoneNumber: string | null;
+    profileImageUrl: string | null;
+    profileImagePositionX: number;
+    profileImagePositionY: number;
     token: string;
   }> {
     const user = await UserRepository.findByEmail(
@@ -85,6 +100,10 @@ export class AuthService {
       role: user.role,
       shopId: user.shop_id,
       shopSlug: user.shop_slug,
+      phoneNumber: user.phone_number,
+      profileImageUrl: user.profile_image_url,
+      profileImagePositionX: user.profile_image_position_x,
+      profileImagePositionY: user.profile_image_position_y,
       token,
     };
   }

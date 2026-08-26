@@ -2,6 +2,7 @@ export interface RegisterRequest {
   fullName: string;
   email: string;
   password: string;
+  phoneNumber: string;
 }
 
 export interface LoginRequest {
@@ -23,6 +24,9 @@ export function validateRegisterRequest(data: any): {
   }
   if (!data.password || typeof data.password !== "string") {
     errors.push("password is required");
+  }
+  if (!data.phoneNumber || typeof data.phoneNumber !== "string") {
+    errors.push("phoneNumber is required");
   }
   return {
     valid: errors.length === 0,

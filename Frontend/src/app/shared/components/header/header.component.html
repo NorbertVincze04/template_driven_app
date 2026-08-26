@@ -107,6 +107,12 @@
               [src]="currentUser()!.profileImageUrl!"
               [alt]="currentUser()?.name || 'Profile'"
               class="profile-img"
+              [style.object-position]="
+                (currentUser()?.profileImagePositionX ?? 50) +
+                '% ' +
+                (currentUser()?.profileImagePositionY ?? 50) +
+                '%'
+              "
             />
           } @else {
             <span class="profile-fallback" aria-hidden="true">

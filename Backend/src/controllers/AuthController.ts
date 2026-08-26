@@ -22,13 +22,14 @@ export class AuthController {
         });
       }
 
-      const { fullName, email, password } = req.body;
+      const { fullName, email, password, phoneNumber } = req.body;
 
       const user = await AuthService.registerUser(
         fullName,
         email,
         password,
         req.shop!,
+        phoneNumber,
       );
 
       return res.json({
