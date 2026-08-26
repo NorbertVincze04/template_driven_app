@@ -1,27 +1,21 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TenantService } from '../../../core/services/tenant.service';
-import { TenantConfig } from '../../../core/models/tenant.model';
+import { TenantConfig } from '../../core/models/tenant.model';
+import { TenantService } from '../../core/services/tenant.service';
 
 @Component({
-  selector: 'app-footer',
+  selector: 'app-terms-of-service',
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './footer.component.html',
-  styleUrl: './footer.component.css',
+  templateUrl: './terms-of-service.component.html',
+  styleUrl: './terms-of-service.component.css',
 })
-export class FooterComponent {
+export class TermsOfServiceComponent {
   private readonly tenantService = inject(TenantService);
 
   protected readonly tenantConfig = computed((): TenantConfig | null =>
     this.tenantService.config(),
   );
-  protected socialLink(label: string): string | undefined {
-    return this.tenantConfig()?.contactDetails?.socialMediaLinks?.find(
-      (link) => link.label.toLowerCase() === label.toLowerCase(),
-    )?.url;
-  }
-
   protected readonly tenantStyles = computed((): Record<string, string> => {
     const config = this.tenantService.config();
     return {
@@ -30,6 +24,9 @@ export class FooterComponent {
       '--tenant-font': config?.fontFamily
         ? `'${config.fontFamily}', sans-serif`
         : 'inherit',
+      '--tenant-font-secondary': config?.fontFamilySecondary
+        ? `'${config.fontFamilySecondary}', Georgia, serif`
+        : 'Georgia, serif',
     };
   });
 }

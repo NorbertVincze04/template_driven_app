@@ -1,0 +1,140 @@
+.terms-page {
+  min-height: calc(100vh - 64px);
+  background:
+    radial-gradient(
+      circle at 92% 8%,
+      color-mix(in srgb, var(--tenant-secondary) 14%, transparent),
+      transparent 28%
+    ),
+    var(--theme-bg);
+  color: var(--theme-text);
+  font-family: var(--tenant-font, inherit);
+}
+
+.terms-hero {
+  padding: clamp(4rem, 9vw, 7rem) 1.25rem 4rem;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--tenant-primary) 13%, var(--theme-surface)),
+    var(--theme-surface)
+  );
+  border-bottom: 1px solid var(--theme-border);
+  text-align: center;
+}
+
+.eyebrow,
+.section-number {
+  color: var(--tenant-primary);
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  font-family: var(--tenant-font-secondary, Georgia, serif);
+}
+
+h1 {
+  margin-top: 0.7rem;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  line-height: 0.98;
+}
+
+.hero-copy {
+  max-width: 540px;
+  margin: 1.3rem auto 0;
+  color: var(--theme-text-soft);
+  line-height: 1.65;
+}
+
+.updated {
+  margin-top: 1.5rem;
+  color: var(--theme-muted);
+  font-size: 0.85rem;
+}
+
+.terms-layout {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 700px);
+  gap: clamp(2rem, 7vw, 6rem);
+  width: min(960px, calc(100% - 2.5rem));
+  margin: 0 auto;
+  padding: 4.5rem 0 5rem;
+}
+
+.terms-nav {
+  display: flex;
+  align-self: start;
+  position: sticky;
+  top: 88px;
+  flex-direction: column;
+  gap: 0.8rem;
+  border-left: 1px solid var(--theme-border);
+  padding-left: 1rem;
+}
+
+.terms-nav a,
+.terms-footer a {
+  color: var(--tenant-primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.terms-nav a {
+  color: var(--theme-text-soft);
+  font-size: 0.88rem;
+}
+
+.terms-nav a:hover,
+.terms-footer a:hover {
+  text-decoration: underline;
+}
+
+.terms-content {
+  max-width: 700px;
+}
+
+.terms-content section {
+  scroll-margin-top: 90px;
+  padding-bottom: 3rem;
+}
+
+.terms-content section + section {
+  border-top: 1px solid var(--theme-border);
+  padding-top: 3rem;
+}
+
+h2 {
+  margin-top: 0.65rem;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+}
+
+.terms-content section p:last-child {
+  margin-top: 1rem;
+  color: var(--theme-text-soft);
+  line-height: 1.8;
+}
+
+.terms-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--theme-border);
+  padding-top: 1.5rem;
+}
+
+@media (max-width: 700px) {
+  .terms-layout {
+    display: block;
+    padding-top: 3rem;
+  }
+
+  .terms-nav {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 3.5rem;
+  }
+}

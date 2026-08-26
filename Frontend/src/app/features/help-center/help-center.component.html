@@ -1,0 +1,61 @@
+<main class="help-page" [style]="tenantStyles()">
+  <section class="help-hero" aria-labelledby="help-title">
+    <p class="eyebrow">{{ tenantConfig()?.name || "Salon" }} support</p>
+    <h1 id="help-title">How can we help?</h1>
+    <p class="hero-copy">
+      Find answers about appointments, services, payments, and getting the most
+      from your visit.
+    </p>
+    <label class="search-box">
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input
+        type="search"
+        placeholder="Search with keywords"
+        aria-label="Search for an answer"
+        (input)="onSearch($event)"
+      />
+    </label>
+  </section>
+
+  <section class="help-content" aria-labelledby="faq-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Quick answers</p>
+        <h2 id="faq-title">Frequently asked questions</h2>
+      </div>
+      <a routerLink="/home" class="back-link">Back to home</a>
+    </div>
+
+    @if (filteredFaqs().length) {
+      <div class="faq-grid">
+        @for (faq of filteredFaqs(); track faq.number) {
+          <article class="faq-card">
+            <span class="card-number">{{ faq.number }}</span>
+            <h3>{{ faq.question }}</h3>
+            <p>{{ faq.answer }}</p>
+          </article>
+        }
+      </div>
+    } @else {
+      <p class="no-results">
+        No matching answers found. Try a different search.
+      </p>
+    }
+  </section>
+
+  <section class="support-banner" aria-labelledby="support-title">
+    <div>
+      <p class="eyebrow">Still need a hand?</p>
+      <h2 id="support-title">Our team is happy to help.</h2>
+    </div>
+    @if (tenantConfig()?.contactDetails?.email) {
+      <a
+        class="support-link"
+        [href]="'mailto:' + tenantConfig()!.contactDetails!.email"
+      >
+        Email support
+        <span aria-hidden="true">&#8594;</span>
+      </a>
+    }
+  </section>
+</main>

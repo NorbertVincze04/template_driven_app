@@ -63,12 +63,8 @@
         "url": "https://instagram.com"
       },
       {
-        "label": "LinkedIn",
-        "url": "https://linkedin.com"
-      },
-      {
-        "label": "Dribbble",
-        "url": "https://dribbble.com"
+        "label": "Facebook",
+        "url": "https://facebook.com"
       }
     ],
     "mapEmbedUrl": "https://www.google.com/maps?q=San+Francisco,+CA&output=embed",

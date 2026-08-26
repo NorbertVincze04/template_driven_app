@@ -1,0 +1,67 @@
+<main class="terms-page" [style]="tenantStyles()">
+  <header class="terms-hero">
+    <p class="eyebrow">{{ tenantConfig()?.name || "Salon" }}</p>
+    <h1>Terms of Service</h1>
+    <p class="hero-copy">
+      These terms explain the guidelines for using our website and booking
+      services.
+    </p>
+    <p class="updated">Last updated: August 26, 2026</p>
+  </header>
+
+  <div class="terms-layout">
+    <nav class="terms-nav" aria-label="Terms sections">
+      <a href="terms#acceptance">Acceptance</a>
+      <a href="terms#appointments">Appointments</a>
+      <a href="terms#payments">Payments</a>
+      <a href="terms#privacy">Privacy</a>
+    </nav>
+
+    <article class="terms-content">
+      <section id="acceptance">
+        <p class="section-number">01</p>
+        <h2>Acceptance of these terms</h2>
+        <p>
+          By using {{ tenantConfig()?.name || "our salon" }} website or booking
+          a service, you agree to these Terms of Service. Please read them
+          carefully before making an appointment.
+        </p>
+      </section>
+
+      <section id="appointments">
+        <p class="section-number">02</p>
+        <h2>Appointments and cancellations</h2>
+        <p>
+          Appointment times are reserved for you. If you need to reschedule or
+          cancel, please contact the salon as early as possible. We may apply a
+          cancellation or missed-appointment fee where permitted by law.
+        </p>
+      </section>
+
+      <section id="payments">
+        <p class="section-number">03</p>
+        <h2>Services and payments</h2>
+        <p>
+          Service prices and availability may change. The final price will be
+          confirmed by your stylist before or during your visit. Payment is due
+          when services are complete using an accepted payment method.
+        </p>
+      </section>
+
+      <section id="privacy">
+        <p class="section-number">04</p>
+        <h2>Privacy and contact</h2>
+        <p>
+          We use information you provide to manage appointments and support your
+          experience. We do not sell your personal information. For questions
+          about these terms, contact our team directly.
+        </p>
+      </section>
+
+      <div class="terms-footer">
+        <a routerLink="/help">Need help?</a>
+        <a routerLink="/home">Back to home</a>
+      </div>
+    </article>
+  </div>
+</main>

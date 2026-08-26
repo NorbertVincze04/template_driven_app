@@ -17,8 +17,17 @@
       <a routerLink="/terms" class="help-btn">Terms of Service</a>
     }
 
-    @if (tenantConfig()?.layout?.footer?.showInstagram !== false) {
-      <a href="#" class="social-btn" aria-label="Instagram">
+    @if (
+      tenantConfig()?.layout?.footer?.showInstagram !== false &&
+      socialLink("Instagram")
+    ) {
+      <a
+        [href]="socialLink('Instagram')"
+        class="social-btn"
+        aria-label="Instagram"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
@@ -37,8 +46,17 @@
       </a>
     }
 
-    @if (tenantConfig()?.layout?.footer?.showFacebook !== false) {
-      <a href="#" class="social-btn" aria-label="Facebook">
+    @if (
+      tenantConfig()?.layout?.footer?.showFacebook !== false &&
+      socialLink("Facebook")
+    ) {
+      <a
+        [href]="socialLink('Facebook')"
+        class="social-btn"
+        aria-label="Facebook"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"

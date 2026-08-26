@@ -3,6 +3,8 @@ import { HomeComponent } from './features/home/home.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { RegisterComponent } from './core/auth/register/register.component';
 import { SignInComponent } from './core/auth/sign-in/sign-in.component';
+import { HelpCenterComponent } from './features/help-center/help-center.component';
+import { TermsOfServiceComponent } from './features/terms-of-service/terms-of-service.component';
 
 export const routes: Routes = [
   {
@@ -24,6 +26,16 @@ export const routes: Routes = [
     path: 'register',
     component: RegisterComponent,
     data: { showBars: false },
+  },
+  {
+    path: 'help',
+    component: HelpCenterComponent,
+    data: { showBars: true },
+  },
+  {
+    path: 'terms',
+    component: TermsOfServiceComponent,
+    data: { showBars: true },
   },
   {
     path: '**',
