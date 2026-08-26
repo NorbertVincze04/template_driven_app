@@ -5,7 +5,7 @@
   "primaryColor": "#D6A92F",
   "secondaryColor": "#D4A574",
   "style": {
-    "mode": "dark"
+    "mode": "light"
   },
   "fontFamily": "Montserrat",
   "fontFamilySecondary": "Playfair Display",
@@ -101,7 +101,7 @@
       "showTerms": true
     },
     "hero": {
-      "variant": "hero-background",
+      "variant": "profile-gallery",
       "showBadge": true,
       "showTitle": true,
       "showSubtitle": true,

@@ -104,7 +104,7 @@ export class AuthService {
               type: response.payload.role,
               token: response.payload.token,
               password: '',
-              tenantId: response.payload.tenantId,
+              tenantId: response.payload.shopSlug,
             };
 
             this.currentUserSubject.next(userWithToken);

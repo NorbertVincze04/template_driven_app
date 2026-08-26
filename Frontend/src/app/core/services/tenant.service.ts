@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, catchError, map, tap } from 'rxjs';
 import { TenantConfig, TenantThemeMode } from '../models/tenant.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class TenantService {
@@ -15,12 +16,18 @@ export class TenantService {
   readonly themeMode = this._themeMode.asReadonly();
   readonly isDarkMode = computed(() => this._themeMode() === 'dark');
 
-  loadFromAssets(tenantId: string): Observable<void> {
-    return this.http.get<TenantConfig>(`tenants/${tenantId}.json`).pipe(
-      catchError(() => this.http.get<TenantConfig>('tenants/default.json')),
-      tap((config) => this.setTenant(config)),
-      map(() => undefined),
-    );
+  loadForDomain(domain: string): Observable<void> {
+    return this.http
+      .get<{
+        success: boolean;
+        payload: TenantConfig;
+      }>(`${environment.apiUrl}/tenant/config`, { headers: { 'X-Tenant-Domain': domain } })
+      .pipe(
+        map((response) => response.payload),
+        catchError(() => this.http.get<TenantConfig>('tenants/default.json')),
+        tap((config) => this.setTenant(config)),
+        map(() => undefined),
+      );
   }
 
   setTenant(config: TenantConfig): void {

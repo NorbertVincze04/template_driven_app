@@ -14,12 +14,6 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { TenantService } from './core/services/tenant.service';
 
-function resolveTenantId(hostname: string): string {
-  const parts = hostname.split('.');
-  // e.g. acme.myapp.com → 'acme', localhost → 'default'
-  return parts.length > 2 ? parts[0] : 'default';
-}
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -33,8 +27,9 @@ export const appConfig: ApplicationConfig = {
           if (!isPlatformBrowser(platformId)) {
             return;
           }
-          const tenantId = resolveTenantId(window.location.hostname);
-          return firstValueFrom(tenantService.loadFromAssets(tenantId));
+          return firstValueFrom(
+            tenantService.loadForDomain(window.location.hostname),
+          );
         };
       },
       deps: [TenantService, PLATFORM_ID],

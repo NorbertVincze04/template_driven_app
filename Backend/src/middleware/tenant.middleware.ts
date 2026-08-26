@@ -15,17 +15,31 @@ export async function tenantMiddleware(
   res: Response,
   next: NextFunction,
 ): Promise<void | Response> {
+  const domainHeader = req.get("X-Tenant-Domain");
   const slugHeader = req.get("X-Tenant-Slug");
+  const domain = (domainHeader || req.hostname).trim().toLowerCase();
   const slug = slugHeader?.trim().toLowerCase();
 
-  if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+  if (domainHeader && !/^[a-z0-9.-]+$/.test(domain)) {
+    return res.status(400).json({
+      success: false,
+      message: "A valid tenant domain is required.",
+    });
+  }
+
+  if (slugHeader && (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))) {
     return res.status(400).json({
       success: false,
       message: "A valid X-Tenant-Slug header is required.",
     });
   }
 
-  const shop = await ShopRepository.findActiveBySlug(slug);
+  let shop = domainHeader
+    ? await ShopRepository.findActiveByDomain(domain)
+    : slug && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)
+      ? await ShopRepository.findActiveBySlug(slug)
+      : await ShopRepository.findActiveByDomain(domain);
+
   if (!shop) {
     return res.status(404).json({
       success: false,

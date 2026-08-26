@@ -3,4 +3,5 @@ export interface ShopRecord {
   slug: string;
   name: string;
   is_active: boolean;
+  config: Record<string, unknown>;
 }
