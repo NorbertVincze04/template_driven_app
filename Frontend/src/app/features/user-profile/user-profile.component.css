@@ -2,7 +2,11 @@
   min-height: calc(100vh - 64px);
   padding: clamp(2.5rem, 8vw, 6rem) 1.5rem;
   background:
-    linear-gradient(120deg, color-mix(in srgb, var(--tenant-primary) 8%, transparent), transparent 52%),
+    linear-gradient(
+      120deg,
+      color-mix(in srgb, var(--tenant-primary) 8%, transparent),
+      transparent 52%
+    ),
     var(--theme-background);
   font-family: var(--tenant-font, inherit);
 }
@@ -52,7 +56,11 @@ h1 {
   display: grid;
   place-items: center;
   color: var(--tenant-primary, #111827);
-  background: color-mix(in srgb, var(--tenant-primary, #111827) 10%, var(--theme-surface));
+  background: color-mix(
+    in srgb,
+    var(--tenant-primary, #111827) 10%,
+    var(--theme-surface)
+  );
 }
 
 .profile-fallback svg {
@@ -74,7 +82,11 @@ h1 {
 .role {
   display: inline-block;
   padding: 0.3rem 0.65rem;
-  background: color-mix(in srgb, var(--tenant-secondary, #374151) 12%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--tenant-secondary, #374151) 12%,
+    transparent
+  );
   color: var(--tenant-secondary, #374151);
   font-size: 0.75rem;
   font-weight: 700;
