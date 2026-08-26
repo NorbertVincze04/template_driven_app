@@ -6,8 +6,8 @@ import {
   signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
-import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
   MonoTypeOperatorFunction,
@@ -44,9 +44,15 @@ export class AuthService {
   }
 
   private throwApiError<T>(): MonoTypeOperatorFunction<T> {
-    return catchError((error: unknown) =>
-      throwError(() => new Error('Server Error: Please try again later.')),
-    );
+    return catchError((error: unknown) => {
+      const message =
+        error instanceof HttpErrorResponse &&
+        typeof error.error?.message === 'string'
+          ? error.error.message
+          : 'Server Error: Please try again later.';
+
+      return throwError(() => new Error(message));
+    });
   }
 
   getAllUsers(): Observable<User[]> {

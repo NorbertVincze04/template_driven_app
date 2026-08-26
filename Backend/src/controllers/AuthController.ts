@@ -75,8 +75,6 @@ export class AuthController {
         payload: result,
       });
     } catch (error: any) {
-      console.error("Login failed:", error);
-
       return res.status(401).json({
         success: false,
         message: error.message || "Login failed.",

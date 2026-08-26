@@ -72,7 +72,7 @@ export class SignInComponent {
         if (result.isTempPassword) {
           this.router.navigate(['/reset-pass']);
         } else {
-          this.router.navigate(['/booking']);
+          this.router.navigate(['/home']);
         }
       },
       error: (error) => {
