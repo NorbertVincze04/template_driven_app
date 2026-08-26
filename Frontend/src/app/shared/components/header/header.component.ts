@@ -26,6 +26,7 @@ export class HeaderComponent {
   protected readonly isLoggedIn = computed(
     (): boolean => this.currentUser() !== null,
   );
+  protected readonly isDarkMode = this.tenantService.isDarkMode;
   protected readonly tenantConfig = computed((): TenantConfig | null =>
     this.tenantService.config(),
   );
@@ -42,5 +43,9 @@ export class HeaderComponent {
 
   onLoginClick(): void {
     this.router.navigate(['/login']);
+  }
+
+  onThemeToggle(): void {
+    this.tenantService.toggleThemeMode();
   }
 }

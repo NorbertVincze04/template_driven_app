@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, catchError, map, tap } from 'rxjs';
 import { TenantConfig, TenantThemeMode } from '../models/tenant.model';
 
@@ -9,8 +9,11 @@ export class TenantService {
   private readonly document = inject(DOCUMENT);
   private readonly http = inject(HttpClient);
   private readonly _config = signal<TenantConfig | null>(null);
+  private readonly _themeMode = signal<TenantThemeMode>('light');
 
   readonly config = this._config.asReadonly();
+  readonly themeMode = this._themeMode.asReadonly();
+  readonly isDarkMode = computed(() => this._themeMode() === 'dark');
 
   loadFromAssets(tenantId: string): Observable<void> {
     return this.http.get<TenantConfig>(`tenants/${tenantId}.json`).pipe(
@@ -22,7 +25,7 @@ export class TenantService {
 
   setTenant(config: TenantConfig): void {
     this._config.set(config);
-    this.applyThemeMode(config.style?.mode);
+    this.setThemeMode(config.style?.mode);
 
     if (config.fontFamily) {
       this.loadGoogleFont(config.fontFamily);
@@ -44,9 +47,14 @@ export class TenantService {
     this.document.head.appendChild(link);
   }
 
-  private applyThemeMode(mode?: TenantThemeMode): void {
+  setThemeMode(mode?: TenantThemeMode): void {
     const normalizedMode: TenantThemeMode = mode === 'dark' ? 'dark' : 'light';
+    this._themeMode.set(normalizedMode);
     this.document.documentElement.setAttribute('data-theme', normalizedMode);
     this.document.documentElement.style.colorScheme = normalizedMode;
+  }
+
+  toggleThemeMode(): void {
+    this.setThemeMode(this.isDarkMode() ? 'light' : 'dark');
   }
 }

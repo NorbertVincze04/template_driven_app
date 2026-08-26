@@ -5,7 +5,7 @@
   "primaryColor": "#D6A92F",
   "secondaryColor": "#D4A574",
   "style": {
-    "mode": "light"
+    "mode": "dark"
   },
   "fontFamily": "Montserrat",
   "fontFamilySecondary": "Playfair Display",
@@ -95,7 +95,8 @@
     "showContactDetails": true,
     "header": {
       "showAboutUs": true,
-      "showPricing": true
+      "showPricing": true,
+      "showThemeToggle": true
     },
     "footer": {
       "showInstagram": true,
@@ -104,7 +105,7 @@
       "showTerms": true
     },
     "hero": {
-      "variant": "profile-gallery",
+      "variant": "hero-background",
       "showBadge": true,
       "showTitle": true,
       "showSubtitle": true,
