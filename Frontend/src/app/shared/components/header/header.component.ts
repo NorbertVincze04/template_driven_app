@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, HostListener, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/services/auth.service';
@@ -40,9 +40,33 @@ export class HeaderComponent {
         : 'inherit',
     };
   });
+  protected profileMenuOpen = false;
 
   onLoginClick(): void {
     this.router.navigate(['/login']);
+  }
+
+  toggleProfileMenu(): void {
+    this.profileMenuOpen = !this.profileMenuOpen;
+  }
+
+  viewProfile(): void {
+    this.profileMenuOpen = false;
+    this.router.navigate(['/user-profile']);
+  }
+
+  logout(): void {
+    this.profileMenuOpen = false;
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeProfileMenu(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.profile-menu')) {
+      this.profileMenuOpen = false;
+    }
   }
 
   onThemeToggle(): void {

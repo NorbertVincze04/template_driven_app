@@ -94,13 +94,52 @@
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
       </button>
-      <button class="profile-btn" aria-label="User profile">
-        <img
-          [src]="currentUser()?.profileImageUrl || 'assets/default-avatar.png'"
-          [alt]="currentUser()?.name || 'Profile'"
-          class="profile-img"
-        />
-      </button>
+      <div class="profile-menu">
+        <button
+          class="profile-btn"
+          type="button"
+          aria-label="Open user profile menu"
+          [attr.aria-expanded]="profileMenuOpen"
+          (click)="$event.stopPropagation(); toggleProfileMenu()"
+        >
+          @if (currentUser()?.profileImageUrl) {
+            <img
+              [src]="currentUser()!.profileImageUrl!"
+              [alt]="currentUser()?.name || 'Profile'"
+              class="profile-img"
+            />
+          } @else {
+            <span class="profile-fallback" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="8" r="3.25" />
+                <path d="M5.5 20c.8-3.1 3.1-4.75 6.5-4.75s5.7 1.65 6.5 4.75" />
+              </svg>
+            </span>
+          }
+        </button>
+        @if (profileMenuOpen) {
+          <div class="profile-dropdown" role="menu">
+            <div class="profile-summary">
+              <strong>{{ currentUser()?.name }}</strong>
+              <span>{{ currentUser()?.email }}</span>
+            </div>
+            <button type="button" role="menuitem" (click)="viewProfile()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.25" />
+                <path d="M5.5 20c.8-3.1 3.1-4.75 6.5-4.75s5.7 1.65 6.5 4.75" />
+              </svg>
+              View profile
+            </button>
+            <button type="button" role="menuitem" (click)="logout()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M10 17l5-5-5-5M15 12H3" />
+                <path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
+              </svg>
+              Log out
+            </button>
+          </div>
+        }
+      </div>
     } @else {
       <app-action-button
         [config]="{ label: 'Login', variant: 'primary' }"
