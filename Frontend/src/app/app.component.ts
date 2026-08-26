@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, inject, PLATFORM_ID } from '@angular/core';
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -21,6 +22,7 @@ import { TopBarComponent } from './shared/components/top-bar/top-bar.component';
 export class AppComponent {
   showBars = true;
   private readonly tenantService = inject(TenantService);
+  private readonly platformId = inject(PLATFORM_ID);
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -46,7 +48,15 @@ export class AppComponent {
     );
   }
 
+  get isLoading(): boolean {
+    return !this.tenantService.config();
+  }
+
   ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.tenantService.loadForDomain(window.location.hostname).subscribe();
+    }
+
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),

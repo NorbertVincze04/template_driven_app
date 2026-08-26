@@ -1,0 +1,24 @@
+.loading-screen {
+  align-items: center;
+  background: var(--theme-bg, #f5f7fb);
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  width: 100%;
+}
+
+.loading-spinner {
+  animation: spin 0.8s linear infinite;
+  border: 3px solid
+    color-mix(in srgb, var(--theme-text, #0f172a) 18%, transparent);
+  border-radius: 50%;
+  border-top-color: var(--theme-text, #0f172a);
+  height: 2rem;
+  width: 2rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -86,23 +86,23 @@ export class RegisterComponent {
   }
 
   get fullName() {
-    return this.signUpForm.get('fullName');
+    return this.signUpForm.controls.fullName;
   }
 
   get email() {
-    return this.signUpForm.get('email');
+    return this.signUpForm.controls.email;
   }
 
   get phoneNumber() {
-    return this.signUpForm.get('phoneNumber');
+    return this.signUpForm.controls.phoneNumber;
   }
 
   get password() {
-    return this.signUpForm.get('password');
+    return this.signUpForm.controls.password;
   }
 
   get confirmPassword() {
-    return this.signUpForm.get('confirmPassword');
+    return this.signUpForm.controls.confirmPassword;
   }
 
   togglePasswordVisibility() {

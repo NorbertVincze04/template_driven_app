@@ -1,15 +1,21 @@
-@if (showHeader) {
-  <app-header></app-header>
-}
+@if (isLoading) {
+  <div class="loading-screen" role="status" aria-label="Loading">
+    <span class="loading-spinner" aria-hidden="true"></span>
+  </div>
+} @else {
+  @if (showHeader) {
+    <app-header></app-header>
+  }
 
-@if (showTopBar) {
-  <app-top-bar></app-top-bar>
-}
+  @if (showTopBar) {
+    <app-top-bar></app-top-bar>
+  }
 
-<main>
-  <router-outlet></router-outlet>
-</main>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
 
-@if (showFooter) {
-  <app-footer></app-footer>
+  @if (showFooter) {
+    <app-footer></app-footer>
+  }
 }
