@@ -50,13 +50,13 @@
   background:
     linear-gradient(
       180deg,
-      rgba(10, 16, 34, 0.28) 0%,
-      rgba(10, 16, 34, 0.92) 100%
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.88) 100%
     ),
     linear-gradient(
       90deg,
-      color-mix(in srgb, var(--tenant-primary) 48%, transparent),
-      transparent 56%
+      color-mix(in srgb, var(--tenant-primary) 22%, transparent),
+      transparent 68%
     );
 }
 
@@ -83,7 +83,7 @@
 }
 
 h1 {
-  color: #fff;
+  color: var(--theme-text);
   font-family: var(--tenant-font-secondary), Georgia, serif;
   font-size: clamp(2.1rem, 5.5vw, 4.2rem);
   line-height: 1.05;
@@ -92,7 +92,7 @@ h1 {
 }
 
 .hero-subtitle {
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--theme-text-soft);
   margin: 1.2rem auto 0;
   max-width: 720px;
   font-size: clamp(1rem, 1.2vw, 1.2rem);
@@ -103,7 +103,7 @@ h1 {
   border: 0;
   border-radius: 999px;
   background: var(--tenant-primary);
-  color: color-mix(in srgb, var(--theme-contrast) 90%, var(--tenant-primary));
+  color: #fff;
   padding: 0.85rem 1.6rem;
   font-size: 0.95rem;
   font-weight: 700;
@@ -133,6 +133,28 @@ h1 {
   color: var(--tenant-primary);
   border: 1px solid
     color-mix(in srgb, var(--tenant-primary) 28%, var(--theme-surface));
+}
+
+:host-context(html[data-theme="dark"]) .hero-backdrop {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(10, 16, 34, 0.28) 0%,
+      rgba(10, 16, 34, 0.92) 100%
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--tenant-primary) 48%, transparent),
+      transparent 56%
+    );
+}
+
+:host-context(html[data-theme="dark"]) h1 {
+  color: #fff;
+}
+
+:host-context(html[data-theme="dark"]) .hero-subtitle {
+  color: rgba(255, 255, 255, 0.88);
 }
 
 :host-context(html[data-theme="dark"]) .hero-cta {
