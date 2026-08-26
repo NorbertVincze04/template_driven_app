@@ -7,6 +7,7 @@ import { tenantRouter } from "./routes/tenant.routes.ts";
 import { errorHandler } from "./middleware/error.middleware.ts";
 import { userRouter } from "./routes/user.routes.ts";
 import { appointmentRouter } from "./routes/appointment.routes.ts";
+import { publicRouter } from "./routes/public.routes.ts";
 
 export function createApp() {
   const app = express(); // create express server
@@ -30,6 +31,7 @@ export function createApp() {
   app.use("/api/tenant", tenantRouter);
   app.use("/api/users", userRouter);
   app.use("/api/appointments", appointmentRouter);
+  app.use("/api/public", publicRouter);
   app.use(errorHandler);
 
   return app;

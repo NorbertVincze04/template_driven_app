@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   TenantHeroLayout,
   TenantHeroSection,
@@ -13,6 +14,7 @@ import {
   styleUrl: './profile-gallery.component.css',
 })
 export class ProfileGalleryComponent {
+  private readonly router = inject(Router);
   @Input({ required: true }) content!: TenantHeroSection;
   @Input({ required: true }) layout!: TenantHeroLayout;
 
@@ -25,7 +27,8 @@ export class ProfileGalleryComponent {
   }
 
   protected onProfileClick(profile: TenantProfileGalleryItem): void {
-    // Hook for future profile routing once a dedicated profile page is added.
-    console.info('Open profile:', profile.name);
+    this.router.navigate(['/appointment-service'], {
+      queryParams: { barber: profile.name },
+    });
   }
 }

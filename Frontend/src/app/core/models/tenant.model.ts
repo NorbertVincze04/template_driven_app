@@ -58,6 +58,7 @@ export interface TenantContactDetailsContent {
 }
 
 export interface TenantProfileGalleryItem {
+  id?: string;
   name: string;
   role: string;
   imageUrl: string;

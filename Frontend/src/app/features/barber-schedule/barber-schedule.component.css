@@ -1,0 +1,80 @@
+.schedule-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--theme-border, #ddd);
+}
+.days {
+  display: grid;
+  gap: 0.7rem;
+}
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.day-toggle {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-weight: 700;
+}
+.times {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.times input,
+form input {
+  padding: 0.55rem;
+  border: 1px solid var(--theme-border, #ccc);
+}
+.save,
+form button {
+  margin-top: 1rem;
+  padding: 0.7rem 1rem;
+  border: 0;
+  background: var(--tenant-primary, #111);
+  color: white;
+  font-weight: 700;
+}
+.success {
+  color: #17683b;
+  margin-left: 0.8rem;
+}
+h3 {
+  margin-top: 2rem;
+}
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+form button {
+  margin-top: 0;
+}
+@media (max-width: 600px) {
+  .day {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+.service-list {
+  display: grid;
+  gap: 0.4rem;
+}
+.blocked-period {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-top: 0.6rem;
+}
+.blocked-period button {
+  border: 0;
+  background: transparent;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.error {
+  color: #a12e2e;
+}

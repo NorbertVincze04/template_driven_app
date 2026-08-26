@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import {
   TenantHeroLayout,
   TenantHeroSection,
@@ -6,6 +6,7 @@ import {
 import { TenantService } from '../../../core/services/tenant.service';
 import { ProfileGalleryComponent } from '../profile-gallery/profile-gallery.component';
 import { HeroBackgroundComponent } from '../hero-background/hero-background.component';
+import { BarberService } from '../../../core/services/barber.service';
 
 @Component({
   selector: 'app-hero-section',
@@ -16,6 +17,17 @@ import { HeroBackgroundComponent } from '../hero-background/hero-background.comp
 })
 export class HeroSectionComponent {
   private readonly tenantService = inject(TenantService);
+  private readonly barberService = inject(BarberService);
+  private readonly barbers = signal<any[]>([]);
+
+  constructor() {
+    effect(() => {
+      if (!this.tenantService.config()) return;
+      this.barberService
+        .listBarbers()
+        .subscribe({ next: (barbers) => this.barbers.set(barbers) });
+    });
+  }
 
   protected readonly tenantStyles = computed((): Record<string, string> => {
     const config = this.tenantService.config();
@@ -50,7 +62,15 @@ export class HeroSectionComponent {
       title: hero?.title || 'text',
       subtitle: hero?.subtitle || 'text',
       ctaText: hero?.ctaText || 'text',
-      profileGallery: hero?.profileGallery || [],
+      profileGallery: this.barbers().length
+        ? this.barbers().map((barber) => ({
+            id: barber.id,
+            name: barber.name,
+            role: 'Barber',
+            imageUrl: barber.profileImageUrl || '',
+            tags: [],
+          }))
+        : hero?.profileGallery || [],
       backgroundImageUrl: hero?.backgroundImageUrl || '',
       backgroundImageAlt: hero?.backgroundImageAlt || 'Hero background image',
     };

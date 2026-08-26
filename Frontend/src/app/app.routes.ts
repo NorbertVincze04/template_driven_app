@@ -7,8 +7,14 @@ import { HelpCenterComponent } from './features/help-center/help-center.componen
 import { TermsOfServiceComponent } from './features/terms-of-service/terms-of-service.component';
 import { UserProfileComponent } from './features/user-profile/user-profile.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { AppointmentServiceComponent } from './features/appointment-service/appointment-service.component';
 
 export const routes: Routes = [
+  {
+    path: 'appointment-service',
+    component: AppointmentServiceComponent,
+    data: { showBars: true },
+  },
   {
     path: '',
     redirectTo: 'home',

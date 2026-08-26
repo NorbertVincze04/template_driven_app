@@ -26,6 +26,10 @@ export interface Appointment {
   date: string;
   serviceName: string;
   hour: string;
+  customerName?: string | null;
+  guestName?: string | null;
+  guestEmail?: string | null;
+  guestPhone?: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -49,6 +53,10 @@ export class AuthService {
 
   get userRole() {
     return this.currentUserSubject.value?.type;
+  }
+
+  get currentUserValue(): User | null {
+    return this.currentUserSubject.value;
   }
 
   private throwApiError<T>(): MonoTypeOperatorFunction<T> {
@@ -114,6 +122,7 @@ export class AuthService {
         tap((response) => {
           if (response.success) {
             const userWithToken: User = {
+              id: response.payload.id,
               name: response.payload.fullName,
               email: response.payload.email,
               type: response.payload.role,
@@ -122,6 +131,8 @@ export class AuthService {
               tenantId: response.payload.shopSlug,
               phoneNumber: response.payload.phoneNumber,
               profileImageUrl: response.payload.profileImageUrl,
+              profileImagePositionX: response.payload.profileImagePositionX,
+              profileImagePositionY: response.payload.profileImagePositionY,
             };
 
             this.currentUserSubject.next(userWithToken);
@@ -189,6 +200,36 @@ export class AuthService {
       })
       .pipe(
         map((response) => response.payload || []),
+        this.throwApiError(),
+      );
+  }
+
+  updateAppointmentStatus(id: string, status: string): Observable<void> {
+    return this.http
+      .patch(
+        `${environment.apiUrl}/appointments/mine/${id}`,
+        { status },
+        {
+          headers: {
+            'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+          },
+        },
+      )
+      .pipe(
+        map(() => undefined),
+        this.throwApiError(),
+      );
+  }
+
+  deleteAppointment(id: string): Observable<void> {
+    return this.http
+      .delete(`${environment.apiUrl}/appointments/mine/${id}`, {
+        headers: {
+          'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+        },
+      })
+      .pipe(
+        map(() => undefined),
         this.throwApiError(),
       );
   }

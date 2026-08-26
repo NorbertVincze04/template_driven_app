@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DestroyRef } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,17 +12,21 @@ import { TenantConfig } from '../../core/models/tenant.model';
 import { User } from '../../core/models/user.model';
 import { Appointment, AuthService } from '../../core/services/auth.service';
 import { TenantService } from '../../core/services/tenant.service';
+import { BarberScheduleComponent } from '../barber-schedule/barber-schedule.component';
+import { interval } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, BarberScheduleComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
 })
 export class UserProfileComponent {
   private readonly authService = inject(AuthService);
   private readonly tenantService = inject(TenantService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly currentUser = toSignal<User | null>(
     this.authService.currentUser$,
@@ -31,6 +36,7 @@ export class UserProfileComponent {
   protected profileError = '';
   protected profileSaved = false;
   protected profileSaving = false;
+  protected appointmentActionId = '';
   protected readonly editingProfile = signal(false);
   protected profileForm = new FormGroup({
     fullName: new FormControl('', {
@@ -73,9 +79,10 @@ export class UserProfileComponent {
       profileImagePositionX: user?.profileImagePositionX ?? 50,
       profileImagePositionY: user?.profileImagePositionY ?? 50,
     });
-    this.authService.getMyAppointments().subscribe({
-      next: (appointments) => this.appointments.set(appointments),
-    });
+    this.loadAppointments();
+    interval(15000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadAppointments());
   }
 
   protected saveProfile(): void {
@@ -129,6 +136,51 @@ export class UserProfileComponent {
     this.profileForm.controls.profileImageData.setValue(null);
     this.profileError = '';
     this.profileSaved = false;
+  }
+
+  protected updateAppointmentStatus(
+    appointment: Appointment,
+    status: string,
+  ): void {
+    if (this.appointmentActionId || appointment.status === status) return;
+    this.appointmentActionId = appointment.id;
+    this.authService.updateAppointmentStatus(appointment.id, status).subscribe({
+      next: () => {
+        this.appointmentActionId = '';
+        this.loadAppointments();
+      },
+      error: (error) => {
+        this.appointmentActionId = '';
+        this.profileError = error.message;
+      },
+    });
+  }
+
+  protected deleteAppointment(appointment: Appointment): void {
+    if (this.appointmentActionId || !window.confirm('Delete this appointment?'))
+      return;
+    this.appointmentActionId = appointment.id;
+    this.authService.deleteAppointment(appointment.id).subscribe({
+      next: () => {
+        this.appointmentActionId = '';
+        this.loadAppointments();
+      },
+      error: (error) => {
+        this.appointmentActionId = '';
+        this.profileError = error.message;
+      },
+    });
+  }
+
+  private loadAppointments(): void {
+    this.authService.getMyAppointments().subscribe({
+      next: (appointments) => this.appointments.set(appointments),
+      error: (error) => (this.profileError = error.message),
+    });
+  }
+
+  protected refreshAppointments(): void {
+    this.loadAppointments();
   }
 
   protected onProfileImageSelected(event: Event): void {

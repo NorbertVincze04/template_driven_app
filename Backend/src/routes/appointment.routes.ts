@@ -8,3 +8,15 @@ export const appointmentRouter = Router();
 appointmentRouter.get("/mine", tenantMiddleware, authMiddleware, (req, res) =>
   AppointmentController.listMine(req, res),
 );
+appointmentRouter.patch(
+  "/mine/:id",
+  tenantMiddleware,
+  authMiddleware,
+  (req, res) => AppointmentController.updateMine(req, res),
+);
+appointmentRouter.delete(
+  "/mine/:id",
+  tenantMiddleware,
+  authMiddleware,
+  (req, res) => AppointmentController.deleteMine(req, res),
+);

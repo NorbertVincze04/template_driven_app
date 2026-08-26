@@ -190,6 +190,10 @@
       }
     </section>
 
+    @if (currentUser()?.type === "BARBER") {
+      <app-barber-schedule></app-barber-schedule>
+    }
+
     <section
       class="profile-section appointments-section"
       aria-labelledby="appointments-title"
@@ -199,7 +203,19 @@
           <p class="section-kicker">Schedule</p>
           <h2 id="appointments-title">My appointments</h2>
         </div>
-        <span class="appointment-count">{{ appointments().length }}</span>
+        <div class="appointment-tools">
+          <span class="appointment-count">{{ appointments().length }}</span>
+          @if (currentUser()?.type === "BARBER") {
+            <button
+              type="button"
+              class="refresh-appointments-button"
+              (click)="refreshAppointments()"
+              [disabled]="appointmentActionId !== ''"
+            >
+              Refresh
+            </button>
+          }
+        </div>
       </div>
       @if (appointments().length) {
         <div
@@ -212,6 +228,10 @@
             ><span role="columnheader">Date</span
             ><span role="columnheader">Service</span
             ><span role="columnheader">Hour</span>
+            @if (currentUser()?.type === "BARBER") {
+              <span role="columnheader">Customer</span
+              ><span role="columnheader">Actions</span>
+            }
           </div>
           @for (appointment of appointments(); track appointment.id) {
             <div class="table-row" role="row">
@@ -226,6 +246,37 @@
               }}</span>
               <span role="cell">{{ appointment.serviceName }}</span>
               <span role="cell">{{ appointment.hour }}</span>
+              @if (currentUser()?.type === "BARBER") {
+                <span role="cell">{{
+                  appointment.customerName || appointment.guestName || "Guest"
+                }}</span>
+                <span role="cell" class="appointment-actions">
+                  <select
+                    [value]="appointment.status"
+                    [disabled]="appointmentActionId === appointment.id"
+                    (change)="
+                      updateAppointmentStatus(
+                        appointment,
+                        $any($event.target).value
+                      )
+                    "
+                    aria-label="Update appointment status"
+                  >
+                    <option value="SCHEDULED">Scheduled</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                  </select>
+                  <button
+                    type="button"
+                    class="delete-appointment-button"
+                    [disabled]="appointmentActionId === appointment.id"
+                    (click)="deleteAppointment(appointment)"
+                  >
+                    Delete
+                  </button>
+                </span>
+              }
             </div>
           }
         </div>

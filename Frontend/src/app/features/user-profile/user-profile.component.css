@@ -272,6 +272,11 @@ small,
   font-weight: 700;
 }
 
+.appointment-tools {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .appointments-table {
   overflow-x: auto;
 }
@@ -286,6 +291,27 @@ small,
   border-top: 1px solid var(--theme-border);
   color: var(--theme-text-soft);
   font-size: 0.85rem;
+}
+
+.appointment-actions {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.appointment-actions select,
+.delete-appointment-button {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.delete-appointment-button {
+  cursor: pointer;
+  color: #a52a2a;
 }
 
 .table-header {

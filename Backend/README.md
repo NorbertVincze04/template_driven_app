@@ -65,6 +65,19 @@ Open `sql/001_multi_tenant_schema.sql` in pgAdmin Query Tool and execute it agai
 your application database. It creates the tenant-aware `shops`, `shop_domains`, and
 `users` tables and seeds the `default` tenant for `localhost`.
 
+For appointments and barber profiles, execute the migrations in order after the
+initial schema:
+
+```text
+sql/002_profile_and_appointments.sql
+sql/003_profile_image_position.sql
+sql/004_barber_scheduling_and_guest_appointments.sql
+sql/005_barber_services.sql
+```
+
+The last two migrations create working hours, blocked periods, service prices,
+barber-owned services, guest booking fields, and appointment overlap protection.
+
 The `shops.config` JSONB column stores the website configuration. To add another
 tenant, insert a shop and map one or more domains:
 
