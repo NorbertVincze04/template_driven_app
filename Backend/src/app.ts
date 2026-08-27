@@ -8,6 +8,7 @@ import { errorHandler } from "./middleware/error.middleware.ts";
 import { userRouter } from "./routes/user.routes.ts";
 import { appointmentRouter } from "./routes/appointment.routes.ts";
 import { publicRouter } from "./routes/public.routes.ts";
+import { apiRateLimiter } from "./middleware/rateLimit.middleware.ts";
 
 export function createApp() {
   const app = express(); // create express server
@@ -27,6 +28,7 @@ export function createApp() {
   app.use(express.json({ limit: "5mb" })); // profile images are sent as resized data URLs
   app.use(morgan("dev"));
 
+  app.use("/api", apiRateLimiter);
   app.use("/api/auth", authRouter);
   app.use("/api/tenant", tenantRouter);
   app.use("/api/users", userRouter);
