@@ -1,0 +1,44 @@
+name: CD
+
+permissions:
+  contents: write
+  actions: write
+
+on:
+  workflow_run:
+    workflows:
+      - CodeQL
+    types:
+      - completed
+
+jobs:
+  promote-to-main:
+    name: Promote dev → main
+    runs-on: ubuntu-latest
+    # only run when the CodeQL analysis that followed a CI push on dev passed
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'dev' && github.event.workflow_run.event == 'workflow_run' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge dev into main
+        run: |
+          git fetch origin main dev
+          git checkout -B main origin/main
+          git merge --no-ff --no-edit origin/dev
+          git push origin main
+
+      # the push above uses GITHUB_TOKEN and cannot trigger workflows, so dispatch explicitly
+      - name: Run CodeQL against main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run CodeQL --ref main
