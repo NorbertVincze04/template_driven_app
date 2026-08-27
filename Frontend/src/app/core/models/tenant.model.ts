@@ -1,85 +1,13 @@
-export interface TenantLayout {
-  showHeader?: boolean;
-  showTopBar?: boolean;
-  showFooter?: boolean;
-  showHeroSection?: boolean;
-  showContactDetails?: boolean;
-  header?: TenantHeaderLayout;
-  footer?: TenantFooterLayout;
-  hero?: TenantHeroLayout;
-  contactDetails?: TenantContactDetailsLayout;
-}
+import type {
+  TenantContactDetailsContent,
+  TenantHeroSection,
+} from './tenant-content.model';
+import type { TenantLayout } from './tenant-layout.model';
+import type { TenantStyle } from './tenant-style.model';
 
-export interface TenantHeaderLayout {
-  showAboutUs?: boolean;
-  showPricing?: boolean;
-  showThemeToggle?: boolean;
-}
-
-export interface TenantFooterLayout {
-  showInstagram?: boolean;
-  showFacebook?: boolean;
-  showHelpCenter?: boolean;
-  showTerms?: boolean;
-}
-
-export interface TenantSocialLink {
-  label: string;
-  url: string;
-}
-
-export interface TenantAddress {
-  line1?: string;
-  line2?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  country?: string;
-}
-
-export interface TenantOperatingHours {
-  timezone?: string;
-  days?: string;
-  hours?: string;
-}
-
-export interface TenantContactDetailsContent {
-  sectionLabel?: string;
-  title?: string;
-  description?: string;
-  email?: string;
-  phone?: string;
-  address?: TenantAddress;
-  socialMediaLinks?: TenantSocialLink[];
-  mapEmbedUrl?: string;
-  operatingHours?: TenantOperatingHours[];
-  ctaText?: string;
-  ctaLink?: string;
-}
-
-export interface TenantProfileGalleryItem {
-  id?: string;
-  name: string;
-  role: string;
-  imageUrl: string;
-  tags?: string[];
-}
-
-export interface TenantHeroSection {
-  badgeText?: string;
-  title?: string;
-  subtitle?: string;
-  ctaText?: string;
-  profileGallery?: TenantProfileGalleryItem[];
-  backgroundImageUrl?: string;
-  backgroundImageAlt?: string;
-}
-
-export type TenantThemeMode = 'light' | 'dark';
-
-export interface TenantStyle {
-  mode?: TenantThemeMode;
-}
+export * from './tenant-content.model';
+export * from './tenant-layout.model';
+export * from './tenant-style.model';
 
 export interface TenantConfig {
   tenantId: string;
@@ -93,23 +21,4 @@ export interface TenantConfig {
   layout?: TenantLayout;
   heroSection?: TenantHeroSection;
   contactDetails?: TenantContactDetailsContent;
-}
-
-export interface TenantHeroLayout {
-  variant?: 'profile-gallery' | 'hero-background';
-  showBadge?: boolean;
-  showTitle?: boolean;
-  showSubtitle?: boolean;
-  showCtaButton?: boolean;
-  showProfileGallery?: boolean;
-}
-
-export interface TenantContactDetailsLayout {
-  showEmail?: boolean;
-  showPhone?: boolean;
-  showAddress?: boolean;
-  showSocialMediaLinks?: boolean;
-  showMap?: boolean;
-  showOperatingHours?: boolean;
-  showCTAButton?: boolean;
 }
