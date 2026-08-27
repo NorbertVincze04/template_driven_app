@@ -3,17 +3,13 @@ name: "CodeQL"
 on:
   pull_request:
     branches: ["dev", "main"]
-  # runs only after CI succeeds on dev
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-  # dispatched by CD once dev is promoted, so main gets analyzed too
+  push:
+    branches: ["dev", "main"]
   workflow_dispatch:
 
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       # required for all workflows
@@ -36,21 +32,10 @@ jobs:
             build-mode: none
 
     steps:
-      - name: Resolve commit to analyze
-        id: target
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_run" ]; then
-            echo "sha=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
-            echo "ref=refs/heads/${{ github.event.workflow_run.head_branch }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
-          ref: ${{ steps.target.outputs.sha }}
+          ref: ${{ github.sha }}
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
@@ -62,5 +47,5 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{matrix.language}}"
-          ref: ${{ steps.target.outputs.ref }}
-          sha: ${{ steps.target.outputs.sha }}
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}
