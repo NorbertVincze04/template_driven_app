@@ -11,47 +11,49 @@ on:
     types:
       - completed
 
-# jobs:
-#   promote-to-main:
-#     name: Promote dev → main
-#     runs-on: ubuntu-latest
-#     # a workflow_run-triggered run reports the original upstream event ('push'), never 'workflow_run'
-#     if: ${{ github.event.workflow_run.conclusion == 'success'
-#       && github.event.workflow_run.head_branch == 'dev' }}
-
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-#         with:
-#           fetch-depth: 0
-#           token: ${{ secrets.GITHUB_TOKEN }}
-
-#       - name: Configure Git
-#         run: |
-#           git config user.name "github-actions[bot]"
-#           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-#       - name: Merge dev into main
-#         run: |
-#           git fetch origin main dev
-#           git checkout -B main origin/main
-#           git merge --no-ff --no-edit origin/dev
-#           git push origin main
-
-#       # the push above uses GITHUB_TOKEN and cannot trigger workflows, so dispatch explicitly
-#       - name: Run CodeQL against main
-#         env:
-#           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         run: gh workflow run CodeQL --ref main
-
 jobs:
-  debug:
+  promote-to-main:
+    name: Promote dev → main
     runs-on: ubuntu-latest
+    # a workflow_run-triggered run reports the original upstream event ('push'), never 'workflow_run'
+    if: ${{ github.event.workflow_run.conclusion == 'success'
+      && github.event.workflow_run.head_branch == 'dev' }}
+      && github.event.workflow_run.name == 'CodeQL'
 
     steps:
-      - name: Print workflow_run values
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
         run: |
-          echo "conclusion=${{ github.event.workflow_run.conclusion }}"
-          echo "head_branch=${{ github.event.workflow_run.head_branch }}"
-          echo "event=${{ github.event.workflow_run.event }}"
-          echo "workflow=${{ github.event.workflow_run.name }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge dev into main
+        run: |
+          git fetch origin main dev
+          git checkout -B main origin/main
+          git merge --no-ff --no-edit origin/dev
+          git push origin main
+
+      # the push above uses GITHUB_TOKEN and cannot trigger workflows, so dispatch explicitly
+      - name: Run CodeQL against main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run CodeQL --ref main
+
+# jobs:
+#   debug:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Print workflow_run values
+#         run: |
+#           echo "conclusion=${{ github.event.workflow_run.conclusion }}"
+#           echo "head_branch=${{ github.event.workflow_run.head_branch }}"
+#           echo "event=${{ github.event.workflow_run.event }}"
+#           echo "workflow=${{ github.event.workflow_run.name }}"
+#           echo "head_sha=${{ github.event.workflow_run.head_sha }}"
