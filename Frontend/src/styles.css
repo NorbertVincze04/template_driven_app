@@ -14,6 +14,11 @@
   --theme-hero-image-fallback: #0f152f;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 64px;
+}
+
 html[data-theme="dark"] {
   --theme-bg: #0b1220;
   --theme-surface: #121a2b;

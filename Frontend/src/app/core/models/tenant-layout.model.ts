@@ -14,6 +14,7 @@ export interface TenantHeaderLayout {
   showAboutUs?: boolean;
   showPricing?: boolean;
   showThemeToggle?: boolean;
+  showContact?: boolean;
 }
 
 export interface TenantFooterLayout {

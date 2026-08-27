@@ -92,7 +92,8 @@
     "header": {
       "showAboutUs": true,
       "showPricing": true,
-      "showThemeToggle": true
+      "showThemeToggle": true,
+      "showContact": true
     },
     "footer": {
       "showInstagram": true,

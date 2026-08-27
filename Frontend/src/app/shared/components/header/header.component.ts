@@ -1,4 +1,11 @@
-import { Component, HostListener, computed, inject } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  PLATFORM_ID,
+  computed,
+  inject,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/services/auth.service';
@@ -18,6 +25,7 @@ export class HeaderComponent {
   private readonly authService = inject(AuthService);
   private readonly tenantService = inject(TenantService);
   private readonly router = inject(Router);
+  private readonly platformId = inject(PLATFORM_ID);
 
   protected readonly currentUser = toSignal<User | null>(
     this.authService.currentUser$,
@@ -41,6 +49,37 @@ export class HeaderComponent {
     };
   });
   protected profileMenuOpen = false;
+
+  scrollToSection(sectionId: string): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const currentUrl = this.router.url.split('?')[0].split('#')[0];
+    const isHomePage = currentUrl === '/' || currentUrl === '/home';
+
+    if (isHomePage) {
+      this.performScroll(sectionId);
+    } else {
+      this.router.navigate(['/home']).then(() => {
+        setTimeout(() => {
+          this.performScroll(sectionId);
+        }, 100);
+      });
+    }
+  }
+
+  private performScroll(sectionId: string): void {
+    if (sectionId === 'hero') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 
   onLoginClick(): void {
     this.router.navigate(['/login']);
