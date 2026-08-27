@@ -59,6 +59,14 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  private persistCurrentUser(user: User): void {
+    const { phoneNumber, ...storedUser } = user;
+    localStorage.setItem(
+      environment.CURRENT_USER_STORAGE,
+      JSON.stringify(storedUser),
+    );
+  }
+
   private throwApiError<T>(): MonoTypeOperatorFunction<T> {
     return catchError((error: unknown) => {
       const message =
@@ -136,11 +144,7 @@ export class AuthService {
             };
 
             this.currentUserSubject.next(userWithToken);
-
-            localStorage.setItem(
-              environment.CURRENT_USER_STORAGE,
-              JSON.stringify(userWithToken),
-            );
+            this.persistCurrentUser(userWithToken);
           }
         }),
         map((response) => ({
@@ -181,10 +185,7 @@ export class AuthService {
             profileImagePositionY: response.payload.profileImagePositionY,
           };
           this.currentUserSubject.next(updatedUser);
-          localStorage.setItem(
-            environment.CURRENT_USER_STORAGE,
-            JSON.stringify(updatedUser),
-          );
+          this.persistCurrentUser(updatedUser);
           return updatedUser;
         }),
         this.throwApiError(),
