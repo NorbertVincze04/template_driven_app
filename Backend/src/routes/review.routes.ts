@@ -1,0 +1,8 @@
+import { Router } from "express";
+import { ReviewController } from "../controllers/ReviewController.ts";
+import { tenantMiddleware } from "../middleware/tenant.middleware.ts";
+
+export const reviewRouter = Router();
+reviewRouter.use(tenantMiddleware);
+reviewRouter.get("/", (req, res) => ReviewController.list(req, res));
+reviewRouter.post("/", (req, res) => ReviewController.create(req, res));

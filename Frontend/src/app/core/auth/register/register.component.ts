@@ -28,7 +28,7 @@ import { TenantService } from '../../services/tenant.service';
   styleUrl: './register.component.css',
 })
 export class RegisterComponent {
-  private readonly tenantService = inject(TenantService);
+  protected readonly tenantService = inject(TenantService);
 
   signUpForm = new FormGroup(
     {

@@ -73,10 +73,16 @@ sql/002_profile_and_appointments.sql
 sql/003_profile_image_position.sql
 sql/004_barber_scheduling_and_guest_appointments.sql
 sql/005_barber_services.sql
+sql/006_bucharest_timezone.sql
+sql/007_shared_services_compatibility.sql
+sql/008_default_tenant_config.sql
+sql/009_client_reviews.sql
 ```
 
-The last two migrations create working hours, blocked periods, service prices,
-barber-owned services, guest booking fields, and appointment overlap protection.
+The later migrations create working hours, blocked periods, service prices,
+barber-owned services, guest booking fields, appointment overlap protection,
+Romanian local-time booking, shared-service compatibility, and the default
+tenant content used by the frontend.
 
 The `shops.config` JSONB column stores the website configuration. To add another
 tenant, insert a shop and map one or more domains:

@@ -34,7 +34,7 @@ export class ProfileGalleryComponent {
   }
 
   protected onCtaClick(): void {
-    const target = this.content.ctaLink || '/appointment-service';
+    const target = this.content.ctaLink || '/services';
     if (target.startsWith('http')) {
       window.open(target, '_blank', 'noopener,noreferrer');
     } else {

@@ -1,0 +1,153 @@
+-- Allow each barber to define a service with the same name independently.
+ALTER TABLE services
+  DROP CONSTRAINT IF EXISTS services_shop_id_name_key;
+
+CREATE UNIQUE INDEX IF NOT EXISTS services_shop_barber_name_idx
+  ON services(shop_id, barber_id, name);
+
+-- Keep the database tenant configuration in sync with Frontend/public/tenants/default.json.
+UPDATE shops
+SET config = $$
+{
+  "tenantId": "default",
+  "name": "Salon Luxe",
+  "logoUrl": "",
+  "primaryColor": "#D6A92F",
+  "secondaryColor": "#D4A574",
+  "style": {
+    "mode": "light"
+  },
+  "fontFamily": "Montserrat",
+  "fontFamilySecondary": "Playfair Display",
+  "heroSection": {
+    "badgeText": "Award-winning stylists & premium beauty services",
+    "title": "Elevate Your Look with Expert Hair Care",
+    "subtitle": "Discover our team of talented stylists dedicated to creating the perfect look for you. From cuts and color to treatments and styling, we're here to make you feel beautiful.",
+    "ctaText": "Book Your Appointment",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "backgroundImageAlt": "Professional hair salon interior with styling stations",
+    "profileGallery": []
+  },
+  "aboutUs": {
+    "sectionLabel": "Our approach",
+    "title": "Crafted around the person in your chair.",
+    "description": "Salon Luxe combines considered consultation with technical care, creating hair that feels like your best self long after you leave the salon.",
+    "imageUrl": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "imageAlt": "Stylist working with a client in a bright salon",
+    "highlights": [
+      "Personal consultations",
+      "Premium professional products",
+      "A calm, welcoming studio"
+    ]
+  },
+  "pricing": {
+    "sectionLabel": "Services & pricing",
+    "title": "Care that meets you where you are.",
+    "description": "Choose the appointment that fits your hair goals. Every service begins with a personal consultation.",
+    "plans": [
+      {
+        "name": "Signature Cut",
+        "price": "$75",
+        "description": "A tailored cut, finish, and styling lesson.",
+        "features": ["Personal consultation", "Shampoo and scalp massage", "Finish and styling guidance"],
+        "ctaText": "Book a cut",
+        "ctaLink": "/appointment-service"
+      },
+      {
+        "name": "Color Refresh",
+        "price": "$145",
+        "description": "Dimensional color designed around your routine.",
+        "features": ["Custom color formulation", "Gloss and restorative treatment", "Cut and polished finish"],
+        "ctaText": "Book color",
+        "ctaLink": "/appointment-service",
+        "featured": true
+      },
+      {
+        "name": "Complete Transformation",
+        "price": "$240",
+        "description": "For a considered new shape, color, or both.",
+        "features": ["Extended consultation", "Cut, color, and treatment", "A plan for care at home"],
+        "ctaText": "Plan your visit",
+        "ctaLink": "/appointment-service"
+      }
+    ]
+  },
+  "contactDetails": {
+    "sectionLabel": "Contact",
+    "title": "Ready for Your New Look?",
+    "description": "Visit us for a consultation with one of our expert stylists. We'd love to help you achieve your dream hair and create a personalized beauty plan.",
+    "email": "hello@salonluxe.com",
+    "phone": "+1 415 555 0123",
+    "address": {
+      "line1": "285 Fashion Drive",
+      "line2": "Suite 100",
+      "city": "San Francisco",
+      "state": "CA",
+      "postalCode": "94103",
+      "country": "USA"
+    },
+    "socialMediaLinks": [
+      {"label": "Instagram", "url": "https://instagram.com"},
+      {"label": "Facebook", "url": "https://facebook.com"}
+    ],
+    "mapEmbedUrl": "https://www.google.com/maps?q=San+Francisco,+CA&output=embed",
+    "operatingHours": [
+      {"days": "Mon - Fri", "hours": "09:00 - 18:00", "timezone": "Europe/Bucharest"},
+      {"days": "Sat", "hours": "10:00 - 14:00", "timezone": "Europe/Bucharest"}
+    ],
+    "ctaText": "Schedule an Appointment",
+    "ctaLink": "/contact"
+  },
+  "reviews": {
+    "sectionLabel": "Client Feedback",
+    "title": "What Our Clients Say",
+    "description": "Discover authentic reviews and experiences shared by our valued salon guests.",
+    "reviews": [
+      {"id": "rev-1", "authorName": "Sophia Martinez", "authorRole": "Regular Client", "rating": 5, "comment": "Absolutely loved my haircut and styling! The atmosphere is so welcoming, and the team really listened to what I wanted.", "date": "2026-08-15"},
+      {"id": "rev-2", "authorName": "Alexander Wright", "authorRole": "Verified Client", "rating": 5, "comment": "Best salon experience in town. Professional service, top quality products, and incredible attention to detail.", "date": "2026-08-20"},
+      {"id": "rev-3", "authorName": "Elena Rostova", "authorRole": "First-time Visitor", "rating": 4, "comment": "Great experience with the Color Refresh service. Very happy with the result and the personalized care advice!", "date": "2026-08-22"}
+    ]
+  },
+  "layout": {
+    "showHeader": true,
+    "showTopBar": false,
+    "showFooter": true,
+    "showHeroSection": true,
+    "showPricingSection": true,
+    "showAboutUsSection": true,
+    "showReviewsSection": true,
+    "showContactDetails": true,
+    "header": {
+      "showAboutUs": true,
+      "showPricing": true,
+      "showReviews": true,
+      "showThemeToggle": true,
+      "showContact": true
+    },
+    "footer": {
+      "showInstagram": true,
+      "showFacebook": true,
+      "showHelpCenter": true,
+      "showTerms": true
+    },
+    "hero": {
+      "variant": "profile-gallery",
+      "showBadge": true,
+      "showTitle": true,
+      "showSubtitle": true,
+      "showCtaButton": true,
+      "showProfileGallery": true
+    },
+    "contactDetails": {
+      "showEmail": true,
+      "showPhone": true,
+      "showAddress": true,
+      "showSocialMediaLinks": true,
+      "showMap": true,
+      "showOperatingHours": true,
+      "showCTAButton": true
+    }
+  }
+}$$::jsonb,
+    updated_at = NOW()
+WHERE slug = 'default';

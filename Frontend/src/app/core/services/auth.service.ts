@@ -79,18 +79,6 @@ export class AuthService {
     });
   }
 
-  getAllUsers(): Observable<User[]> {
-    return this.http.get<any>(`${this.authUrl}/users`).pipe(
-      map((response) => {
-        if (!response.success) {
-          return [];
-        }
-
-        return response.payload;
-      }),
-    );
-  }
-
   register(userData: {
     fullName: string;
     email: string;
@@ -145,6 +133,10 @@ export class AuthService {
 
             this.currentUserSubject.next(userWithToken);
             this.persistCurrentUser(userWithToken);
+            this.tenantService.setUserThemeContext(
+              userWithToken.id || null,
+              userWithToken.tenantId,
+            );
           }
         }),
         map((response) => ({
@@ -156,6 +148,7 @@ export class AuthService {
 
   logout(): void {
     this.currentUserSubject.next(null);
+    this.tenantService.setUserThemeContext(null);
     localStorage.removeItem(environment.CURRENT_USER_STORAGE);
   }
 

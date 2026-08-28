@@ -199,7 +199,9 @@ export class BarberRepository {
   ): Promise<ServiceRecord[]> {
     const { rows } = await pool.query(
       `SELECT id, name, duration_minutes AS "durationMinutes", price::text
-      FROM services WHERE shop_id = $1 AND ($2::uuid IS NULL OR barber_id = $2) ORDER BY name`,
+      FROM services
+      WHERE shop_id = $1 AND ($2::uuid IS NULL OR barber_id = $2 OR barber_id IS NULL)
+      ORDER BY name`,
       [shopId, barberId ?? null],
     );
     return rows;
@@ -216,7 +218,8 @@ export class BarberRepository {
 
     const serviceResult = await pool.query<ServiceRecord>(
       `SELECT id, name, duration_minutes AS "durationMinutes", price::text
-      FROM services WHERE id = $1 AND shop_id = $2 AND barber_id = $3`,
+      FROM services
+      WHERE id = $1 AND shop_id = $2 AND (barber_id = $3 OR barber_id IS NULL)`,
       [serviceId, shopId, barberId],
     );
     const service = serviceResult.rows[0];
@@ -285,7 +288,8 @@ export class BarberRepository {
       await client.query("BEGIN");
       const serviceResult = await client.query<ServiceRecord>(
         `SELECT id, name, duration_minutes AS "durationMinutes", price::text
-         FROM services WHERE id = $1 AND shop_id = $2 AND barber_id = $3`,
+         FROM services
+         WHERE id = $1 AND shop_id = $2 AND (barber_id = $3 OR barber_id IS NULL)`,
         [input.serviceId, input.shopId, input.barberId],
       );
       const service = serviceResult.rows[0];

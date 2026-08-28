@@ -27,7 +27,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './sign-in.component.css',
 })
 export class SignInComponent {
-  private readonly tenantService = inject(TenantService);
+  protected readonly tenantService = inject(TenantService);
 
   signInForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -69,11 +69,7 @@ export class SignInComponent {
       next: (result) => {
         this.signInLoading = false;
         this.loginError = '';
-        if (result.isTempPassword) {
-          this.router.navigate(['/reset-pass']);
-        } else {
-          this.router.navigate(['/home']);
-        }
+        this.router.navigate(['/home']);
       },
       error: (error) => {
         this.signInLoading = false;

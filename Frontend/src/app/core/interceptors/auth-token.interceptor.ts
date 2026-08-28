@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import {
   HttpEvent,
   HttpHandler,
@@ -10,10 +11,16 @@ import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   intercept(
     req: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
+    if (!this.isBrowser) {
+      return next.handle(req);
+    }
+
     const rawUser = localStorage.getItem(environment.CURRENT_USER_STORAGE);
     if (!rawUser) {
       return next.handle(req);
