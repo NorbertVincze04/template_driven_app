@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import {
   TenantHeroLayout,
   TenantHeroSection,
@@ -21,12 +21,9 @@ export class HeroSectionComponent {
   private readonly barbers = signal<any[]>([]);
 
   constructor() {
-    effect(() => {
-      if (!this.tenantService.config()) return;
-      this.barberService
-        .listBarbers()
-        .subscribe({ next: (barbers) => this.barbers.set(barbers) });
-    });
+    this.barberService
+      .listBarbers()
+      .subscribe({ next: (barbers) => this.barbers.set(barbers) });
   }
 
   protected readonly tenantStyles = computed((): Record<string, string> => {
