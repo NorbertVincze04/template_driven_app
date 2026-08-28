@@ -21,7 +21,9 @@ export class TenantService {
       .get<{
         success: boolean;
         payload: TenantConfig;
-      }>(`${environment.apiUrl}/tenant/config`, { headers: { 'X-Tenant-Domain': domain } })
+      }>(`${environment.apiUrl}/tenant/config`, {
+        headers: { 'X-Tenant-Domain': domain },
+      })
       .pipe(
         map((response) => response.payload),
         catchError(() => this.http.get<TenantConfig>('tenants/default.json')),
@@ -33,6 +35,7 @@ export class TenantService {
   setTenant(config: TenantConfig): void {
     this._config.set(config);
     this.setThemeMode(config.style?.mode);
+    this.applyCssVariables(config);
 
     if (config.fontFamily) {
       this.loadGoogleFont(config.fontFamily);
@@ -40,6 +43,53 @@ export class TenantService {
     if (config.fontFamilySecondary) {
       this.loadGoogleFont(config.fontFamilySecondary);
     }
+  }
+
+  private applyCssVariables(config: TenantConfig): void {
+    const root = this.document.documentElement;
+    const primary = config.primaryColor || '#111827';
+    const secondary = config.secondaryColor || '#374151';
+
+    root.style.setProperty('--tenant-primary', primary);
+    root.style.setProperty('--tenant-secondary', secondary);
+    root.style.setProperty(
+      '--tenant-primary-contrast',
+      this.getContrastColor(primary),
+    );
+    root.style.setProperty(
+      '--tenant-secondary-contrast',
+      this.getContrastColor(secondary),
+    );
+
+    if (config.fontFamily) {
+      root.style.setProperty(
+        '--tenant-font',
+        `'${config.fontFamily}', sans-serif`,
+      );
+    }
+    if (config.fontFamilySecondary) {
+      root.style.setProperty(
+        '--tenant-font-secondary',
+        `'${config.fontFamilySecondary}', Georgia, serif`,
+      );
+    }
+  }
+
+  private getContrastColor(hexColor?: string): string {
+    if (!hexColor) return '#ffffff';
+    let hex = hexColor.replace('#', '').trim();
+    if (hex.length === 3) {
+      hex = hex
+        .split('')
+        .map((c) => c + c)
+        .join('');
+    }
+    if (hex.length !== 6) return '#ffffff';
+    const r = parseInt(hex.substring(0, 2), 16) || 0;
+    const g = parseInt(hex.substring(2, 4), 16) || 0;
+    const b = parseInt(hex.substring(4, 6), 16) || 0;
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 140 ? '#0f172a' : '#ffffff';
   }
 
   private loadGoogleFont(fontName: string): void {

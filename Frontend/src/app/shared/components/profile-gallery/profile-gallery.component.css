@@ -47,31 +47,10 @@ h1 {
   font-size: clamp(1rem, 1.2vw, 1.2rem);
 }
 
-.hero-cta {
-  margin-top: 1.6rem;
-  border: 0;
-  border-radius: 999px;
-  background: var(--tenant-primary);
-  color: #fff;
-  padding: 0.85rem 1.6rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    transform 0.18s,
-    box-shadow 0.18s,
-    opacity 0.18s;
-}
-
-.hero-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px
-    color-mix(in srgb, var(--tenant-primary) 25%, transparent);
-}
-
-.hero-cta:active {
-  transform: translateY(0);
-  opacity: 0.92;
+.hero-cta-wrapper {
+  margin-top: 1.8rem;
+  display: flex;
+  justify-content: center;
 }
 
 .gallery-wrapper {

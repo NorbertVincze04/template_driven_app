@@ -33,17 +33,25 @@
                 "
               />
             }
-            <div>
+            <div class="barber-details">
               <h2>{{ option.barber.name }}</h2>
-              <p>{{ option.barber.role || "Barber" }}</p>
-              <p>Rating: {{ option.barber.rating ?? "New" }}</p>
-              <p>
+              <p class="barber-role">{{ option.barber.role || "Barber" }}</p>
+              <p class="barber-rating">
+                Rating: {{ option.barber.rating ?? "New" }}
+              </p>
+              <p class="barber-service-info">
                 {{ option.service.price }} RON ·
                 {{ option.service.durationMinutes }} min
               </p>
-              <button type="button" (click)="chooseBarber(option)">
-                Choose {{ option.barber.name }}
-              </button>
+              <div class="barber-action">
+                <app-action-button
+                  [config]="{
+                    label: 'Choose ' + option.barber.name,
+                    variant: 'primary',
+                  }"
+                  (action)="chooseBarber(option)"
+                ></app-action-button>
+              </div>
             </div>
           </article>
         } @empty {

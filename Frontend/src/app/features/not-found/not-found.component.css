@@ -88,7 +88,7 @@
 }
 
 h1 {
-  color: #fff;
+  color: var(--theme-text);
   font-family: var(--tenant-font-secondary), Georgia, serif;
   font-size: clamp(2.1rem, 5.5vw, 4.2rem);
   line-height: 1.05;
@@ -107,7 +107,7 @@ h1::before {
 }
 
 .hero-subtitle {
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--theme-text-soft);
   margin: 1.2rem auto 0;
   max-width: 720px;
   font-size: clamp(1rem, 1.2vw, 1.2rem);
@@ -122,94 +122,9 @@ h1::before {
   margin-top: 2rem;
 }
 
-.hero-cta {
-  border: 0;
-  border-radius: 999px;
-  background: var(--tenant-primary);
-  color: #111827;
-  padding: 0.85rem 1.6rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    transform 0.18s,
-    box-shadow 0.18s,
-    opacity 0.18s;
-}
-
-.hero-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(10, 16, 34, 0.35);
-}
-
-.hero-cta:active {
-  transform: translateY(0);
-  opacity: 0.94;
-}
-
-.hero-secondary-btn {
-  padding: 0.85rem 1.6rem;
-  border-radius: 999px;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  background: transparent;
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    transform 0.18s,
-    background-color 0.18s,
-    border-color 0.18s;
-}
-
-.hero-secondary-btn:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.75);
-}
-
-.hero-secondary-btn:active {
-  transform: translateY(0);
-}
-
-:host-context(html[data-theme="dark"]) .hero-badge {
-  background: color-mix(
-    in srgb,
-    var(--theme-surface) 84%,
-    var(--tenant-primary)
-  );
-  color: var(--tenant-primary);
-  border: 1px solid
-    color-mix(in srgb, var(--tenant-primary) 28%, var(--theme-surface));
-}
-
-:host-context(html[data-theme="dark"]) .hero-cta {
-  background: var(--tenant-primary);
-  color: #111827;
-  box-shadow: 0 10px 24px color-mix(in srgb, var(--tenant-primary) 34%, black);
-}
-
-:host-context(html[data-theme="dark"]) .hero-cta:hover {
-  box-shadow: 0 14px 30px color-mix(in srgb, var(--tenant-primary) 46%, black);
-}
-
-:host-context(html[data-theme="dark"]) .hero-secondary-btn {
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-:host-context(html[data-theme="dark"]) .hero-secondary-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
 @media (max-width: 768px) {
   .hero-actions {
     flex-direction: column;
     width: 100%;
-  }
-
-  .hero-cta,
-  .hero-secondary-btn {
-    width: min(280px, 100%);
   }
 }

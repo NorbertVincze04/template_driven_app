@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BarberService } from '../../core/services/barber.service';
 import { BarberService as ServiceOption } from '../../core/models/barber.model';
 import { TenantService } from '../../core/services/tenant.service';
+import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
 
 interface ServiceSummary {
   name: string;
@@ -15,7 +16,7 @@ interface ServiceSummary {
 @Component({
   selector: 'app-barber-services',
   standalone: true,
-  imports: [],
+  imports: [ActionButtonComponent],
   templateUrl: './barber-services.component.html',
   styleUrl: './barber-services.component.css',
 })

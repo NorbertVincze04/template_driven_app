@@ -51,10 +51,17 @@
         </div>
       }
 
-      @if (layout().showCTAButton !== false) {
-        <a class="contact-cta" [href]="contact().ctaLink">{{
-          contact().ctaText
-        }}</a>
+      @if (layout().showCTAButton !== false && contact().ctaText) {
+        <div class="contact-cta-wrapper">
+          <app-action-button
+            [config]="{
+              label: contact().ctaText || 'Book a call',
+              variant: 'primary',
+              size: 'lg',
+            }"
+            (action)="onCtaClick()"
+          ></app-action-button>
+        </div>
       }
     </div>
 

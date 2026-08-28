@@ -4,12 +4,9 @@
 
 #pricing {
   padding: clamp(3.5rem, 7vw, 6.5rem) 1.25rem;
-  background: linear-gradient(
-    180deg,
-    var(--theme-surface-soft) 0%,
-    var(--theme-surface-alt) 100%
-  );
+  background: var(--theme-surface);
   font-family: var(--tenant-font, inherit);
+  border-top: 1px solid var(--theme-border-subtle, var(--theme-border));
 }
 
 .pricing-intro {
@@ -21,7 +18,7 @@
 .pricing-label,
 .featured-label {
   margin: 0;
-  color: color-mix(in srgb, var(--tenant-secondary) 84%, var(--theme-contrast));
+  color: var(--tenant-primary);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -43,21 +40,16 @@ h2 {
   line-height: 1.65;
 }
 
-.all-services-link {
+.all-services-wrapper {
   margin-top: 1.25rem;
-  border: 0;
-  border-bottom: 1px solid currentColor;
-  background: transparent;
-  color: var(--tenant-primary);
-  cursor: pointer;
-  font: inherit;
-  font-weight: 700;
+  display: flex;
+  justify-content: center;
 }
 
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 1.25rem;
   max-width: 1100px;
   margin: clamp(2rem, 5vw, 3.5rem) auto 0;
 }
@@ -66,16 +58,27 @@ h2 {
   display: flex;
   min-height: 100%;
   flex-direction: column;
-  padding: 1.75rem;
+  padding: 2rem;
   border: 1px solid var(--theme-border);
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   background: var(--theme-card-bg);
+  box-shadow: var(--theme-shadow-sm);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.pricing-plan:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .pricing-plan.featured {
   border-color: var(--tenant-primary);
   box-shadow: 0 14px 30px
     color-mix(in srgb, var(--tenant-primary) 14%, transparent);
+  position: relative;
 }
 
 .featured-label {
@@ -126,25 +129,9 @@ h3 {
   font-weight: 700;
 }
 
-.plan-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.8rem;
+.plan-cta-wrapper {
   margin-top: auto;
-  border: 1px solid var(--tenant-primary);
-  border-radius: 0.35rem;
-  color: var(--tenant-primary);
-  cursor: pointer;
-  font: inherit;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.pricing-plan.featured .plan-cta,
-.plan-cta:hover {
-  background: var(--tenant-primary);
-  color: #ffffff;
+  padding-top: 1rem;
 }
 
 @media (max-width: 850px) {

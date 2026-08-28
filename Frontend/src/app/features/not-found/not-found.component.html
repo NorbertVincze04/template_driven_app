@@ -14,9 +14,15 @@
     </p>
 
     <div class="hero-actions">
-      <button class="hero-cta" routerLink="/home">Back to Home</button>
+      <app-action-button
+        [config]="{ label: 'Back to Home', variant: 'primary', size: 'lg' }"
+        (action)="goHome()"
+      ></app-action-button>
 
-      <button class="hero-secondary-btn" (click)="goBack()">Go Back</button>
+      <app-action-button
+        [config]="{ label: 'Go Back', variant: 'secondary', size: 'lg' }"
+        (action)="goBack()"
+      ></app-action-button>
     </div>
   </div>
 </section>

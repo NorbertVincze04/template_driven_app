@@ -24,7 +24,12 @@
     }
 
     @if (layout.showCtaButton && content.ctaText) {
-      <button type="button" class="hero-cta">{{ content.ctaText }}</button>
+      <div class="hero-cta-wrapper">
+        <app-action-button
+          [config]="{ label: content.ctaText, variant: 'primary', size: 'lg' }"
+          (action)="onCtaClick()"
+        ></app-action-button>
+      </div>
     }
   </div>
 </div>

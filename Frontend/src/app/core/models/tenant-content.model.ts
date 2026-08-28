@@ -45,6 +45,7 @@ export interface TenantHeroSection {
   title?: string;
   subtitle?: string;
   ctaText?: string;
+  ctaLink?: string;
   profileGallery?: TenantProfileGalleryItem[];
   backgroundImageUrl?: string;
   backgroundImageAlt?: string;

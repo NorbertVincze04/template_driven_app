@@ -1,5 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import {
   TenantContactDetailsContent,
   TenantContactDetailsLayout,
@@ -7,17 +8,19 @@ import {
   TenantSocialLink,
 } from '../../../core/models/tenant.model';
 import { TenantService } from '../../../core/services/tenant.service';
+import { ActionButtonComponent } from '../action-button/action-button.component';
 
 @Component({
   selector: 'app-contact-details',
   standalone: true,
-  imports: [],
+  imports: [ActionButtonComponent],
   templateUrl: './contact-details.component.html',
   styleUrl: './contact-details.component.css',
 })
 export class ContactDetailsComponent {
   private readonly tenantService = inject(TenantService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly router = inject(Router);
 
   protected readonly tenantStyles = computed((): Record<string, string> => {
     const config = this.tenantService.config();
@@ -116,4 +119,15 @@ export class ContactDetailsComponent {
 
     return [lineOne, lineTwo].filter(Boolean).join(' | ');
   });
+
+  protected onCtaClick(): void {
+    const link = this.contact().ctaLink;
+    if (link && link.startsWith('http')) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    } else if (link && link !== '#') {
+      void this.router.navigateByUrl(link);
+    } else {
+      void this.router.navigate(['/appointment-service']);
+    }
+  }
 }

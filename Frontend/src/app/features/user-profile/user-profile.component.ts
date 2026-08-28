@@ -13,13 +13,19 @@ import { User } from '../../core/models/user.model';
 import { Appointment, AuthService } from '../../core/services/auth.service';
 import { TenantService } from '../../core/services/tenant.service';
 import { BarberScheduleComponent } from '../barber-schedule/barber-schedule.component';
+import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
 import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BarberScheduleComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    BarberScheduleComponent,
+    ActionButtonComponent,
+  ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
 })

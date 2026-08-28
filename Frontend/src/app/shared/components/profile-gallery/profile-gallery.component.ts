@@ -5,11 +5,12 @@ import {
   TenantHeroSection,
   TenantProfileGalleryItem,
 } from '../../../core/models/tenant.model';
+import { ActionButtonComponent } from '../action-button/action-button.component';
 
 @Component({
   selector: 'app-profile-gallery',
   standalone: true,
-  imports: [],
+  imports: [ActionButtonComponent],
   templateUrl: './profile-gallery.component.html',
   styleUrl: './profile-gallery.component.css',
 })
@@ -30,5 +31,14 @@ export class ProfileGalleryComponent {
     this.router.navigate(['/appointment-service'], {
       queryParams: { barber: profile.name },
     });
+  }
+
+  protected onCtaClick(): void {
+    const target = this.content.ctaLink || '/appointment-service';
+    if (target.startsWith('http')) {
+      window.open(target, '_blank', 'noopener,noreferrer');
+    } else {
+      this.router.navigateByUrl(target);
+    }
   }
 }

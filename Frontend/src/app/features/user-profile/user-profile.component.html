@@ -53,13 +53,12 @@
             </div>
           </dl>
         </div>
-        <button
-          class="edit-profile-button"
-          type="button"
-          (click)="editProfile()"
-        >
-          Edit Profile
-        </button>
+        <div class="edit-profile-action">
+          <app-action-button
+            [config]="{ label: 'Edit Profile', variant: 'secondary' }"
+            (action)="editProfile()"
+          ></app-action-button>
+        </div>
       } @else {
         <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
           <div class="form-grid">
@@ -156,29 +155,36 @@
                   />
                 </label>
                 @if (profileForm.controls.profileImageData.value) {
-                  <button
-                    class="delete-image-button"
-                    type="button"
-                    (click)="deleteProfileImage()"
-                  >
-                    Delete picture
-                  </button>
+                  <app-action-button
+                    [config]="{
+                      label: 'Delete picture',
+                      variant: 'danger',
+                      size: 'sm',
+                    }"
+                    (action)="deleteProfileImage()"
+                  ></app-action-button>
                 }
               </div>
             </div>
           }
           <div class="form-actions">
-            <button type="submit" [disabled]="profileSaving">
-              {{ profileSaving ? "Saving..." : "Save changes" }}
-            </button>
-            <button
-              class="cancel-button"
-              type="button"
-              (click)="cancelEdit()"
-              [disabled]="profileSaving"
-            >
-              Cancel
-            </button>
+            <app-action-button
+              buttonType="submit"
+              [config]="{
+                label: 'Save changes',
+                loadingLabel: 'Saving...',
+                variant: 'primary',
+              }"
+              [isLoading]="profileSaving"
+            ></app-action-button>
+            <app-action-button
+              [config]="{
+                label: 'Cancel',
+                variant: 'secondary',
+                disabled: profileSaving,
+              }"
+              (action)="cancelEdit()"
+            ></app-action-button>
             @if (profileSaved) {
               <span class="success-message">Changes saved.</span>
             }
@@ -206,14 +212,15 @@
         <div class="appointment-tools">
           <span class="appointment-count">{{ appointments().length }}</span>
           @if (currentUser()?.type === "BARBER") {
-            <button
-              type="button"
-              class="refresh-appointments-button"
-              (click)="refreshAppointments()"
-              [disabled]="appointmentActionId !== ''"
-            >
-              Refresh
-            </button>
+            <app-action-button
+              [config]="{
+                label: 'Refresh',
+                variant: 'secondary',
+                size: 'sm',
+                disabled: appointmentActionId !== '',
+              }"
+              (action)="refreshAppointments()"
+            ></app-action-button>
           }
         </div>
       </div>
@@ -267,14 +274,15 @@
                     <option value="COMPLETED">Completed</option>
                     <option value="CANCELLED">Cancelled</option>
                   </select>
-                  <button
-                    type="button"
-                    class="delete-appointment-button"
-                    [disabled]="appointmentActionId === appointment.id"
-                    (click)="deleteAppointment(appointment)"
-                  >
-                    Delete
-                  </button>
+                  <app-action-button
+                    [config]="{
+                      label: 'Delete',
+                      variant: 'danger',
+                      size: 'sm',
+                      disabled: appointmentActionId === appointment.id,
+                    }"
+                    (action)="deleteAppointment(appointment)"
+                  ></app-action-button>
                 </span>
               }
             </div>

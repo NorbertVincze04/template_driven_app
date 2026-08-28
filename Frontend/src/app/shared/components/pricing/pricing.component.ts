@@ -6,10 +6,12 @@ import {
 } from '../../../core/models/tenant.model';
 import { TenantService } from '../../../core/services/tenant.service';
 
+import { ActionButtonComponent } from '../action-button/action-button.component';
+
 @Component({
   selector: 'app-pricing',
   standalone: true,
-  imports: [],
+  imports: [ActionButtonComponent],
   templateUrl: './pricing.component.html',
   styleUrl: './pricing.component.css',
 })

@@ -1,12 +1,20 @@
 <button
   [type]="buttonType"
   (click)="onAction()"
-  [disabled]="config.disabled || isLoading"
-  [class]="'btn-' + (config.variant || 'primary')"
+  [disabled]="isDisabled"
+  [class]="
+    'action-btn btn-' +
+    effectiveVariant +
+    ' btn-' +
+    effectiveSize +
+    (isFullWidth ? ' btn-block' : '') +
+    (customClass ? ' ' + customClass : '')
+  "
+  [attr.aria-label]="effectiveAriaLabel"
   [style]="tenantStyles()"
 >
   @if (isLoading) {
-    <span class="spinner"></span>
+    <span class="spinner" aria-hidden="true"></span>
   }
 
   @if (icon) {
@@ -14,8 +22,8 @@
     <span>{{ displayLabel }}</span>
   } @else {
     @if (config.icon) {
-      <i [class]="config.icon"></i>
+      <i [class]="config.icon" aria-hidden="true"></i>
     }
-    {{ displayLabel }}
+    <span>{{ displayLabel }}</span>
   }
 </button>

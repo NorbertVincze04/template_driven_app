@@ -77,46 +77,56 @@ legend {
   gap: 0.6rem;
 }
 .slots button {
-  border: 1px solid var(--tenant-primary);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
   background: var(--theme-surface);
   color: var(--theme-text);
-  padding: 0.65rem 0.9rem;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
+
+.slots button:hover {
+  border-color: var(--tenant-primary);
+  color: var(--tenant-primary);
+}
+
 .slots button.selected {
   background: var(--tenant-primary);
-  color: var(--theme-contrast);
+  border-color: var(--tenant-primary);
+  color: var(--tenant-primary-contrast, #ffffff);
+  box-shadow: 0 2px 8px
+    color-mix(in srgb, var(--tenant-primary) 35%, transparent);
 }
+
 .guest-fields {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
+
+@media (max-width: 640px) {
+  .guest-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
 .success {
   margin-top: 1rem;
-  color: #237047;
+  color: var(--theme-success);
+  font-weight: 600;
 }
+
 .error {
   margin-top: 1rem;
-  color: #a12e2e;
+  color: var(--theme-danger);
+  font-weight: 600;
 }
+
 .state {
   text-align: center;
   padding: 4rem 0;
-}
-
-:host-context(html[data-theme="dark"]) .slots button.selected {
-  background: #f8fafc;
-  color: #0f172a;
-}
-
-:host-context(html[data-theme="dark"]) .slots button.selected {
-  border-color: #f8fafc;
-}
-
-:host-context(html[data-theme="dark"]) input,
-:host-context(html[data-theme="dark"]) select {
-  color-scheme: dark;
 }
 
 :host-context(html[data-theme="light"]) input,

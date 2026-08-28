@@ -2,7 +2,10 @@
   <header>
     <p class="eyebrow">Services</p>
     <h1>Find the right appointment.</h1>
-    <p>Prices and appointment times reflect the barbers currently offering each service.</p>
+    <p>
+      Prices and appointment times reflect the barbers currently offering each
+      service.
+    </p>
   </header>
 
   @if (loading) {
@@ -14,9 +17,22 @@
       @for (service of services(); track service.name) {
         <article class="service-card">
           <h2>{{ service.name }}</h2>
-          <p>{{ formatRange(service.minDuration, service.maxDuration, 'min') }}</p>
-          <p>{{ formatRange(service.minPrice, service.maxPrice, 'RON') }}</p>
-          <button type="button" (click)="selectService(service)">Choose a barber</button>
+          <p class="service-duration">
+            {{ formatRange(service.minDuration, service.maxDuration, "min") }}
+          </p>
+          <p class="service-price">
+            {{ formatRange(service.minPrice, service.maxPrice, "RON") }}
+          </p>
+          <div class="service-cta">
+            <app-action-button
+              [config]="{
+                label: 'Choose a barber',
+                variant: 'primary',
+                fullWidth: true,
+              }"
+              (action)="selectService(service)"
+            ></app-action-button>
+          </div>
         </article>
       } @empty {
         <p class="state">No services are available yet.</p>

@@ -12,6 +12,8 @@ import { TenantService } from '../../core/services/tenant.service';
 import { BarberService } from '../../core/services/barber.service';
 import { AuthService } from '../../core/services/auth.service';
 
+import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
+
 interface ScheduleDay {
   weekday: number;
   label: string;
@@ -29,7 +31,7 @@ interface BlockedPeriod {
 @Component({
   selector: 'app-barber-schedule',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ActionButtonComponent],
   templateUrl: './barber-schedule.component.html',
   styleUrl: './barber-schedule.component.css',
 })
@@ -130,13 +132,11 @@ export class BarberScheduleComponent {
         this.auth.currentUserValue?.type === 'BARBER'
       ) {
         this.loadSchedule();
-        this.barberApi
-          .listMyServices()
-          .subscribe({
-            next: (services) => this.services.set(services),
-            error: (error) =>
-              (this.error = this.apiMessage(error, 'Could not load services.')),
-          });
+        this.barberApi.listMyServices().subscribe({
+          next: (services) => this.services.set(services),
+          error: (error) =>
+            (this.error = this.apiMessage(error, 'Could not load services.')),
+        });
       }
     });
   }
@@ -209,7 +209,11 @@ export class BarberScheduleComponent {
     this.http
       .post<{
         payload: BlockedPeriod;
-      }>(`${environment.apiUrl}/public/schedule/blocked`, values, this.options())
+      }>(
+        `${environment.apiUrl}/public/schedule/blocked`,
+        values,
+        this.options(),
+      )
       .subscribe({
         next: (response) => {
           this.blockedPeriods.update((periods) => [

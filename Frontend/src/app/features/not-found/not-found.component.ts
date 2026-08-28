@@ -1,22 +1,28 @@
 import { Component, computed, inject } from '@angular/core';
 import { Location, NgStyle } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TenantService } from '../../core/services/tenant.service';
+import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
+
 @Component({
   selector: 'app-not-found',
   standalone: true,
-  imports: [RouterLink, NgStyle],
+  imports: [NgStyle, ActionButtonComponent],
   templateUrl: './not-found.component.html',
   styleUrl: './not-found.component.css',
 })
 export class NotFoundComponent {
-  constructor(private location: Location) {}
+  private readonly location = inject(Location);
+  private readonly router = inject(Router);
+  private readonly tenantService = inject(TenantService);
 
   goBack(): void {
     this.location.back();
   }
 
-  private readonly tenantService = inject(TenantService);
+  goHome(): void {
+    this.router.navigate(['/home']);
+  }
 
   protected readonly tenantStyles = computed((): Record<string, string> => {
     const config = this.tenantService.config();

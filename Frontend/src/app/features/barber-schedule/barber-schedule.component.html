@@ -33,12 +33,15 @@
       </div>
     }
   </div>
-  <button type="button" class="save" (click)="save()">
-    Save working hours
-  </button>
-  @if (saved()) {
-    <span class="success">Saved.</span>
-  }
+  <div class="save-action-row">
+    <app-action-button
+      [config]="{ label: 'Save working hours', variant: 'primary' }"
+      (action)="save()"
+    ></app-action-button>
+    @if (saved()) {
+      <span class="success">Saved.</span>
+    }
+  </div>
   <h3>My services</h3>
   <div class="service-list">
     @for (service of services(); track service.id) {
@@ -69,7 +72,10 @@
       step="1"
       placeholder="Price (RON)"
       required
-    /><button type="submit">Add service</button>
+    /><app-action-button
+      buttonType="submit"
+      [config]="{ label: 'Add service', variant: 'primary' }"
+    ></app-action-button>
   </form>
   <h3>Block time</h3>
   <form [formGroup]="blockForm" (ngSubmit)="block()">
@@ -81,13 +87,21 @@
       type="text"
       formControlName="reason"
       placeholder="Reason (optional)"
-    /><button type="submit">Block appointment time</button>
+    /><app-action-button
+      buttonType="submit"
+      [config]="{ label: 'Block appointment time', variant: 'secondary' }"
+    ></app-action-button>
   </form>
   @for (period of blockedPeriods(); track period.id) {
     <div class="blocked-period">
-      {{ period.startsAt | date: "medium" }} -
-      {{ period.endsAt | date: "medium" }}
-      <button type="button" (click)="unblock(period.id)">Remove</button>
+      <span
+        >{{ period.startsAt | date: "medium" }} -
+        {{ period.endsAt | date: "medium" }}</span
+      >
+      <app-action-button
+        [config]="{ label: 'Remove', variant: 'danger', size: 'sm' }"
+        (action)="unblock(period.id)"
+      ></app-action-button>
     </div>
   }
   @if (error) {

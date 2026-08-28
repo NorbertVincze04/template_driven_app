@@ -3,9 +3,12 @@
     <p class="pricing-label">{{ pricing().sectionLabel }}</p>
     <h2>{{ pricing().title }}</h2>
     <p class="pricing-description">{{ pricing().description }}</p>
-    <button type="button" class="all-services-link" (click)="viewAllServices()">
-      View all services
-    </button>
+    <div class="all-services-wrapper">
+      <app-action-button
+        [config]="{ label: 'View all services', variant: 'ghost' }"
+        (action)="viewAllServices()"
+      ></app-action-button>
+    </div>
   </div>
 
   @if (plans().length) {
@@ -27,9 +30,16 @@
               }
             </ul>
           }
-          <button type="button" class="plan-cta" (click)="choosePlan(plan)">
-            {{ plan.ctaText || "Choose a barber" }}
-          </button>
+          <div class="plan-cta-wrapper">
+            <app-action-button
+              [config]="{
+                label: plan.ctaText || 'Choose a barber',
+                variant: plan.featured ? 'primary' : 'secondary',
+                fullWidth: true,
+              }"
+              (action)="choosePlan(plan)"
+            ></app-action-button>
+          </div>
         </article>
       }
     </div>

@@ -7,6 +7,8 @@ import {
 import { BarberService } from '../../core/services/barber.service';
 import { TenantService } from '../../core/services/tenant.service';
 
+import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
+
 interface BarberOption {
   barber: Barber;
   service: ServiceOption;
@@ -15,7 +17,7 @@ interface BarberOption {
 @Component({
   selector: 'app-barbers-preview',
   standalone: true,
-  imports: [],
+  imports: [ActionButtonComponent],
   templateUrl: './barbers-preview.component.html',
   styleUrl: './barbers-preview.component.css',
 })

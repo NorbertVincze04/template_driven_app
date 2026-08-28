@@ -1,32 +1,31 @@
 .sign-in-container {
-  background-color: color-mix(
-    in srgb,
-    var(--tenant-primary, #111827) 8%,
-    var(--theme-surface)
-  );
+  background-color: var(--theme-card-bg);
   border: 1px solid var(--theme-border);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--theme-shadow-lg);
   height: auto;
-  width: 400px;
-  padding: 30px;
-  border-radius: 4px;
+  width: min(440px, calc(100vw - 2rem));
+  padding: 2.25rem;
+  border-radius: 12px;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 10;
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
-  color: var(--tenant-primary, #6b7280);
+  margin-bottom: 24px;
+  color: var(--theme-text);
   font-family: var(--tenant-font, inherit);
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
 }
 
 .form-group {
@@ -35,26 +34,30 @@ form {
 }
 
 label {
-  margin-bottom: 5px;
-  font-weight: 500;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.88rem;
   color: var(--theme-text-soft);
   font-family: var(--tenant-font, inherit);
 }
 
 .form-control {
-  padding: 10px;
+  padding: 12px 14px;
   border: 1px solid var(--theme-border);
   background: var(--theme-surface);
   color: var(--theme-text);
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .form-control:focus {
   outline: none;
-  border-color: var(--tenant-primary, #6b7280);
-  box-shadow: 0 0 5px
-    color-mix(in srgb, var(--tenant-primary, #111827) 50%, var(--theme-surface));
+  border-color: var(--tenant-primary, #111827);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--tenant-primary, #111827) 20%, transparent);
 }
 
 .password-input-container {
@@ -65,7 +68,7 @@ label {
 
 .password-input-container .form-control {
   flex: 1;
-  padding-right: 40px;
+  padding-right: 42px;
 }
 
 .visibility-toggle {
@@ -75,14 +78,15 @@ label {
   border: none;
   color: var(--theme-muted);
   cursor: pointer;
-  padding: 5px;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 4px;
 }
 
 .visibility-toggle:hover {
-  color: var(--tenant-primary, #6b7280);
+  color: var(--tenant-primary, #111827);
 }
 
 .visibility-toggle:focus {
@@ -90,33 +94,44 @@ label {
 }
 
 form app-action-button {
-  align-self: center;
-  margin-top: 10px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+form app-action-button ::ng-deep .action-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 0.75rem 1rem;
 }
 
 .form-error {
   color: var(--theme-danger);
   text-align: center;
   margin-top: 10px;
-  font-family: var(--tenant-font, inherit);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .form-links {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-top: 15px;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .forgot-link,
 .register-link {
-  color: var(--tenant-primary, #6b7280);
+  color: var(--tenant-primary, #111827);
+  font-size: 0.88rem;
+  font-weight: 500;
   text-decoration: none;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
 .forgot-link:hover,
 .register-link:hover {
   text-decoration: underline;
+  opacity: 0.85;
 }

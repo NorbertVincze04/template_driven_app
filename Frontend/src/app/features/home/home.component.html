@@ -2,12 +2,12 @@
   <app-hero-section></app-hero-section>
 }
 
-@if (showPricingSection()) {
-  <app-pricing></app-pricing>
-}
-
 @if (showAboutUsSection()) {
   <app-about-us></app-about-us>
+}
+
+@if (showPricingSection()) {
+  <app-pricing></app-pricing>
 }
 
 @if (showContactDetails()) {
