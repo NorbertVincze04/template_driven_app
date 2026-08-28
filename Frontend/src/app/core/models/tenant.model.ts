@@ -2,6 +2,7 @@ import type {
   TenantAboutUsContent,
   TenantContactDetailsContent,
   TenantHeroSection,
+  TenantPricingContent,
 } from './tenant-content.model';
 import type { TenantLayout } from './tenant-layout.model';
 import type { TenantStyle } from './tenant-style.model';
@@ -22,5 +23,6 @@ export interface TenantConfig {
   layout?: TenantLayout;
   heroSection?: TenantHeroSection;
   aboutUs?: TenantAboutUsContent;
+  pricing?: TenantPricingContent;
   contactDetails?: TenantContactDetailsContent;
 }

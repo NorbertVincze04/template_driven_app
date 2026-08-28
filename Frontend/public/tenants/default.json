@@ -55,6 +55,50 @@
       "A calm, welcoming studio"
     ]
   },
+  "pricing": {
+    "sectionLabel": "Services & pricing",
+    "title": "Care that meets you where you are.",
+    "description": "Choose the appointment that fits your hair goals. Every service begins with a personal consultation.",
+    "plans": [
+      {
+        "name": "Signature Cut",
+        "price": "$75",
+        "description": "A tailored cut, finish, and styling lesson.",
+        "features": [
+          "Personal consultation",
+          "Shampoo and scalp massage",
+          "Finish and styling guidance"
+        ],
+        "ctaText": "Book a cut",
+        "ctaLink": "/appointment-service"
+      },
+      {
+        "name": "Color Refresh",
+        "price": "$145",
+        "description": "Dimensional color designed around your routine.",
+        "features": [
+          "Custom color formulation",
+          "Gloss and restorative treatment",
+          "Cut and polished finish"
+        ],
+        "ctaText": "Book color",
+        "ctaLink": "/appointment-service",
+        "featured": true
+      },
+      {
+        "name": "Complete Transformation",
+        "price": "$240",
+        "description": "For a considered new shape, color, or both.",
+        "features": [
+          "Extended consultation",
+          "Cut, color, and treatment",
+          "A plan for care at home"
+        ],
+        "ctaText": "Plan your visit",
+        "ctaLink": "/appointment-service"
+      }
+    ]
+  },
   "contactDetails": {
     "sectionLabel": "Contact",
     "title": "Ready for Your New Look?",
@@ -100,6 +144,7 @@
     "showTopBar": false,
     "showFooter": true,
     "showHeroSection": true,
+    "showPricingSection": true,
     "showAboutUsSection": true,
     "showContactDetails": true,
     "header": {

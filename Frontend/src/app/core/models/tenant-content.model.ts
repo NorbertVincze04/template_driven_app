@@ -58,3 +58,20 @@ export interface TenantAboutUsContent {
   imageAlt?: string;
   highlights?: string[];
 }
+
+export interface TenantPricingPlan {
+  name: string;
+  price: string;
+  description?: string;
+  features?: string[];
+  ctaText?: string;
+  ctaLink?: string;
+  featured?: boolean;
+}
+
+export interface TenantPricingContent {
+  sectionLabel?: string;
+  title?: string;
+  description?: string;
+  plans?: TenantPricingPlan[];
+}

@@ -91,8 +91,11 @@ export class AppointmentServiceComponent {
   });
 
   constructor() {
+    const barberId = this.route.snapshot.queryParamMap.get('barberId');
     const barberName = this.route.snapshot.queryParamMap.get('barber');
-    if (!barberName) {
+    const selectedServiceId =
+      this.route.snapshot.queryParamMap.get('serviceId');
+    if (!barberId && !barberName) {
       this.error = 'No barber was selected.';
       this.loading = false;
       return;
@@ -100,10 +103,13 @@ export class AppointmentServiceComponent {
 
     this.barberApi.listBarbers().subscribe({
       next: (barbers) => {
-        const selected = barbers.find(
-          (barber) =>
-            barber.name.toLocaleLowerCase() === barberName.toLocaleLowerCase(),
-        );
+        const selected = barberId
+          ? barbers.find((barber) => barber.id === barberId)
+          : barbers.find(
+              (barber) =>
+                barber.name.toLocaleLowerCase() ===
+                barberName!.toLocaleLowerCase(),
+            );
         if (!selected) {
           this.error = 'Barber not found.';
           this.loading = false;
@@ -113,8 +119,14 @@ export class AppointmentServiceComponent {
         this.barberApi.listServices(selected.id).subscribe({
           next: (services) => {
             this.services.set(services);
-            if (services[0])
-              this.bookingForm.controls.serviceId.setValue(services[0].id);
+            const selectedService = services.find(
+              (service) => service.id === selectedServiceId,
+            );
+            if (selectedService || services[0]) {
+              this.bookingForm.controls.serviceId.setValue(
+                (selectedService || services[0]).id,
+              );
+            }
             this.loading = false;
             this.loadAvailability();
           },

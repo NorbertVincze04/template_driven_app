@@ -8,8 +8,20 @@ import { TermsOfServiceComponent } from './features/terms-of-service/terms-of-se
 import { UserProfileComponent } from './features/user-profile/user-profile.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AppointmentServiceComponent } from './features/appointment-service/appointment-service.component';
+import { ServicesComponent } from './features/barber-services/barber-services.component';
+import { BarbersPreviewComponent } from './features/barbers-preview/barbers-preview.component';
 
 export const routes: Routes = [
+  {
+    path: 'services',
+    component: ServicesComponent,
+    data: { showBars: true },
+  },
+  {
+    path: 'barbers-preview',
+    component: BarbersPreviewComponent,
+    data: { showBars: true },
+  },
   {
     path: 'appointment-service',
     component: AppointmentServiceComponent,

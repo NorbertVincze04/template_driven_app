@@ -1,0 +1,55 @@
+<main class="barbers-page" [style]="tenantStyles()">
+  @if (serviceRange(); as range) {
+    <header class="service-summary">
+      <p class="eyebrow">Selected service</p>
+      <h1>{{ range.name }}</h1>
+      <div>
+        <span>{{ formatRange(range.minPrice, range.maxPrice, "RON") }}</span
+        ><span>{{
+          formatRange(range.minDuration, range.maxDuration, "min")
+        }}</span>
+      </div>
+    </header>
+  }
+  @if (loading) {
+    <p class="state">Finding available barbers...</p>
+  } @else if (error) {
+    <p class="state error">{{ error }}</p>
+  } @else {
+    <section aria-label="Available barbers">
+      <p class="eyebrow">Choose your barber</p>
+      <div class="barbers-grid">
+        @for (option of options(); track option.barber.id) {
+          <article class="barber-card">
+            @if (option.barber.profileImageUrl) {
+              <img
+                [src]="option.barber.profileImageUrl"
+                [alt]="option.barber.name"
+                [style.object-position]="
+                  option.barber.profileImagePositionX +
+                  '% ' +
+                  option.barber.profileImagePositionY +
+                  '%'
+                "
+              />
+            }
+            <div>
+              <h2>{{ option.barber.name }}</h2>
+              <p>{{ option.barber.role || "Barber" }}</p>
+              <p>Rating: {{ option.barber.rating ?? "New" }}</p>
+              <p>
+                {{ option.service.price }} RON ·
+                {{ option.service.durationMinutes }} min
+              </p>
+              <button type="button" (click)="chooseBarber(option)">
+                Choose {{ option.barber.name }}
+              </button>
+            </div>
+          </article>
+        } @empty {
+          <p class="state">No barber currently offers this service.</p>
+        }
+      </div>
+    </section>
+  }
+</main>

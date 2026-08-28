@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+.barbers-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 5rem;
+  color: var(--theme-text);
+  font-family: var(--tenant-font, inherit);
+}
+.eyebrow {
+  color: var(--tenant-primary, #1f5e4a);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.service-summary {
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--theme-border);
+}
+.service-summary h1,
+h2 {
+  font-family: var(--tenant-font-secondary, Georgia), serif;
+}
+.service-summary h1 {
+  margin: 0.5rem 0 1rem;
+  font-size: clamp(2.3rem, 5vw, 4rem);
+}
+.service-summary div {
+  display: flex;
+  gap: 1.5rem;
+  color: var(--tenant-primary, #1f5e4a);
+  font-weight: 700;
+}
+.barbers-page section {
+  margin-top: 2.5rem;
+}
+.barbers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.barber-card {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.5rem;
+  background: var(--theme-card-bg);
+}
+.barber-card img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.barber-card h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.5rem;
+}
+.barber-card p {
+  margin: 0.3rem 0;
+  color: var(--theme-text-soft);
+}
+.barber-card button {
+  margin-top: 0.9rem;
+  border: 1px solid var(--tenant-primary, #1f5e4a);
+  border-radius: 0.35rem;
+  background: var(--tenant-primary, #1f5e4a);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.65rem 0.9rem;
+}
+.state {
+  margin-top: 3rem;
+  text-align: center;
+}
+.error {
+  color: var(--theme-danger);
+}
+@media (max-width: 700px) {
+  .barbers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 420px) {
+  .barber-card {
+    grid-template-columns: 1fr;
+  }
+  .barber-card img {
+    width: 80px;
+    height: 80px;
+  }
+}

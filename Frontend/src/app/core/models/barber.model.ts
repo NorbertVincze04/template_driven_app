@@ -6,6 +6,8 @@ export interface Barber {
   profileImageUrl: string | null;
   profileImagePositionX: number;
   profileImagePositionY: number;
+  role?: string;
+  rating?: number | null;
 }
 
 export interface BarberService {

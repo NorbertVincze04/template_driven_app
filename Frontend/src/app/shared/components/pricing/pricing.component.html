@@ -1,0 +1,37 @@
+<section id="pricing" [style]="tenantStyles()">
+  <div class="pricing-intro">
+    <p class="pricing-label">{{ pricing().sectionLabel }}</p>
+    <h2>{{ pricing().title }}</h2>
+    <p class="pricing-description">{{ pricing().description }}</p>
+    <button type="button" class="all-services-link" (click)="viewAllServices()">
+      View all services
+    </button>
+  </div>
+
+  @if (plans().length) {
+    <div class="pricing-grid">
+      @for (plan of plans(); track plan.name) {
+        <article class="pricing-plan" [class.featured]="plan.featured">
+          @if (plan.featured) {
+            <p class="featured-label">Most popular</p>
+          }
+          <h3>{{ plan.name }}</h3>
+          <p class="plan-price">{{ plan.price }}</p>
+          @if (plan.description) {
+            <p class="plan-description">{{ plan.description }}</p>
+          }
+          @if (plan.features?.length) {
+            <ul class="plan-features">
+              @for (feature of plan.features; track feature) {
+                <li>{{ feature }}</li>
+              }
+            </ul>
+          }
+          <button type="button" class="plan-cta" (click)="choosePlan(plan)">
+            {{ plan.ctaText || "Choose a barber" }}
+          </button>
+        </article>
+      }
+    </div>
+  }
+</section>

@@ -22,7 +22,13 @@
       </button>
     }
     @if (tenantConfig()?.layout?.header?.showPricing !== false) {
-      <a routerLink="/pricing" class="nav-link">Pricing</a>
+      <button
+        type="button"
+        class="nav-link"
+        (click)="scrollToSection('pricing')"
+      >
+        Pricing
+      </button>
     }
     @if (tenantConfig()?.layout?.header?.showContact !== false) {
       <button
