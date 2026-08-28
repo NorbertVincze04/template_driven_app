@@ -1,4 +1,5 @@
 import type {
+  TenantAboutUsContent,
   TenantContactDetailsContent,
   TenantHeroSection,
 } from './tenant-content.model';
@@ -20,5 +21,6 @@ export interface TenantConfig {
   fontFamilySecondary?: string;
   layout?: TenantLayout;
   heroSection?: TenantHeroSection;
+  aboutUs?: TenantAboutUsContent;
   contactDetails?: TenantContactDetailsContent;
 }

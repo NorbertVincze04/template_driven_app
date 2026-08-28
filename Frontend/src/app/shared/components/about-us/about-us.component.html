@@ -1,0 +1,28 @@
+<section id="about" [style]="tenantStyles()">
+  <div class="about-grid" [class.without-image]="!about().imageUrl">
+    @if (about().imageUrl) {
+      <div class="about-image-wrap">
+        <img
+          class="about-image"
+          [src]="about().imageUrl"
+          [alt]="about().imageAlt"
+          loading="lazy"
+        />
+      </div>
+    }
+
+    <div class="about-content">
+      <p class="about-label">{{ about().sectionLabel }}</p>
+      <h2>{{ about().title }}</h2>
+      <p class="about-description">{{ about().description }}</p>
+
+      @if (about().highlights?.length) {
+        <ul class="about-highlights">
+          @for (highlight of about().highlights; track highlight) {
+            <li>{{ highlight }}</li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+</section>

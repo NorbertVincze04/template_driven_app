@@ -2,6 +2,10 @@
   <app-hero-section></app-hero-section>
 }
 
+@if (showAboutUsSection()) {
+  <app-about-us></app-about-us>
+}
+
 @if (showContactDetails()) {
   <app-contact-details></app-contact-details>
 }

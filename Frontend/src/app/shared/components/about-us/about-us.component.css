@@ -1,0 +1,109 @@
+:host {
+  display: block;
+}
+
+#about {
+  padding: clamp(3rem, 7vw, 6rem) 1.25rem;
+  background: var(--theme-surface);
+  font-family: var(--tenant-font, inherit);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.about-grid.without-image {
+  grid-template-columns: minmax(0, 720px);
+  justify-content: center;
+}
+
+.about-image-wrap {
+  position: relative;
+  min-height: 360px;
+}
+
+.about-image-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 1rem -1rem -1rem 1rem;
+  border: 1px solid
+    color-mix(in srgb, var(--tenant-secondary) 55%, var(--theme-border));
+  z-index: 0;
+}
+
+.about-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.about-label {
+  margin: 0;
+  color: color-mix(in srgb, var(--tenant-secondary) 84%, var(--theme-contrast));
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h2 {
+  margin: 0.7rem 0 0;
+  color: var(--theme-text);
+  font-family: var(--tenant-font-secondary, var(--tenant-font, inherit));
+  font-size: clamp(2rem, 3.4vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.about-description {
+  margin: 1.2rem 0 0;
+  color: var(--theme-text-soft);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.about-highlights {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--theme-text);
+  font-weight: 600;
+}
+
+.about-highlights li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.about-highlights li::before {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--tenant-primary);
+  content: "";
+}
+
+@media (max-width: 760px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-image-wrap,
+  .about-image {
+    min-height: 280px;
+  }
+}

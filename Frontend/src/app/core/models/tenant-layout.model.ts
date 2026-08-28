@@ -3,6 +3,7 @@ export interface TenantLayout {
   showTopBar?: boolean;
   showFooter?: boolean;
   showHeroSection?: boolean;
+  showAboutUsSection?: boolean;
   showContactDetails?: boolean;
   header?: TenantHeaderLayout;
   footer?: TenantFooterLayout;

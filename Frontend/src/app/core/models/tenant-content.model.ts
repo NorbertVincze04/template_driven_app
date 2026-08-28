@@ -49,3 +49,12 @@ export interface TenantHeroSection {
   backgroundImageUrl?: string;
   backgroundImageAlt?: string;
 }
+
+export interface TenantAboutUsContent {
+  sectionLabel?: string;
+  title?: string;
+  description?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  highlights?: string[];
+}

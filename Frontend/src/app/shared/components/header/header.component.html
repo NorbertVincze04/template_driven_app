@@ -17,7 +17,9 @@
   <!-- Right -->
   <div class="header-right">
     @if (tenantConfig()?.layout?.header?.showAboutUs !== false) {
-      <a routerLink="/about-us" class="nav-link">About Us</a>
+      <button type="button" class="nav-link" (click)="scrollToSection('about')">
+        About Us
+      </button>
     }
     @if (tenantConfig()?.layout?.header?.showPricing !== false) {
       <a routerLink="/pricing" class="nav-link">Pricing</a>
