@@ -114,6 +114,37 @@
     "ctaText": "Schedule an Appointment",
     "ctaLink": "/contact"
   },
+  "reviews": {
+    "sectionLabel": "Client Feedback",
+    "title": "What Our Clients Say",
+    "description": "Discover authentic reviews and experiences shared by our valued salon guests.",
+    "reviews": [
+      {
+        "id": "rev-1",
+        "authorName": "Sophia Martinez",
+        "authorRole": "Regular Client",
+        "rating": 5,
+        "comment": "Absolutely loved my haircut and styling! The atmosphere is so welcoming, and the team really listened to what I wanted.",
+        "date": "2026-08-15"
+      },
+      {
+        "id": "rev-2",
+        "authorName": "Alexander Wright",
+        "authorRole": "Verified Client",
+        "rating": 5,
+        "comment": "Best salon experience in town. Professional service, top quality products, and incredible attention to detail.",
+        "date": "2026-08-20"
+      },
+      {
+        "id": "rev-3",
+        "authorName": "Elena Rostova",
+        "authorRole": "First-time Visitor",
+        "rating": 4,
+        "comment": "Great experience with the Color Refresh service. Very happy with the result and the personalized care advice!",
+        "date": "2026-08-22"
+      }
+    ]
+  },
   "layout": {
     "showHeader": true,
     "showTopBar": false,
@@ -121,10 +152,12 @@
     "showHeroSection": true,
     "showPricingSection": true,
     "showAboutUsSection": true,
+    "showReviewsSection": true,
     "showContactDetails": true,
     "header": {
       "showAboutUs": true,
       "showPricing": true,
+      "showReviews": true,
       "showThemeToggle": true,
       "showContact": true
     },

@@ -10,6 +10,10 @@
   <app-pricing></app-pricing>
 }
 
+@if (showReviewsSection()) {
+  <app-client-site-reviews></app-client-site-reviews>
+}
+
 @if (showContactDetails()) {
   <app-contact-details></app-contact-details>
 }

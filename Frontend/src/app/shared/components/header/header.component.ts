@@ -6,7 +6,7 @@ import {
   inject,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/services/auth.service';
 import { TenantService } from '../../../core/services/tenant.service';
@@ -17,7 +17,7 @@ import { TenantConfig } from '../../../core/models/tenant.model';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, ActionButtonComponent],
+  imports: [ActionButtonComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })

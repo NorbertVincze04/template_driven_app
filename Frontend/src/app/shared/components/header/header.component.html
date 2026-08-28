@@ -30,6 +30,15 @@
         Pricing
       </button>
     }
+    @if (tenantConfig()?.layout?.header?.showReviews !== false) {
+      <button
+        type="button"
+        class="nav-link"
+        (click)="scrollToSection('reviews')"
+      >
+        Reviews
+      </button>
+    }
     @if (tenantConfig()?.layout?.header?.showContact !== false) {
       <button
         type="button"

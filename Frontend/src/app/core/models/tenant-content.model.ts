@@ -76,3 +76,20 @@ export interface TenantPricingContent {
   description?: string;
   plans?: TenantPricingPlan[];
 }
+
+export interface TenantReviewItem {
+  id: string;
+  authorName: string;
+  authorRole?: string;
+  authorAvatarUrl?: string;
+  rating: number;
+  comment: string;
+  date?: string;
+}
+
+export interface TenantReviewsContent {
+  sectionLabel?: string;
+  title?: string;
+  description?: string;
+  reviews?: TenantReviewItem[];
+}

@@ -4,6 +4,7 @@ import { HeroSectionComponent } from '../../shared/components/hero-section/hero-
 import { ContactDetailsComponent } from '../../shared/components/contact-details/contact-details.component';
 import { AboutUsComponent } from '../../shared/components/about-us/about-us.component';
 import { PricingComponent } from '../../shared/components/pricing/pricing.component';
+import { ClientSiteReviewsComponent } from '../../shared/components/client-site-reviews/client-site-reviews.component';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,7 @@ import { PricingComponent } from '../../shared/components/pricing/pricing.compon
     HeroSectionComponent,
     PricingComponent,
     AboutUsComponent,
+    ClientSiteReviewsComponent,
     ContactDetailsComponent,
   ],
   templateUrl: './home.component.html',
@@ -32,6 +34,11 @@ export class HomeComponent {
   protected readonly showAboutUsSection = computed(
     (): boolean =>
       this.tenantService.config()?.layout?.showAboutUsSection ?? true,
+  );
+
+  protected readonly showReviewsSection = computed(
+    (): boolean =>
+      this.tenantService.config()?.layout?.showReviewsSection ?? true,
   );
 
   protected readonly showContactDetails = computed(

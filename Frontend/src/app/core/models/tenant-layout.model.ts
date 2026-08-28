@@ -5,6 +5,7 @@ export interface TenantLayout {
   showHeroSection?: boolean;
   showPricingSection?: boolean;
   showAboutUsSection?: boolean;
+  showReviewsSection?: boolean;
   showContactDetails?: boolean;
   header?: TenantHeaderLayout;
   footer?: TenantFooterLayout;
@@ -15,6 +16,7 @@ export interface TenantLayout {
 export interface TenantHeaderLayout {
   showAboutUs?: boolean;
   showPricing?: boolean;
+  showReviews?: boolean;
   showThemeToggle?: boolean;
   showContact?: boolean;
 }
