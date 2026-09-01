@@ -1,9 +1,10 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, Input } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import {
   TenantContactDetailsContent,
   TenantContactDetailsLayout,
+  TenantHeroSection,
   TenantOperatingHours,
   TenantSocialLink,
 } from '../../../core/models/tenant.model';
@@ -21,6 +22,7 @@ export class ContactDetailsComponent {
   private readonly tenantService = inject(TenantService);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly router = inject(Router);
+  @Input() content?: TenantHeroSection;
 
   protected readonly tenantStyles = computed((): Record<string, string> => {
     const config = this.tenantService.config();
@@ -124,10 +126,15 @@ export class ContactDetailsComponent {
     const link = this.contact().ctaLink;
     if (link && link.startsWith('http')) {
       window.open(link, '_blank', 'noopener,noreferrer');
-    } else if (link && link !== '#') {
+    } else if (
+      link &&
+      link !== '#' &&
+      link !== '/contact' &&
+      link !== '/appointment-service'
+    ) {
       void this.router.navigateByUrl(link);
     } else {
-      void this.router.navigate(['/appointment-service']);
+      void this.router.navigate(['/services']);
     }
   }
 }

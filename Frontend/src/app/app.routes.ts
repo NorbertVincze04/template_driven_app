@@ -18,8 +18,28 @@ export const routes: Routes = [
     data: { showBars: true },
   },
   {
+    path: 'services/:serviceSlug',
+    component: BarbersPreviewComponent,
+    data: { showBars: true },
+  },
+  {
     path: 'barbers-preview',
     component: BarbersPreviewComponent,
+    data: { showBars: true },
+  },
+  {
+    path: 'book',
+    component: AppointmentServiceComponent,
+    data: { showBars: true },
+  },
+  {
+    path: 'book/:barberSlug',
+    component: AppointmentServiceComponent,
+    data: { showBars: true },
+  },
+  {
+    path: 'book/:barberSlug/:serviceSlug',
+    component: AppointmentServiceComponent,
     data: { showBars: true },
   },
   {

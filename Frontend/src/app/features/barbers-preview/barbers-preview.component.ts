@@ -6,6 +6,7 @@ import {
 } from '../../core/models/barber.model';
 import { BarberService } from '../../core/services/barber.service';
 import { TenantService } from '../../core/services/tenant.service';
+import { slugify } from '../../core/utils/slug.utils';
 
 import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
 
@@ -27,7 +28,9 @@ export class BarbersPreviewComponent {
   private readonly barberApi = inject(BarberService);
   private readonly tenantService = inject(TenantService);
   private readonly serviceName =
-    this.route.snapshot.queryParamMap.get('service') || '';
+    this.route.snapshot.paramMap.get('serviceSlug') ||
+    this.route.snapshot.queryParamMap.get('service') ||
+    '';
   protected readonly options = signal<BarberOption[]>([]);
   protected loading = true;
   protected error = '';
@@ -73,9 +76,9 @@ export class BarbersPreviewComponent {
   }
 
   protected chooseBarber(option: BarberOption): void {
-    void this.router.navigate(['/appointment-service'], {
-      queryParams: { barberId: option.barber.id, serviceId: option.service.id },
-    });
+    const barberSlug = slugify(option.barber.name);
+    const serviceSlug = slugify(option.service.name);
+    void this.router.navigate(['/book', barberSlug, serviceSlug]);
   }
 
   protected formatRange(
@@ -92,13 +95,15 @@ export class BarbersPreviewComponent {
     let pending = barbers.length;
     if (!pending) return this.setError('No barbers are available yet.');
     const matches: BarberOption[] = [];
+    const targetSlug = slugify(this.serviceName);
     for (const barber of barbers) {
       this.barberApi.listServices(barber.id).subscribe({
         next: (services) => {
           const service = services.find(
             (item) =>
+              slugify(item.name) === targetSlug ||
               item.name.trim().toLocaleLowerCase() ===
-              this.serviceName.trim().toLocaleLowerCase(),
+                this.serviceName.trim().toLocaleLowerCase(),
           );
           if (service) matches.push({ barber, service });
           if (--pending === 0) {

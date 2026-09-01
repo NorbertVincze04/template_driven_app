@@ -6,6 +6,7 @@ import {
   TenantProfileGalleryItem,
 } from '../../../core/models/tenant.model';
 import { ActionButtonComponent } from '../action-button/action-button.component';
+import { slugify } from '../../../core/utils/slug.utils';
 
 @Component({
   selector: 'app-profile-gallery',
@@ -28,9 +29,7 @@ export class ProfileGalleryComponent {
   }
 
   protected onProfileClick(profile: TenantProfileGalleryItem): void {
-    this.router.navigate(['/appointment-service'], {
-      queryParams: { barber: profile.name },
-    });
+    void this.router.navigate(['/book', slugify(profile.name)]);
   }
 
   protected onCtaClick(): void {

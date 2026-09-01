@@ -5,6 +5,7 @@ import {
   TenantPricingPlan,
 } from '../../../core/models/tenant.model';
 import { TenantService } from '../../../core/services/tenant.service';
+import { slugify } from '../../../core/utils/slug.utils';
 
 import { ActionButtonComponent } from '../action-button/action-button.component';
 
@@ -50,9 +51,7 @@ export class PricingComponent {
   );
 
   protected choosePlan(plan: TenantPricingPlan): void {
-    void this.router.navigate(['/barbers-preview'], {
-      queryParams: { service: plan.name },
-    });
+    void this.router.navigate(['/services', slugify(plan.name)]);
   }
 
   protected viewAllServices(): void {

@@ -17,6 +17,7 @@ import {
 } from '../../core/models/barber.model';
 import { TenantConfig } from '../../core/models/tenant.model';
 import { TenantService } from '../../core/services/tenant.service';
+import { slugify } from '../../core/utils/slug.utils';
 import {
   ActionButtonComponent,
   ActionConfig,
@@ -105,37 +106,62 @@ export class AppointmentServiceComponent {
   );
 
   constructor() {
-    const barberId = this.route.snapshot.queryParamMap.get('barberId');
-    const barberName = this.route.snapshot.queryParamMap.get('barber');
+    const barberId = this.route.snapshot.queryParamMap.get('barberId') || '';
+    const barberSlug =
+      this.route.snapshot.paramMap.get('barberSlug') ||
+      this.route.snapshot.queryParamMap.get('barber') ||
+      '';
     const selectedServiceId =
-      this.route.snapshot.queryParamMap.get('serviceId');
-    if (!barberId && !barberName) {
-      this.error = 'No barber was selected.';
-      this.loading = false;
-      return;
-    }
+      this.route.snapshot.queryParamMap.get('serviceId') || '';
+    const selectedServiceSlug =
+      this.route.snapshot.paramMap.get('serviceSlug') ||
+      this.route.snapshot.queryParamMap.get('service') ||
+      '';
 
     this.barberApi.listBarbers().subscribe({
       next: (barbers) => {
-        const selected = barberId
-          ? barbers.find((barber) => barber.id === barberId)
-          : barbers.find(
-              (barber) =>
-                barber.name.toLocaleLowerCase() ===
-                barberName!.toLocaleLowerCase(),
-            );
-        if (!selected) {
-          this.error = 'Barber not found.';
+        if (!barbers.length) {
+          this.error = 'No barbers available.';
           this.loading = false;
           return;
         }
+
+        let selected: Barber | undefined;
+        if (barberId) {
+          selected = barbers.find((b) => b.id === barberId);
+        }
+        if (!selected && barberSlug) {
+          const targetSlug = slugify(barberSlug);
+          selected = barbers.find(
+            (b) =>
+              slugify(b.name) === targetSlug ||
+              b.name.toLocaleLowerCase() === barberSlug.toLocaleLowerCase(),
+          );
+        }
+        if (!selected) {
+          selected = barbers[0];
+        }
+
         this.barber.set(selected);
         this.barberApi.listServices(selected.id).subscribe({
           next: (services) => {
             this.services.set(services);
-            const selectedService = services.find(
-              (service) => service.id === selectedServiceId,
-            );
+            let selectedService: ServiceOption | undefined;
+            if (selectedServiceId) {
+              selectedService = services.find(
+                (service) => service.id === selectedServiceId,
+              );
+            }
+            if (!selectedService && selectedServiceSlug) {
+              const targetSlug = slugify(selectedServiceSlug);
+              selectedService = services.find(
+                (service) =>
+                  slugify(service.name) === targetSlug ||
+                  service.name.toLocaleLowerCase() ===
+                    selectedServiceSlug.toLocaleLowerCase(),
+              );
+            }
+
             if (selectedService || services[0]) {
               this.bookingForm.controls.serviceId.setValue(
                 (selectedService || services[0]).id,

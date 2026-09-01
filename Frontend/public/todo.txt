@@ -14,5 +14,6 @@
         the 2 buttons for this mode should be working as one so the information should be kept locally as well
 - user must be able to request 'cancel' for an appoinment, filtering must be the same as for barbers appoinment table
         request for reschedule
-- appoinment barber url
-- take light/dark mode style from users browser settings, make the start loading page with light/dark mode
+
+- take light/dark mode style from users browser settings, make the start loading page use that info
+- tenant operating hours for contant component

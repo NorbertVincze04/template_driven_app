@@ -32,7 +32,7 @@ export class HeroBackgroundComponent {
   });
 
   onCtaClick(): void {
-    const target = this.content.ctaLink || '/appointment-service';
+    const target = this.content.ctaLink || '/book';
     if (target.startsWith('http')) {
       window.open(target, '_blank', 'noopener,noreferrer');
     } else {

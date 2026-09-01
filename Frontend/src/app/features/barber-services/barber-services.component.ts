@@ -4,6 +4,7 @@ import { BarberService } from '../../core/services/barber.service';
 import { BarberService as ServiceOption } from '../../core/models/barber.model';
 import { TenantService } from '../../core/services/tenant.service';
 import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
+import { slugify } from '../../core/utils/slug.utils';
 
 interface ServiceSummary {
   name: string;
@@ -56,9 +57,7 @@ export class ServicesComponent {
   }
 
   protected selectService(service: ServiceSummary): void {
-    void this.router.navigate(['/barbers-preview'], {
-      queryParams: { service: service.name },
-    });
+    void this.router.navigate(['/services', slugify(service.name)]);
   }
 
   protected formatRange(
