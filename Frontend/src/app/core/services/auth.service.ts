@@ -19,6 +19,7 @@ import {
 } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { TenantService } from './tenant.service';
+import { Router } from '@angular/router';
 
 export interface Appointment {
   id: string;
@@ -42,11 +43,21 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private tenantService: TenantService,
+    private router: Router,
   ) {
     if (isPlatformBrowser(inject(PLATFORM_ID))) {
       const storedUser = localStorage.getItem(environment.CURRENT_USER_STORAGE);
       if (storedUser) {
-        this.currentUserSubject.next(JSON.parse(storedUser));
+        try {
+          const parsedUser = JSON.parse(storedUser) as User;
+          if (this.isTokenValid(parsedUser)) {
+            this.currentUserSubject.next(parsedUser);
+          } else {
+            this.logout();
+          }
+        } catch {
+          this.logout();
+        }
       }
     }
   }
@@ -150,6 +161,10 @@ export class AuthService {
     this.currentUserSubject.next(null);
     this.tenantService.setUserThemeContext(null);
     localStorage.removeItem(environment.CURRENT_USER_STORAGE);
+
+    if (this.router.url !== '/login') {
+      this.router.navigate(['/login']);
+    }
   }
 
   updateProfile(profile: {
@@ -228,7 +243,44 @@ export class AuthService {
       );
   }
 
+  private decodeJwtPayload(token: string): Record<string, unknown> | null {
+    try {
+      const base64Url = token.split('.')[1];
+      if (!base64Url) {
+        return null;
+      }
+
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(
+        base64.length + ((4 - (base64.length % 4)) % 4),
+        '=',
+      );
+      const decoded = atob(padded);
+      const payload = decodeURIComponent(
+        decoded
+          .split('')
+          .map((char) => `%${`00${char.charCodeAt(0).toString(16)}`.slice(-2)}`)
+          .join(''),
+      );
+
+      return JSON.parse(payload) as Record<string, unknown>;
+    } catch {
+      return null;
+    }
+  }
+
   isTokenValid(user: User | null): boolean {
-    return user ? !!user.token : false; // '!!' to convert to boolean
+    if (!user?.token) {
+      return false;
+    }
+
+    const payload = this.decodeJwtPayload(user.token);
+    const exp = payload?.['exp'];
+
+    if (typeof exp !== 'number' || Number.isNaN(exp)) {
+      return true;
+    }
+
+    return Math.floor(Date.now() / 1000) < exp;
   }
 }
