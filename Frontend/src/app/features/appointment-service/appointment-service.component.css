@@ -58,6 +58,21 @@ select {
   font: inherit;
   border-radius: 4px;
 }
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 14px;
+}
+
+/* keep the arrow tone in sync with the native date picker icon, which follows color-scheme */
+:host-context(html[data-theme="dark"]) select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f8fafc' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
 select option {
   background: var(--theme-surface);
   color: var(--theme-text);
@@ -100,16 +115,53 @@ legend {
     color-mix(in srgb, var(--tenant-primary) 35%, transparent);
 }
 
+.form-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.form-fields label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.form-fields select,
+.form-fields input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .guest-fields {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  align-items: start;
+}
+
+.guest-fields .form-group {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  gap: 0.4rem;
+}
+
+.guest-fields label {
+  margin: 0;
+  font-weight: 600;
 }
 
 @media (max-width: 640px) {
+  .form-fields,
   .guest-fields {
     grid-template-columns: 1fr;
   }
+}
+
+.guest-fields .form-control {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .success {
@@ -127,6 +179,27 @@ legend {
 .state {
   text-align: center;
   padding: 4rem 0;
+}
+
+.field-error {
+  color: var(--theme-danger);
+  font-size: 0.82rem;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.form-control {
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  padding: 0.8rem;
+  font: inherit;
+  border-radius: 4px;
+}
+
+app-action-button {
+  display: block;
+  margin-top: 1.5rem;
 }
 
 :host-context(html[data-theme="light"]) input,

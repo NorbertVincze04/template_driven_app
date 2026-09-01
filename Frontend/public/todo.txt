@@ -1,0 +1,18 @@
+
+- method to setup the barbers services in services section
+- appoinment page: show only the next available hours, do not show the past ones
+- barber page: crud operation for 'my services' with table design
+- barber page: block button set to primary, also show information about the reason with the hours, edit option
+- barber page: schedule table should have filtering by status, default set to 'scheduled',
+        past schedules automatically set their behaviour to 'completed'
+        no option needed to set status, only 2 statuses available
+        filtering: scheduled, completed, all
+        option to edit appoinment date and time, service
+        delete button must the the last collumn from the table
+        delete option opens a popup that asks if 'you are sure to delete this booking: details about booking'
+- light/dark mode should keep itself the same in auth pages as well as the other pages
+        the 2 buttons for this mode should be working as one so the information should be kept locally as well
+- user must be able to request 'cancel' for an appoinment, filtering must be the same as for barbers appoinment table
+        request for reschedule
+- appoinment barber url
+- take light/dark mode style from users browser settings, make the start loading page with light/dark mode

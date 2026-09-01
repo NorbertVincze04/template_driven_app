@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -70,25 +71,38 @@ export class AppointmentServiceComponent {
   protected booking = false;
   protected message = '';
   protected error = '';
+  protected submitted = false;
   protected readonly confirmAppointmentConfig: ActionConfig = {
     label: 'Confirm appointment',
     loadingLabel: 'Booking...',
     variant: 'primary',
     disabled: false,
   };
-  protected readonly bookingForm = new FormGroup({
-    serviceId: new FormControl('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    date: new FormControl(todayInBucharest(), {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    guestName: new FormControl('', { nonNullable: true }),
-    guestEmail: new FormControl('', { nonNullable: true }),
-    guestPhone: new FormControl('', { nonNullable: true }),
-  });
+  protected readonly bookingForm = new FormGroup(
+    {
+      serviceId: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      date: new FormControl(todayInBucharest(), {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      guestName: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      guestEmail: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.email],
+      }),
+      guestPhone: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.pattern(/^0[237]\d{8}$/)],
+      }),
+    },
+    { validators: this.guestFieldsValidator.bind(this) },
+  );
 
   constructor() {
     const barberId = this.route.snapshot.queryParamMap.get('barberId');
@@ -156,10 +170,44 @@ export class AppointmentServiceComponent {
     });
   }
 
+  private guestFieldsValidator(
+    group: AbstractControl,
+  ): { [key: string]: any } | null {
+    const isGuest = !this.auth.currentUserValue?.token;
+    if (!isGuest) {
+      return null;
+    }
+
+    const guestName = group.get('guestName');
+    const guestEmail = group.get('guestEmail');
+    const guestPhone = group.get('guestPhone');
+
+    const errors: { [key: string]: any } = {};
+
+    if (guestName?.hasError('required')) {
+      errors['guestNameRequired'] = true;
+    }
+
+    if (guestEmail?.hasError('required')) {
+      errors['guestEmailRequired'] = true;
+    } else if (guestEmail?.hasError('email')) {
+      errors['guestEmailInvalid'] = true;
+    }
+
+    if (guestPhone?.hasError('required')) {
+      errors['guestPhoneRequired'] = true;
+    } else if (guestPhone?.hasError('pattern')) {
+      errors['guestPhoneInvalid'] = true;
+    }
+
+    return Object.keys(errors).length > 0 ? errors : null;
+  }
+
   protected book(): void {
     if (this.booking) {
       return;
     }
+    this.submitted = true;
     const values = this.bookingForm.getRawValue();
     if (!values.serviceId) {
       this.error = 'Select a service before booking.';
@@ -178,12 +226,32 @@ export class AppointmentServiceComponent {
       return;
     }
     const accountBooking = !!this.auth.currentUserValue?.token;
-    if (
-      !accountBooking &&
-      (!values.guestName || !values.guestEmail || !values.guestPhone)
-    ) {
-      this.error = 'Complete your contact details before booking.';
-      return;
+    if (!accountBooking) {
+      const guestName = this.bookingForm.get('guestName');
+      const guestEmail = this.bookingForm.get('guestEmail');
+      const guestPhone = this.bookingForm.get('guestPhone');
+
+      if (guestName?.hasError('required') || !values.guestName) {
+        this.error = 'Please enter your name.';
+        return;
+      }
+      if (guestEmail?.hasError('required') || !values.guestEmail) {
+        this.error = 'Please enter your email address.';
+        return;
+      }
+      if (guestEmail?.hasError('email')) {
+        this.error = 'Please enter a valid email address.';
+        return;
+      }
+      if (guestPhone?.hasError('required') || !values.guestPhone) {
+        this.error = 'Please enter your phone number.';
+        return;
+      }
+      if (guestPhone?.hasError('pattern')) {
+        this.error =
+          'Phone number must be in format: 02XXXXXXXX or 03XXXXXXXX or 07XXXXXXXX';
+        return;
+      }
     }
     this.booking = true;
     this.error = '';
