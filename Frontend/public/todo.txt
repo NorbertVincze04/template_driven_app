@@ -17,3 +17,5 @@
 
 - take light/dark mode style from users browser settings, make the start loading page use that info
 - tenant operating hours for contant component
+- split components to easier future development
+- sync with mero bookings

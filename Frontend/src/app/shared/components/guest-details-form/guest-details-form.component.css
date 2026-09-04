@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.guest-fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.guest-fields .form-group {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  gap: 0.4rem;
+}
+
+.guest-fields label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.guest-fields .form-control {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-control {
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  padding: 0.8rem;
+  font: inherit;
+  border-radius: 4px;
+}
+
+.field-error {
+  color: var(--theme-danger);
+  font-size: 0.82rem;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .guest-fields {
+    grid-template-columns: 1fr;
+  }
+}

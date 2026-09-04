@@ -1,37 +1,34 @@
 import { Component, effect, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { TenantService } from '../../core/services/tenant.service';
 import { BarberService } from '../../core/services/barber.service';
 import { AuthService } from '../../core/services/auth.service';
+import { BarberService as ServiceOption } from '../../core/models/barber.model';
+import {
+  ScheduleDay,
+  BlockedPeriod,
+} from '../../core/models/barber-schedule.models';
+import { WorkingHoursEditorComponent } from '../../shared/components/working-hours-editor/working-hours-editor.component';
+import { BarberServicesManagerComponent } from '../../shared/components/barber-services-manager/barber-services-manager.component';
+import { BlockedTimeManagerComponent } from '../../shared/components/blocked-time-manager/blocked-time-manager.component';
 
-import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
-
-interface ScheduleDay {
-  weekday: number;
-  label: string;
-  startTime: string;
-  endTime: string;
-  isActive: boolean;
-}
-interface BlockedPeriod {
-  id: string;
-  startsAt: string;
-  endsAt: string;
-  reason?: string;
-}
-
+/**
+ * Orchestrates the barber-only scheduling tools shown on the profile page:
+ * working hours, custom services, and blocked time periods. All API calls
+ * live here; each concern is rendered by a focused, reusable child:
+ *  - app-working-hours-editor    -> weekly schedule toggles/times
+ *  - app-barber-services-manager -> service list + "add service" form
+ *  - app-blocked-time-manager    -> block/unblock time ranges
+ */
 @Component({
   selector: 'app-barber-schedule',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ActionButtonComponent],
+  imports: [
+    WorkingHoursEditorComponent,
+    BarberServicesManagerComponent,
+    BlockedTimeManagerComponent,
+  ],
   templateUrl: './barber-schedule.component.html',
   styleUrl: './barber-schedule.component.css',
 })
@@ -40,9 +37,12 @@ export class BarberScheduleComponent {
   private readonly tenant = inject(TenantService);
   private readonly barberApi = inject(BarberService);
   private readonly auth = inject(AuthService);
+
   protected readonly saved = signal(false);
   protected readonly blockedPeriods = signal<BlockedPeriod[]>([]);
+  protected readonly services = signal<ServiceOption[]>([]);
   protected error = '';
+
   protected readonly days = signal<ScheduleDay[]>([
     {
       weekday: 1,
@@ -94,38 +94,16 @@ export class BarberScheduleComponent {
       isActive: false,
     },
   ]);
-  protected readonly blockForm = new FormGroup({
-    startsAt: new FormControl('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    endsAt: new FormControl('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    reason: new FormControl('', { nonNullable: true }),
-  });
+
+  // All requests are scoped to the active tenant via this header.
   private options() {
     return {
       headers: { 'X-Tenant-Slug': this.tenant.config()?.tenantId || 'default' },
     };
   }
-  protected readonly services = signal<any[]>([]);
-  protected readonly serviceForm = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    durationMinutes: new FormControl(30, {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-    price: new FormControl(0, {
-      nonNullable: true,
-      validators: Validators.required,
-    }),
-  });
+
   constructor() {
+    // Only barbers (once the tenant config is available) need schedule/service data.
     effect(() => {
       if (
         this.tenant.config() &&
@@ -140,9 +118,11 @@ export class BarberScheduleComponent {
       }
     });
   }
+
   private apiMessage(error: any, fallback: string): string {
     return error.error?.message || error.message || fallback;
   }
+
   private loadSchedule(): void {
     if (!this.tenant.config()) return;
     this.http
@@ -166,7 +146,21 @@ export class BarberScheduleComponent {
           )),
       });
   }
-  protected save(): void {
+
+  // Called by app-working-hours-editor whenever a day's toggle/time changes.
+  protected updateDay(
+    day: ScheduleDay,
+    field: keyof ScheduleDay,
+    value: string | boolean,
+  ): void {
+    this.days.update((days) =>
+      days.map((item) => (item === day ? { ...item, [field]: value } : item)),
+    );
+    this.saved.set(false);
+  }
+
+  // Called by app-working-hours-editor's "Save working hours" button.
+  protected saveSchedule(): void {
     this.http
       .put(
         `${environment.apiUrl}/public/schedule`,
@@ -185,48 +179,51 @@ export class BarberScheduleComponent {
           )),
       });
   }
-  protected update(
-    day: ScheduleDay,
-    field: keyof ScheduleDay,
-    value: string | boolean,
-  ): void {
-    this.days.update((days) =>
-      days.map((item) => (item === day ? { ...item, [field]: value } : item)),
-    );
-    this.saved.set(false);
+
+  // Called by app-barber-services-manager when a new service is submitted.
+  protected addService(value: {
+    name: string;
+    durationMinutes: number;
+    price: number;
+  }): void {
+    this.barberApi.createService(value).subscribe({
+      next: (service) => {
+        this.services.update((services) => [...services, service]);
+        this.error = '';
+      },
+      error: (error) =>
+        (this.error = this.apiMessage(
+          error,
+          'Could not create service. Apply the barber services migration first.',
+        )),
+    });
   }
-  protected block(): void {
-    if (this.blockForm.invalid) {
-      this.blockForm.markAllAsTouched();
-      return;
-    }
-    const values = this.blockForm.getRawValue();
-    if (values.startsAt >= values.endsAt) {
-      this.error = 'End time must be after start time.';
-      return;
-    }
-    this.error = '';
+
+  // Called by app-blocked-time-manager when a new blocked period is submitted.
+  protected blockTime(value: {
+    startsAt: string;
+    endsAt: string;
+    reason: string;
+  }): void {
     this.http
       .post<{
         payload: BlockedPeriod;
-      }>(
-        `${environment.apiUrl}/public/schedule/blocked`,
-        values,
-        this.options(),
-      )
+      }>(`${environment.apiUrl}/public/schedule/blocked`, value, this.options())
       .subscribe({
         next: (response) => {
           this.blockedPeriods.update((periods) => [
             ...periods,
             response.payload,
           ]);
-          this.blockForm.reset();
+          this.error = '';
         },
         error: (error) =>
           (this.error = error.error?.message || 'Could not block this time.'),
       });
   }
-  protected unblock(id: string): void {
+
+  // Called by app-blocked-time-manager's "Remove" button.
+  protected unblockTime(id: string): void {
     this.http
       .delete(
         `${environment.apiUrl}/public/schedule/blocked/${id}`,
@@ -243,23 +240,5 @@ export class BarberScheduleComponent {
             'Could not remove this blocked period.',
           )),
       });
-  }
-  protected addService(): void {
-    if (this.serviceForm.invalid) {
-      this.serviceForm.markAllAsTouched();
-      return;
-    }
-    this.barberApi.createService(this.serviceForm.getRawValue()).subscribe({
-      next: (service) => {
-        this.services.update((services) => [...services, service]);
-        this.serviceForm.reset({ name: '', durationMinutes: 30, price: 0 });
-        this.error = '';
-      },
-      error: (error) =>
-        (this.error = this.apiMessage(
-          error,
-          'Could not create service. Apply the barber services migration first.',
-        )),
-    });
   }
 }

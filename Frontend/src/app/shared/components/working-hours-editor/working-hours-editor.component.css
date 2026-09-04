@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+
+.section-heading {
+  margin-bottom: 1rem;
+}
+
+.section-kicker {
+  margin: 0 0 0.25rem;
+  color: var(--tenant-primary, #111827);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.days {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.day-toggle {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-weight: 700;
+}
+
+.times {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.times input {
+  padding: 0.65rem;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.save-action-row {
+  margin-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.success {
+  color: var(--theme-success);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .day {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,19 @@
+<header class="profile-header">
+  @if (barber.profileImageUrl) {
+    <img
+      [src]="barber.profileImageUrl"
+      [alt]="barber.name"
+      [style.object-position]="
+        barber.profileImagePositionX + '% ' + barber.profileImagePositionY + '%'
+      "
+    />
+  }
+  <div>
+    <p class="eyebrow">Barber profile</p>
+    <h1>{{ barber.name }}</h1>
+    <p>Choose a service and a time that works for you.</p>
+    @if (barber.phoneNumber) {
+      <p>{{ barber.phoneNumber }}</p>
+    }
+  </div>
+</header>

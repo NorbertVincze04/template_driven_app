@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+legend {
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+}
+
+.slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.slots button {
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.slots button:hover {
+  border-color: var(--tenant-primary);
+  color: var(--tenant-primary);
+}
+
+.slots button.selected {
+  background: var(--tenant-primary);
+  border-color: var(--tenant-primary);
+  color: var(--tenant-primary-contrast, #ffffff);
+  box-shadow: 0 2px 8px
+    color-mix(in srgb, var(--tenant-primary) 35%, transparent);
+}

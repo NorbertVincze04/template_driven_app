@@ -1,110 +1,24 @@
 <section class="schedule-section" aria-labelledby="schedule-title">
-  <div class="section-heading">
-    <div>
-      <p class="section-kicker">Barber tools</p>
-      <h2 id="schedule-title">Working calendar</h2>
-    </div>
-  </div>
-  <div class="days">
-    @for (day of days(); track day.weekday) {
-      <div class="day">
-        <label class="day-toggle"
-          ><input
-            type="checkbox"
-            [checked]="day.isActive"
-            (change)="update(day, 'isActive', $any($event.target).checked)"
-          />
-          {{ day.label }}</label
-        >
-        <div class="times">
-          <input
-            type="time"
-            [value]="day.startTime"
-            [disabled]="!day.isActive"
-            (change)="update(day, 'startTime', $any($event.target).value)"
-          /><span>to</span
-          ><input
-            type="time"
-            [value]="day.endTime"
-            [disabled]="!day.isActive"
-            (change)="update(day, 'endTime', $any($event.target).value)"
-          />
-        </div>
-      </div>
-    }
-  </div>
-  <div class="save-action-row">
-    <app-action-button
-      [config]="{ label: 'Save working hours', variant: 'primary' }"
-      (action)="save()"
-    ></app-action-button>
-    @if (saved()) {
-      <span class="success">Saved.</span>
-    }
-  </div>
-  <h3>My services</h3>
-  <div class="service-list">
-    @for (service of services(); track service.id) {
-      <span
-        >{{ service.name }} · {{ service.durationMinutes }} min ·
-        {{ service.price }} lei</span
-      >
-    } @empty {
-      <p>No services created yet.</p>
-    }
-  </div>
-  <form [formGroup]="serviceForm" (ngSubmit)="addService()">
-    <input
-      type="text"
-      formControlName="name"
-      placeholder="Service name"
-      required
-    /><input
-      type="number"
-      formControlName="durationMinutes"
-      min="1"
-      placeholder="Minutes"
-      required
-    /><input
-      type="number"
-      formControlName="price"
-      min="0"
-      step="1"
-      placeholder="Price (RON)"
-      required
-    /><app-action-button
-      buttonType="submit"
-      [config]="{ label: 'Add service', variant: 'primary' }"
-    ></app-action-button>
-  </form>
-  <h3>Block time</h3>
-  <form [formGroup]="blockForm" (ngSubmit)="block()">
-    <input type="datetime-local" formControlName="startsAt" required /><input
-      type="datetime-local"
-      formControlName="endsAt"
-      required
-    /><input
-      type="text"
-      formControlName="reason"
-      placeholder="Reason (optional)"
-    /><app-action-button
-      buttonType="submit"
-      [config]="{ label: 'Block appointment time', variant: 'secondary' }"
-    ></app-action-button>
-  </form>
-  @for (period of blockedPeriods(); track period.id) {
-    <div class="blocked-period">
-      <span
-        >{{ period.startsAt | date: "medium" }} -
-        {{ period.endsAt | date: "medium" }}</span
-      >
-      <app-action-button
-        [config]="{ label: 'Remove', variant: 'danger', size: 'sm' }"
-        (action)="unblock(period.id)"
-      ></app-action-button>
-    </div>
-  }
+  <app-working-hours-editor
+    [days]="days()"
+    [saved]="saved()"
+    (dayChange)="updateDay($event.day, $event.field, $event.value)"
+    (save)="saveSchedule()"
+  ></app-working-hours-editor>
+
+  <app-barber-services-manager
+    [services]="services()"
+    (addService)="addService($event)"
+  ></app-barber-services-manager>
+
+  <app-blocked-time-manager
+    [blockedPeriods]="blockedPeriods()"
+    (block)="blockTime($event)"
+    (unblock)="unblockTime($event)"
+  ></app-blocked-time-manager>
+
   @if (error) {
     <p class="error">{{ error }}</p>
   }
 </section>
+

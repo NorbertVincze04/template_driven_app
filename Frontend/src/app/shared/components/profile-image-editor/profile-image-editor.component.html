@@ -1,0 +1,50 @@
+<label class="upload-label">
+  Profile picture
+  <input
+    class="profile-upload"
+    type="file"
+    accept="image/*"
+    (change)="onFileSelected($event)"
+  />
+</label>
+@if (imageData) {
+  <div class="profile-image-editor">
+    <div
+      class="profile-preview-frame"
+      [style.--image-position-x]="positionX + '%'"
+      [style.--image-position-y]="positionY + '%'"
+    >
+      <img class="profile-preview" [src]="imageData" alt="Selected profile picture" />
+    </div>
+    <div class="position-controls">
+      <label>
+        Horizontal position
+        <input
+          type="range"
+          min="0"
+          max="100"
+          [value]="positionX"
+          (input)="onPositionXInput($event)"
+        />
+      </label>
+      <label>
+        Vertical position
+        <input
+          type="range"
+          min="0"
+          max="100"
+          [value]="positionY"
+          (input)="onPositionYInput($event)"
+        />
+      </label>
+      <app-action-button
+        [config]="{
+          label: 'Delete picture',
+          variant: 'danger',
+          size: 'sm',
+        }"
+        (action)="deleteImage()"
+      ></app-action-button>
+    </div>
+  </div>
+}

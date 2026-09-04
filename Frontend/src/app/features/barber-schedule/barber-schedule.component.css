@@ -3,88 +3,13 @@
   padding-top: 2rem;
   border-top: 1px solid var(--theme-border, #ddd);
 }
-.days {
-  display: grid;
-  gap: 0.7rem;
-}
-.day {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.day-toggle {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  font-weight: 700;
-}
-.times {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.times input,
-form input {
-  padding: 0.65rem;
-  border: 1px solid var(--theme-border);
-  background: var(--theme-surface);
-  color: var(--theme-text);
-  border-radius: 6px;
-  font: inherit;
-}
 
-.save-action-row {
-  margin-top: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.success {
-  color: var(--theme-success);
-  font-weight: 600;
-}
-
-h3 {
-  margin-top: 2rem;
-  color: var(--theme-text);
-}
-
-form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 0.75rem;
-}
-
-@media (max-width: 600px) {
-  .day {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
-
-.service-list {
-  display: grid;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  color: var(--theme-text-soft);
-}
-
-.blocked-period {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  margin-top: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--theme-border);
-  border-radius: 6px;
-  background: var(--theme-card-bg);
-}
+/* Working hours, services and blocked-time styles now live in their own
+   components: app-working-hours-editor, app-barber-services-manager and
+   app-blocked-time-manager. */
 
 .error {
   color: var(--theme-danger);
   font-weight: 600;
 }
+

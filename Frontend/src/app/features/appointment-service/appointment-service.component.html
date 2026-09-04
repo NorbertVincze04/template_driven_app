@@ -3,28 +3,7 @@
     <p class="state">Loading barber profile...</p>
   }
   @if (barber(); as profile) {
-    <header class="profile-header">
-      @if (profile.profileImageUrl) {
-        <img
-          [src]="profile.profileImageUrl"
-          [alt]="profile.name"
-          [style.object-position]="
-            profile.profileImagePositionX +
-            '% ' +
-            profile.profileImagePositionY +
-            '%'
-          "
-        />
-      }
-      <div>
-        <p class="eyebrow">Barber profile</p>
-        <h1>{{ profile.name }}</h1>
-        <p>Choose a service and a time that works for you.</p>
-        @if (profile.phoneNumber) {
-          <p>{{ profile.phoneNumber }}</p>
-        }
-      </div>
-    </header>
+    <app-barber-profile-header [barber]="profile"></app-barber-profile-header>
     <section class="booking-panel" aria-labelledby="booking-title">
       <p class="eyebrow">Appointments</p>
       <h2 id="booking-title">Book a visit</h2>
@@ -51,105 +30,16 @@
             />
           </label>
         </div>
-        @if (availability(); as available) {
-          <fieldset>
-            <legend>Available times</legend>
-            <div class="slots">
-              @for (slot of available.slots; track slot) {
-                <button
-                  type="button"
-                  [class.selected]="selectedTime === slot"
-                  (click)="selectedTime = selectedTime === slot ? '' : slot"
-                >
-                  {{ slot }}
-                </button>
-              } @empty {
-                <p>No times available for this date.</p>
-              }
-            </div>
-          </fieldset>
-        }
+        <app-time-slot-picker
+          [availability]="availability()"
+          [selectedTime]="selectedTime"
+          (timeSelected)="selectedTime = $event"
+        ></app-time-slot-picker>
         @if (!auth.currentUserValue?.token) {
-          <div class="guest-fields">
-            <div class="form-group">
-              <label for="guestName">Your name</label>
-              <input
-                id="guestName"
-                formControlName="guestName"
-                autocomplete="name"
-                class="form-control"
-                placeholder="Enter your name"
-              />
-              <div
-                *ngIf="
-                  bookingForm.get('guestName')?.invalid &&
-                  (bookingForm.get('guestName')?.touched || submitted)
-                "
-                class="field-error"
-              >
-                <span *ngIf="bookingForm.get('guestName')?.errors?.['required']"
-                  >Name is required.</span
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="guestEmail">Email</label>
-              <input
-                id="guestEmail"
-                type="email"
-                formControlName="guestEmail"
-                autocomplete="email"
-                class="form-control"
-                placeholder="Enter your email"
-              />
-              <div
-                *ngIf="
-                  bookingForm.get('guestEmail')?.invalid &&
-                  (bookingForm.get('guestEmail')?.touched || submitted)
-                "
-                class="field-error"
-              >
-                <span
-                  *ngIf="bookingForm.get('guestEmail')?.errors?.['required']"
-                  >Email is required.</span
-                >
-                <span *ngIf="bookingForm.get('guestEmail')?.errors?.['email']"
-                  >Enter a valid email address.</span
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="guestPhone">Phone</label>
-              <input
-                id="guestPhone"
-                formControlName="guestPhone"
-                autocomplete="tel"
-                inputmode="numeric"
-                minlength="10"
-                maxlength="10"
-                class="form-control"
-                placeholder="07..."
-                type="tel"
-              />
-              <div
-                *ngIf="
-                  bookingForm.get('guestPhone')?.invalid &&
-                  (bookingForm.get('guestPhone')?.touched || submitted)
-                "
-                class="field-error"
-              >
-                <span
-                  *ngIf="bookingForm.get('guestPhone')?.errors?.['required']"
-                  >Phone number is required.</span
-                >
-                <span *ngIf="bookingForm.get('guestPhone')?.errors?.['pattern']"
-                  >Use 10 digits, for example 07...</span
-                >
-              </div>
-            </div>
-          </div>
+          <app-guest-details-form
+            [group]="bookingForm.controls.guestDetails"
+            [submitted]="submitted"
+          ></app-guest-details-form>
         }
         <app-action-button
           buttonType="submit"
@@ -168,3 +58,4 @@
     <p class="state">{{ error }}</p>
   }
 </main>
+

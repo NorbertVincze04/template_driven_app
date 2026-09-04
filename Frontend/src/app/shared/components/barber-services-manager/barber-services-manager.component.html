@@ -1,0 +1,35 @@
+<h3>My services</h3>
+<div class="service-list">
+  @for (service of services; track service.id) {
+    <span
+      >{{ service.name }} · {{ service.durationMinutes }} min ·
+      {{ service.price }} lei</span
+    >
+  } @empty {
+    <p>No services created yet.</p>
+  }
+</div>
+<form [formGroup]="serviceForm" (ngSubmit)="submit()">
+  <input
+    type="text"
+    formControlName="name"
+    placeholder="Service name"
+    required
+  /><input
+    type="number"
+    formControlName="durationMinutes"
+    min="1"
+    placeholder="Minutes"
+    required
+  /><input
+    type="number"
+    formControlName="price"
+    min="0"
+    step="1"
+    placeholder="Price (RON)"
+    required
+  /><app-action-button
+    buttonType="submit"
+    [config]="{ label: 'Add service', variant: 'primary' }"
+  ></app-action-button>
+</form>

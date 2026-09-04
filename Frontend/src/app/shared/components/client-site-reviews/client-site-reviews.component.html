@@ -42,174 +42,18 @@
       </div>
     </div>
 
-    <!-- Reviews Grid -->
-    @if (reviewsList().length > 0) {
-      <div class="reviews-grid">
-        @for (review of reviewsList(); track review.id) {
-          <article class="review-card">
-            <div class="card-header">
-              <div class="author-avatar">
-                @if (review.authorAvatarUrl) {
-                  <img
-                    [src]="review.authorAvatarUrl"
-                    [alt]="review.authorName"
-                  />
-                } @else {
-                  <span>{{ review.authorName.charAt(0).toUpperCase() }}</span>
-                }
-              </div>
-              <div class="author-info">
-                <h3 class="author-name">{{ review.authorName }}</h3>
-                @if (review.authorRole) {
-                  <span class="author-role">{{ review.authorRole }}</span>
-                }
-              </div>
-              @if (review.date) {
-                <time class="review-date">{{ review.date }}</time>
-              }
-            </div>
-
-            <div class="review-rating">
-              @for (star of [1, 2, 3, 4, 5]; track star) {
-                <svg
-                  class="star-icon"
-                  [class.filled]="star <= review.rating"
-                  viewBox="0 0 24 24"
-                >
-                  <polygon
-                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                  />
-                </svg>
-              }
-            </div>
-
-            <p class="review-comment">{{ review.comment }}</p>
-          </article>
-        }
-      </div>
-    } @else {
-      <div class="empty-reviews">
-        <p>No reviews yet. Be the first to share your experience!</p>
-        <app-action-button
-          [config]="{
-            label: 'Write First Review',
-            variant: 'outline',
-            size: 'sm',
-          }"
-          (action)="openReviewModal()"
-        ></app-action-button>
-      </div>
-    }
+    <!-- Grid/empty-state rendering is delegated to the reusable reviews-list component -->
+    <app-reviews-list
+      [reviews]="reviewsList()"
+      (writeReview)="openReviewModal()"
+    ></app-reviews-list>
   </div>
 </section>
 
-<!-- Review Modal Popup -->
-@if (isModalOpen()) {
-  <div class="modal-backdrop" (click)="closeReviewModal()" role="presentation">
-    <div
-      class="modal-card"
-      (click)="$event.stopPropagation()"
-      role="dialog"
-      aria-labelledby="modal-title"
-      aria-modal="true"
-    >
-      <div class="modal-header">
-        <h3 id="modal-title">Write a Review</h3>
-        <button
-          type="button"
-          class="modal-close-btn"
-          aria-label="Close dialog"
-          (click)="closeReviewModal()"
-        >
-          &times;
-        </button>
-      </div>
-
-      <form
-        (submit)="$event.preventDefault(); submitReview()"
-        class="modal-form"
-      >
-        @if (formError()) {
-          <div class="form-error-alert" role="alert">
-            {{ formError() }}
-          </div>
-        }
-
-        <div class="form-group">
-          <label for="rating-picker">Rating</label>
-          <div id="rating-picker" class="star-rating-input">
-            @for (star of [1, 2, 3, 4, 5]; track star) {
-              <button
-                type="button"
-                class="star-btn"
-                [class.active]="star <= rating"
-                (click)="setRating(star)"
-                [attr.aria-label]="'Rate ' + star + ' stars'"
-              >
-                <svg class="star-icon" viewBox="0 0 24 24">
-                  <polygon
-                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                  />
-                </svg>
-              </button>
-            }
-            <span class="rating-label">{{ rating }} out of 5 stars</span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="authorName"
-            >Your Name <span class="required">*</span></label
-          >
-          <input
-            id="authorName"
-            type="text"
-            [(ngModel)]="authorName"
-            name="authorName"
-            placeholder="e.g. Jane Doe"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="authorRole">Role / Relationship (Optional)</label>
-          <input
-            id="authorRole"
-            type="text"
-            [(ngModel)]="authorRole"
-            name="authorRole"
-            placeholder="e.g. Regular Client, First-time visitor"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="comment"
-            >Your Review <span class="required">*</span></label
-          >
-          <textarea
-            id="comment"
-            [(ngModel)]="comment"
-            name="comment"
-            rows="4"
-            placeholder="Tell us what you liked about your experience..."
-            required
-          ></textarea>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn-cancel" (click)="closeReviewModal()">
-            Cancel
-          </button>
-          <app-action-button
-            [buttonType]="'submit'"
-            [config]="{
-              label: 'Submit Review',
-              variant: 'primary',
-              size: 'md',
-            }"
-          ></app-action-button>
-        </div>
-      </form>
-    </div>
-  </div>
-}
+<!-- Review submission dialog is a self-contained, reusable modal component -->
+<app-review-form-modal
+  [isOpen]="isModalOpen()"
+  [errorMessage]="submitError()"
+  (submitReview)="handleReviewSubmit($event)"
+  (closeModal)="closeReviewModal()"
+></app-review-form-modal>

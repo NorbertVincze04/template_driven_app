@@ -22,6 +22,9 @@ import {
   ActionButtonComponent,
   ActionConfig,
 } from '../../shared/components/action-button/action-button.component';
+import { BarberProfileHeaderComponent } from '../../shared/components/barber-profile-header/barber-profile-header.component';
+import { TimeSlotPickerComponent } from '../../shared/components/time-slot-picker/time-slot-picker.component';
+import { GuestDetailsFormComponent } from '../../shared/components/guest-details-form/guest-details-form.component';
 
 function todayInBucharest(): string {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -38,10 +41,26 @@ function todayInBucharest(): string {
   return `${values['year']}-${values['month']}-${values['day']}`;
 }
 
+/**
+ * Orchestrates the public booking page (route: /book, /book/:barberSlug, ...).
+ * Responsibilities kept here: resolving which barber/service to preload from
+ * the route, loading availability, and submitting the booking request.
+ * The visual pieces are delegated to focused, reusable children:
+ *  - app-barber-profile-header  -> shows who you're booking with
+ *  - app-time-slot-picker       -> lets the visitor pick a time
+ *  - app-guest-details-form     -> collects guest contact info when not logged in
+ */
 @Component({
   selector: 'app-appointment-service',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ActionButtonComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ActionButtonComponent,
+    BarberProfileHeaderComponent,
+    TimeSlotPickerComponent,
+    GuestDetailsFormComponent,
+  ],
   templateUrl: './appointment-service.component.html',
   styleUrl: './appointment-service.component.css',
 })
@@ -79,6 +98,9 @@ export class AppointmentServiceComponent {
     variant: 'primary',
     disabled: false,
   };
+  // Guest details live in their own nested FormGroup so it can be handed
+  // directly to <app-guest-details-form> via [group] while staying part of
+  // this component's overall bookingForm (validity/values stay in sync).
   protected readonly bookingForm = new FormGroup(
     {
       serviceId: new FormControl('', {
@@ -89,17 +111,22 @@ export class AppointmentServiceComponent {
         nonNullable: true,
         validators: Validators.required,
       }),
-      guestName: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
-      guestEmail: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required, Validators.email],
-      }),
-      guestPhone: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required, Validators.pattern(/^0[237]\d{8}$/)],
+      guestDetails: new FormGroup({
+        guestName: new FormControl('', {
+          nonNullable: true,
+          validators: [Validators.required],
+        }),
+        guestEmail: new FormControl('', {
+          nonNullable: true,
+          validators: [Validators.required, Validators.email],
+        }),
+        guestPhone: new FormControl('', {
+          nonNullable: true,
+          validators: [
+            Validators.required,
+            Validators.pattern(/^0[237]\d{8}$/),
+          ],
+        }),
       }),
     },
     { validators: this.guestFieldsValidator.bind(this) },
@@ -183,11 +210,14 @@ export class AppointmentServiceComponent {
     });
   }
 
+  // Re-fetches free time slots whenever the barber, service or date changes.
+  // Called from the template on (change) of the service/date selects, and
+  // once from the constructor after the barber + services finish loading.
   protected loadAvailability(): void {
     const barberId = this.barber()?.id;
     const { serviceId, date } = this.bookingForm.getRawValue();
     if (!barberId || !serviceId || !date) return;
-    this.selectedTime = '';
+    this.selectedTime = ''; // a new date/service invalidates any previously picked slot
     this.barberApi.availability(barberId, serviceId, date).subscribe({
       next: (value) => this.availability.set(value),
       error: (error) =>
@@ -196,6 +226,8 @@ export class AppointmentServiceComponent {
     });
   }
 
+  // Cross-field validator attached to the whole bookingForm: guest contact
+  // fields are only required when nobody is logged in (see `auth` below).
   private guestFieldsValidator(
     group: AbstractControl,
   ): { [key: string]: any } | null {
@@ -204,9 +236,9 @@ export class AppointmentServiceComponent {
       return null;
     }
 
-    const guestName = group.get('guestName');
-    const guestEmail = group.get('guestEmail');
-    const guestPhone = group.get('guestPhone');
+    const guestName = group.get('guestDetails.guestName');
+    const guestEmail = group.get('guestDetails.guestEmail');
+    const guestPhone = group.get('guestDetails.guestPhone');
 
     const errors: { [key: string]: any } = {};
 
@@ -229,11 +261,13 @@ export class AppointmentServiceComponent {
     return Object.keys(errors).length > 0 ? errors : null;
   }
 
+  // Handles the booking form submit: validates, then calls the account or
+  // guest booking endpoint depending on whether the visitor is signed in.
   protected book(): void {
     if (this.booking) {
       return;
     }
-    this.submitted = true;
+    this.submitted = true; // reveals validation messages in app-guest-details-form
     const values = this.bookingForm.getRawValue();
     if (!values.serviceId) {
       this.error = 'Select a service before booking.';
@@ -253,15 +287,15 @@ export class AppointmentServiceComponent {
     }
     const accountBooking = !!this.auth.currentUserValue?.token;
     if (!accountBooking) {
-      const guestName = this.bookingForm.get('guestName');
-      const guestEmail = this.bookingForm.get('guestEmail');
-      const guestPhone = this.bookingForm.get('guestPhone');
+      const guestName = this.bookingForm.get('guestDetails.guestName');
+      const guestEmail = this.bookingForm.get('guestDetails.guestEmail');
+      const guestPhone = this.bookingForm.get('guestDetails.guestPhone');
 
-      if (guestName?.hasError('required') || !values.guestName) {
+      if (guestName?.hasError('required') || !values.guestDetails.guestName) {
         this.error = 'Please enter your name.';
         return;
       }
-      if (guestEmail?.hasError('required') || !values.guestEmail) {
+      if (guestEmail?.hasError('required') || !values.guestDetails.guestEmail) {
         this.error = 'Please enter your email address.';
         return;
       }
@@ -269,7 +303,7 @@ export class AppointmentServiceComponent {
         this.error = 'Please enter a valid email address.';
         return;
       }
-      if (guestPhone?.hasError('required') || !values.guestPhone) {
+      if (guestPhone?.hasError('required') || !values.guestDetails.guestPhone) {
         this.error = 'Please enter your phone number.';
         return;
       }
@@ -287,9 +321,9 @@ export class AppointmentServiceComponent {
       serviceId: values.serviceId,
       date: values.date,
       time: this.selectedTime,
-      guestName: values.guestName,
-      guestEmail: values.guestEmail,
-      guestPhone: values.guestPhone,
+      guestName: values.guestDetails.guestName,
+      guestEmail: values.guestDetails.guestEmail,
+      guestPhone: values.guestDetails.guestPhone,
     };
     const bookingRequest = accountBooking
       ? this.barberApi.bookAccount(request)

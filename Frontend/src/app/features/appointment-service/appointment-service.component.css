@@ -6,19 +6,7 @@
   background: var(--theme-bg);
   font-family: var(--tenant-font, inherit);
 }
-.profile-header {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-  padding-bottom: 2.5rem;
-  border-bottom: 1px solid var(--theme-border);
-}
-.profile-header img {
-  width: 180px;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 50%;
-}
+/* Barber avatar/name/phone block now lives in app-barber-profile-header. */
 .eyebrow {
   color: var(--tenant-primary);
   text-transform: uppercase;
@@ -77,43 +65,7 @@ select option {
   background: var(--theme-surface);
   color: var(--theme-text);
 }
-fieldset {
-  border: 0;
-  padding: 0;
-  margin: 2rem 0;
-}
-legend {
-  font-weight: 700;
-  margin-bottom: 0.7rem;
-}
-.slots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-.slots button {
-  border: 1px solid var(--theme-border);
-  border-radius: 8px;
-  background: var(--theme-surface);
-  color: var(--theme-text);
-  padding: 0.65rem 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.slots button:hover {
-  border-color: var(--tenant-primary);
-  color: var(--tenant-primary);
-}
-
-.slots button.selected {
-  background: var(--tenant-primary);
-  border-color: var(--tenant-primary);
-  color: var(--tenant-primary-contrast, #ffffff);
-  box-shadow: 0 2px 8px
-    color-mix(in srgb, var(--tenant-primary) 35%, transparent);
-}
+/* Time slot fieldset/buttons now live in app-time-slot-picker. */
 
 .form-fields {
   display: grid;
@@ -133,35 +85,12 @@ legend {
   box-sizing: border-box;
 }
 
-.guest-fields {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  align-items: start;
-}
-
-.guest-fields .form-group {
-  display: grid;
-  grid-template-rows: auto auto auto;
-  align-content: start;
-  gap: 0.4rem;
-}
-
-.guest-fields label {
-  margin: 0;
-  font-weight: 600;
-}
+/* Guest name/email/phone fields now live in app-guest-details-form. */
 
 @media (max-width: 640px) {
-  .form-fields,
-  .guest-fields {
+  .form-fields {
     grid-template-columns: 1fr;
   }
-}
-
-.guest-fields .form-control {
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .success {
@@ -181,22 +110,6 @@ legend {
   padding: 4rem 0;
 }
 
-.field-error {
-  color: var(--theme-danger);
-  font-size: 0.82rem;
-  margin-top: 4px;
-  font-weight: 500;
-}
-
-.form-control {
-  border: 1px solid var(--theme-border);
-  background: var(--theme-surface);
-  color: var(--theme-text);
-  padding: 0.8rem;
-  font: inherit;
-  border-radius: 4px;
-}
-
 app-action-button {
   display: block;
   margin-top: 1.5rem;
@@ -206,12 +119,4 @@ app-action-button {
 :host-context(html[data-theme="light"]) select {
   color-scheme: light;
 }
-@media (max-width: 650px) {
-  .profile-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .guest-fields {
-    grid-template-columns: 1fr;
-  }
-}
+

@@ -1,0 +1,18 @@
+@if (availability; as available) {
+  <fieldset>
+    <legend>Available times</legend>
+    <div class="slots">
+      @for (slot of available.slots; track slot) {
+        <button
+          type="button"
+          [class.selected]="selectedTime === slot"
+          (click)="selectSlot(slot)"
+        >
+          {{ slot }}
+        </button>
+      } @empty {
+        <p>No times available for this date.</p>
+      }
+    </div>
+  </fieldset>
+}

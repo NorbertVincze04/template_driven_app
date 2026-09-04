@@ -108,65 +108,16 @@
                 <small>Enter a valid email address.</small>
               }
             </label>
-            <label>
-              Profile picture
-              <input
-                class="profile-upload"
-                type="file"
-                accept="image/*"
-                (change)="onProfileImageSelected($event)"
-              />
-            </label>
           </div>
-          @if (profileForm.controls.profileImageData.value) {
-            <div class="profile-image-editor">
-              <div
-                class="profile-preview-frame"
-                [style.--image-position-x]="
-                  profileForm.controls.profileImagePositionX.value + '%'
-                "
-                [style.--image-position-y]="
-                  profileForm.controls.profileImagePositionY.value + '%'
-                "
-              >
-                <img
-                  class="profile-preview"
-                  [src]="profileForm.controls.profileImageData.value!"
-                  alt="Selected profile picture"
-                />
-              </div>
-              <div class="position-controls">
-                <label>
-                  Horizontal position
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    formControlName="profileImagePositionX"
-                  />
-                </label>
-                <label>
-                  Vertical position
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    formControlName="profileImagePositionY"
-                  />
-                </label>
-                @if (profileForm.controls.profileImageData.value) {
-                  <app-action-button
-                    [config]="{
-                      label: 'Delete picture',
-                      variant: 'danger',
-                      size: 'sm',
-                    }"
-                    (action)="deleteProfileImage()"
-                  ></app-action-button>
-                }
-              </div>
-            </div>
-          }
+          <app-profile-image-editor
+            [imageData]="profileForm.controls.profileImageData.value"
+            [positionX]="profileForm.controls.profileImagePositionX.value"
+            [positionY]="profileForm.controls.profileImagePositionY.value"
+            (imageDataChange)="onProfileImageSelected($event)"
+            (positionXChange)="profileForm.controls.profileImagePositionX.setValue($event)"
+            (positionYChange)="profileForm.controls.profileImagePositionY.setValue($event)"
+            (errorMessage)="profileError = $event"
+          ></app-profile-image-editor>
           <div class="form-actions">
             <app-action-button
               buttonType="submit"
@@ -200,97 +151,15 @@
       <app-barber-schedule></app-barber-schedule>
     }
 
-    <section
-      class="profile-section appointments-section"
-      aria-labelledby="appointments-title"
-    >
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">Schedule</p>
-          <h2 id="appointments-title">My appointments</h2>
-        </div>
-        <div class="appointment-tools">
-          <span class="appointment-count">{{ appointments().length }}</span>
-          @if (currentUser()?.type === "BARBER") {
-            <app-action-button
-              [config]="{
-                label: 'Refresh',
-                variant: 'secondary',
-                size: 'sm',
-                disabled: appointmentActionId !== '',
-              }"
-              (action)="refreshAppointments()"
-            ></app-action-button>
-          }
-        </div>
-      </div>
-      @if (appointments().length) {
-        <div
-          class="appointments-table"
-          role="table"
-          aria-label="My appointments"
-        >
-          <div class="table-row table-header" role="row">
-            <span role="columnheader">Status</span
-            ><span role="columnheader">Date</span
-            ><span role="columnheader">Service</span
-            ><span role="columnheader">Hour</span>
-            @if (currentUser()?.type === "BARBER") {
-              <span role="columnheader">Customer</span
-              ><span role="columnheader">Actions</span>
-            }
-          </div>
-          @for (appointment of appointments(); track appointment.id) {
-            <div class="table-row" role="row">
-              <span
-                role="cell"
-                class="status"
-                [attr.data-status]="appointment.status"
-                >{{ appointment.status }}</span
-              >
-              <span role="cell">{{
-                appointment.date | date: "mediumDate"
-              }}</span>
-              <span role="cell">{{ appointment.serviceName }}</span>
-              <span role="cell">{{ appointment.hour }}</span>
-              @if (currentUser()?.type === "BARBER") {
-                <span role="cell">{{
-                  appointment.customerName || appointment.guestName || "Guest"
-                }}</span>
-                <span role="cell" class="appointment-actions">
-                  <select
-                    [value]="appointment.status"
-                    [disabled]="appointmentActionId === appointment.id"
-                    (change)="
-                      updateAppointmentStatus(
-                        appointment,
-                        $any($event.target).value
-                      )
-                    "
-                    aria-label="Update appointment status"
-                  >
-                    <option value="SCHEDULED">Scheduled</option>
-                    <option value="CONFIRMED">Confirmed</option>
-                    <option value="COMPLETED">Completed</option>
-                    <option value="CANCELLED">Cancelled</option>
-                  </select>
-                  <app-action-button
-                    [config]="{
-                      label: 'Delete',
-                      variant: 'danger',
-                      size: 'sm',
-                      disabled: appointmentActionId === appointment.id,
-                    }"
-                    (action)="deleteAppointment(appointment)"
-                  ></app-action-button>
-                </span>
-              }
-            </div>
-          }
-        </div>
-      } @else {
-        <p class="empty-state">No appointments have been scheduled yet.</p>
-      }
-    </section>
+    <!-- Appointments table + status/delete actions are delegated to app-appointments-list -->
+    <app-appointments-list
+      [appointments]="appointments()"
+      [userType]="currentUser()?.type"
+      [actionId]="appointmentActionId"
+      (statusChange)="updateAppointmentStatus($event.appointment, $event.status)"
+      (deleteAppointment)="deleteAppointment($event)"
+      (refresh)="refreshAppointments()"
+    ></app-appointments-list>
   </div>
 </main>
+

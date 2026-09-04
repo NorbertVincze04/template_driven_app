@@ -1,0 +1,78 @@
+<section
+  class="profile-section appointments-section"
+  aria-labelledby="appointments-title"
+>
+  <div class="section-heading">
+    <div>
+      <p class="section-kicker">Schedule</p>
+      <h2 id="appointments-title">My appointments</h2>
+    </div>
+    <div class="appointment-tools">
+      <span class="appointment-count">{{ appointments.length }}</span>
+      @if (userType === "BARBER") {
+        <app-action-button
+          [config]="{
+            label: 'Refresh',
+            variant: 'secondary',
+            size: 'sm',
+            disabled: actionId !== '',
+          }"
+          (action)="refresh.emit()"
+        ></app-action-button>
+      }
+    </div>
+  </div>
+  @if (appointments.length) {
+    <div class="appointments-table" role="table" aria-label="My appointments">
+      <div class="table-row table-header" role="row">
+        <span role="columnheader">Status</span
+        ><span role="columnheader">Date</span
+        ><span role="columnheader">Service</span
+        ><span role="columnheader">Hour</span>
+        @if (userType === "BARBER") {
+          <span role="columnheader">Customer</span
+          ><span role="columnheader">Actions</span>
+        }
+      </div>
+      @for (appointment of appointments; track appointment.id) {
+        <div class="table-row" role="row">
+          <span role="cell" class="status" [attr.data-status]="appointment.status">{{
+            appointment.status
+          }}</span>
+          <span role="cell">{{ appointment.date | date: "mediumDate" }}</span>
+          <span role="cell">{{ appointment.serviceName }}</span>
+          <span role="cell">{{ appointment.hour }}</span>
+          @if (userType === "BARBER") {
+            <span role="cell">{{
+              appointment.customerName || appointment.guestName || "Guest"
+            }}</span>
+            <span role="cell" class="appointment-actions">
+              <select
+                [value]="appointment.status"
+                [disabled]="actionId === appointment.id"
+                (change)="onStatusSelect(appointment, $any($event.target).value)"
+                aria-label="Update appointment status"
+              >
+                <option value="SCHEDULED">Scheduled</option>
+                <option value="CONFIRMED">Confirmed</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+              <app-action-button
+                [config]="{
+                  label: 'Delete',
+                  variant: 'danger',
+                  size: 'sm',
+                  disabled: actionId === appointment.id,
+                }"
+                (action)="deleteAppointment.emit(appointment)"
+              ></app-action-button>
+            </span>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="empty-state">No appointments have been scheduled yet.</p>
+  }
+</section>

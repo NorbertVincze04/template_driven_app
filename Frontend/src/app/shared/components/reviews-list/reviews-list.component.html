@@ -1,0 +1,54 @@
+@if (reviews.length > 0) {
+  <div class="reviews-grid">
+    @for (review of reviews; track review.id) {
+      <article class="review-card">
+        <div class="card-header">
+          <div class="author-avatar">
+            @if (review.authorAvatarUrl) {
+              <img [src]="review.authorAvatarUrl" [alt]="review.authorName" />
+            } @else {
+              <span>{{ review.authorName.charAt(0).toUpperCase() }}</span>
+            }
+          </div>
+          <div class="author-info">
+            <h3 class="author-name">{{ review.authorName }}</h3>
+            @if (review.authorRole) {
+              <span class="author-role">{{ review.authorRole }}</span>
+            }
+          </div>
+          @if (review.date) {
+            <time class="review-date">{{ review.date }}</time>
+          }
+        </div>
+
+        <div class="review-rating">
+          @for (star of starIndexes; track star) {
+            <svg
+              class="star-icon"
+              [class.filled]="star <= review.rating"
+              viewBox="0 0 24 24"
+            >
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+              />
+            </svg>
+          }
+        </div>
+
+        <p class="review-comment">{{ review.comment }}</p>
+      </article>
+    }
+  </div>
+} @else {
+  <div class="empty-reviews">
+    <p>No reviews yet. Be the first to share your experience!</p>
+    <app-action-button
+      [config]="{
+        label: 'Write First Review',
+        variant: 'outline',
+        size: 'sm',
+      }"
+      (action)="writeReview.emit()"
+    ></app-action-button>
+  </div>
+}

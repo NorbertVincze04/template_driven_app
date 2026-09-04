@@ -14,9 +14,17 @@ import { Appointment, AuthService } from '../../core/services/auth.service';
 import { TenantService } from '../../core/services/tenant.service';
 import { BarberScheduleComponent } from '../barber-schedule/barber-schedule.component';
 import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
+import { ProfileImageEditorComponent } from '../../shared/components/profile-image-editor/profile-image-editor.component';
+import { AppointmentsListComponent } from '../../shared/components/appointments-list/appointments-list.component';
 import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+/**
+ * Orchestrates the "My account" page: account details form, the barber-only
+ * scheduling tools, and the appointments list. State/HTTP calls live here;
+ * the picture editing and appointments table are delegated to focused,
+ * reusable children (app-profile-image-editor, app-appointments-list).
+ */
 @Component({
   selector: 'app-user-profile',
   standalone: true,
@@ -25,6 +33,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ReactiveFormsModule,
     BarberScheduleComponent,
     ActionButtonComponent,
+    ProfileImageEditorComponent,
+    AppointmentsListComponent,
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
@@ -144,6 +154,7 @@ export class UserProfileComponent {
     this.profileSaved = false;
   }
 
+  // Called when a barber picks a new status from app-appointments-list.
   protected updateAppointmentStatus(
     appointment: Appointment,
     status: string,
@@ -162,6 +173,7 @@ export class UserProfileComponent {
     });
   }
 
+  // Called when a barber clicks "Delete" on a row in app-appointments-list.
   protected deleteAppointment(appointment: Appointment): void {
     if (this.appointmentActionId || !window.confirm('Delete this appointment?'))
       return;
@@ -185,48 +197,16 @@ export class UserProfileComponent {
     });
   }
 
+  // Called by the "Refresh" button inside app-appointments-list (barbers only).
   protected refreshAppointments(): void {
     this.loadAppointments();
   }
 
-  protected onProfileImageSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) {
-      return;
-    }
-    if (!file.type.startsWith('image/') || file.size > 2_000_000) {
-      this.profileSaved = false;
-      this.profileError = 'Choose an image smaller than 2 MB.';
-      input.value = '';
-      return;
-    }
+  // Handles the file input + canvas resize logic delegated to
+  // app-profile-image-editor; stores the processed image on the form.
+  protected onProfileImageSelected(dataUrl: string | null): void {
     this.profileError = '';
     this.profileSaved = false;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const image = new Image();
-      image.onload = () => {
-        const maxDimension = 1000;
-        const scale = Math.min(
-          1,
-          maxDimension / Math.max(image.naturalWidth, image.naturalHeight),
-        );
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
-        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
-        canvas
-          .getContext('2d')
-          ?.drawImage(image, 0, 0, canvas.width, canvas.height);
-        this.profileForm.controls.profileImageData.setValue(
-          canvas.toDataURL('image/jpeg', 0.82),
-        );
-      };
-      image.onerror = () => {
-        this.profileError = 'The selected image could not be processed.';
-      };
-      image.src = reader.result as string;
-    };
-    reader.readAsDataURL(file);
+    this.profileForm.controls.profileImageData.setValue(dataUrl);
   }
 }

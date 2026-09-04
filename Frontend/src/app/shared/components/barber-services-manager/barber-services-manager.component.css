@@ -1,0 +1,32 @@
+:host {
+  display: block;
+}
+
+h3 {
+  margin-top: 2rem;
+  color: var(--theme-text);
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+form input {
+  padding: 0.65rem;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.service-list {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  color: var(--theme-text-soft);
+}

@@ -1,0 +1,30 @@
+<h3>Block time</h3>
+<form [formGroup]="blockForm" (ngSubmit)="submit()">
+  <input type="datetime-local" formControlName="startsAt" required /><input
+    type="datetime-local"
+    formControlName="endsAt"
+    required
+  /><input
+    type="text"
+    formControlName="reason"
+    placeholder="Reason (optional)"
+  /><app-action-button
+    buttonType="submit"
+    [config]="{ label: 'Block appointment time', variant: 'secondary' }"
+  ></app-action-button>
+</form>
+@if (validationError) {
+  <p class="error">{{ validationError }}</p>
+}
+@for (period of blockedPeriods; track period.id) {
+  <div class="blocked-period">
+    <span
+      >{{ period.startsAt | date: "medium" }} -
+      {{ period.endsAt | date: "medium" }}</span
+    >
+    <app-action-button
+      [config]="{ label: 'Remove', variant: 'danger', size: 'sm' }"
+      (action)="unblock.emit(period.id)"
+    ></app-action-button>
+  </div>
+}
