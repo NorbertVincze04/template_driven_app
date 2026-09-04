@@ -251,6 +251,7 @@ export class BarberRepository {
     const hours = hoursResult.rows[0];
     const dayStart = bucharestTimeToUtc(date, hours.start_time).getTime();
     const dayEnd = bucharestTimeToUtc(date, hours.end_time).getTime();
+    const now = Date.now();
     const occupied = [...blocksResult.rows, ...appointmentsResult.rows];
     const slots: string[] = [];
     for (
@@ -260,6 +261,7 @@ export class BarberRepository {
     ) {
       const end = start + service.durationMinutes * 60000;
       if (
+        start > now &&
         !occupied.some(
           (item) =>
             start < new Date(item.ends_at).getTime() &&
