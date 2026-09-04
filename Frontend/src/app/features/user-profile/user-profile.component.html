@@ -114,8 +114,12 @@
             [positionX]="profileForm.controls.profileImagePositionX.value"
             [positionY]="profileForm.controls.profileImagePositionY.value"
             (imageDataChange)="onProfileImageSelected($event)"
-            (positionXChange)="profileForm.controls.profileImagePositionX.setValue($event)"
-            (positionYChange)="profileForm.controls.profileImagePositionY.setValue($event)"
+            (positionXChange)="
+              profileForm.controls.profileImagePositionX.setValue($event)
+            "
+            (positionYChange)="
+              profileForm.controls.profileImagePositionY.setValue($event)
+            "
             (errorMessage)="profileError = $event"
           ></app-profile-image-editor>
           <div class="form-actions">
@@ -156,10 +160,11 @@
       [appointments]="appointments()"
       [userType]="currentUser()?.type"
       [actionId]="appointmentActionId"
-      (statusChange)="updateAppointmentStatus($event.appointment, $event.status)"
+      (statusChange)="
+        updateAppointmentStatus($event.appointment, $event.status)
+      "
       (deleteAppointment)="deleteAppointment($event)"
       (refresh)="refreshAppointments()"
     ></app-appointments-list>
   </div>
 </main>
-

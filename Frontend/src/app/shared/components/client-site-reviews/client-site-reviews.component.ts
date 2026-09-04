@@ -25,7 +25,11 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-client-site-reviews',
   standalone: true,
-  imports: [ActionButtonComponent, ReviewsListComponent, ReviewFormModalComponent],
+  imports: [
+    ActionButtonComponent,
+    ReviewsListComponent,
+    ReviewFormModalComponent,
+  ],
   templateUrl: './client-site-reviews.component.html',
   styleUrl: './client-site-reviews.component.css',
 })
