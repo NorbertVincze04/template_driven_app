@@ -11,7 +11,7 @@ function timeToMinutes(time: string): number {
   return hours * 60 + minutes;
 }
 
-function bucharestTimeToUtc(date: string, time: string): Date {
+export function bucharestTimeToUtc(date: string, time: string): Date {
   const wallClock = new Date(`${date}T${normalizeTime(time)}:00Z`);
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: BOOKING_TIME_ZONE,
@@ -40,7 +40,7 @@ function bucharestTimeToUtc(date: string, time: string): Date {
   return new Date(wallClock.getTime() - offset);
 }
 
-function formatBucharestTime(value: Date): string {
+export function formatBucharestTime(value: Date): string {
   return new Intl.DateTimeFormat("en-GB", {
     timeZone: BOOKING_TIME_ZONE,
     hour: "2-digit",
@@ -86,6 +86,35 @@ export class BarberRepository {
       [shopId, barberId, name.trim(), durationMinutes, price],
     );
     return rows[0];
+  }
+
+  static async updateService(
+    shopId: string,
+    barberId: string,
+    serviceId: string,
+    name: string,
+    durationMinutes: number,
+    price: number,
+  ): Promise<ServiceRecord | null> {
+    const { rows } = await pool.query(
+      `UPDATE services SET name = $4, duration_minutes = $5, price = $6
+       WHERE id = $1 AND shop_id = $2 AND barber_id = $3
+       RETURNING id, name, duration_minutes AS "durationMinutes", price::text`,
+      [serviceId, shopId, barberId, name.trim(), durationMinutes, price],
+    );
+    return rows[0] ?? null;
+  }
+
+  static async deleteService(
+    shopId: string,
+    barberId: string,
+    serviceId: string,
+  ): Promise<boolean> {
+    const result = await pool.query(
+      `DELETE FROM services WHERE id = $1 AND shop_id = $2 AND barber_id = $3`,
+      [serviceId, shopId, barberId],
+    );
+    return result.rowCount === 1;
   }
 
   static async saveWorkingHours(
@@ -156,6 +185,23 @@ export class BarberRepository {
       [shopId, barberId],
     );
     return rows;
+  }
+
+  static async updateBlockedPeriod(
+    shopId: string,
+    barberId: string,
+    id: string,
+    startsAt: string,
+    endsAt: string,
+    reason?: string,
+  ) {
+    const { rows } = await pool.query(
+      `UPDATE barber_blocked_periods SET starts_at = $4, ends_at = $5, reason = $6
+       WHERE id = $1 AND shop_id = $2 AND barber_id = $3
+       RETURNING id, starts_at AS "startsAt", ends_at AS "endsAt", reason`,
+      [id, shopId, barberId, startsAt, endsAt, reason ?? null],
+    );
+    return rows[0] ?? null;
   }
 
   static async deleteBlockedPeriod(

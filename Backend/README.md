@@ -77,12 +77,13 @@ sql/006_bucharest_timezone.sql
 sql/007_shared_services_compatibility.sql
 sql/008_default_tenant_config.sql
 sql/009_client_reviews.sql
+sql/010_appointment_change_requests.sql
 ```
 
 The later migrations create working hours, blocked periods, service prices,
 barber-owned services, guest booking fields, appointment overlap protection,
-Romanian local-time booking, shared-service compatibility, and the default
-tenant content used by the frontend.
+Romanian local-time booking, shared-service compatibility, the default
+tenant content used by the frontend, and customer cancel/reschedule requests.
 
 The `shops.config` JSONB column stores the website configuration. To add another
 tenant, insert a shop and map one or more domains:

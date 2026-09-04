@@ -12,6 +12,8 @@ import { TenantConfig } from '../../core/models/tenant.model';
 import { User } from '../../core/models/user.model';
 import { Appointment, AuthService } from '../../core/services/auth.service';
 import { TenantService } from '../../core/services/tenant.service';
+import { BarberService } from '../../core/services/barber.service';
+import { BarberService as ServiceOption } from '../../core/models/barber.model';
 import { BarberScheduleComponent } from '../barber-schedule/barber-schedule.component';
 import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
 import { ProfileImageEditorComponent } from '../../shared/components/profile-image-editor/profile-image-editor.component';
@@ -42,6 +44,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class UserProfileComponent {
   private readonly authService = inject(AuthService);
   private readonly tenantService = inject(TenantService);
+  private readonly barberApi = inject(BarberService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly currentUser = toSignal<User | null>(
@@ -49,6 +52,8 @@ export class UserProfileComponent {
     { initialValue: null },
   );
   protected readonly appointments = signal<Appointment[]>([]);
+  // Only populated for barbers, to feed the appointments edit form's service dropdown.
+  protected readonly services = signal<ServiceOption[]>([]);
   protected profileError = '';
   protected profileSaved = false;
   protected profileSaving = false;
@@ -96,6 +101,12 @@ export class UserProfileComponent {
       profileImagePositionY: user?.profileImagePositionY ?? 50,
     });
     this.loadAppointments();
+    if (user?.type === 'BARBER') {
+      this.barberApi.listMyServices().subscribe({
+        next: (services) => this.services.set(services),
+        error: () => undefined,
+      });
+    }
     interval(15000)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.loadAppointments());
@@ -154,14 +165,17 @@ export class UserProfileComponent {
     this.profileSaved = false;
   }
 
-  // Called when a barber picks a new status from app-appointments-list.
-  protected updateAppointmentStatus(
-    appointment: Appointment,
-    status: string,
-  ): void {
-    if (this.appointmentActionId || appointment.status === status) return;
-    this.appointmentActionId = appointment.id;
-    this.authService.updateAppointmentStatus(appointment.id, status).subscribe({
+  // Called when a barber saves an inline edit from app-appointments-list.
+  protected editAppointment(event: {
+    id: string;
+    date: string;
+    time: string;
+    serviceId: string;
+  }): void {
+    if (this.appointmentActionId) return;
+    const { id, ...details } = event;
+    this.appointmentActionId = id;
+    this.authService.updateAppointmentDetails(id, details).subscribe({
       next: () => {
         this.appointmentActionId = '';
         this.loadAppointments();
@@ -173,10 +187,9 @@ export class UserProfileComponent {
     });
   }
 
-  // Called when a barber clicks "Delete" on a row in app-appointments-list.
+  // Called when a barber confirms "Delete" in app-appointments-list's dialog.
   protected deleteAppointment(appointment: Appointment): void {
-    if (this.appointmentActionId || !window.confirm('Delete this appointment?'))
-      return;
+    if (this.appointmentActionId) return;
     this.appointmentActionId = appointment.id;
     this.authService.deleteAppointment(appointment.id).subscribe({
       next: () => {
@@ -188,6 +201,58 @@ export class UserProfileComponent {
         this.profileError = error.message;
       },
     });
+  }
+
+  // Called when a customer confirms a cancellation request.
+  protected requestAppointmentCancel(appointment: Appointment): void {
+    if (this.appointmentActionId) return;
+    this.appointmentActionId = appointment.id;
+    this.authService.requestAppointmentCancel(appointment.id).subscribe({
+      next: () => {
+        this.appointmentActionId = '';
+        this.loadAppointments();
+      },
+      error: (error) => {
+        this.appointmentActionId = '';
+        this.profileError = error.message;
+      },
+    });
+  }
+
+  // Called when a customer submits a reschedule request.
+  protected requestAppointmentReschedule(event: {
+    appointment: Appointment;
+    date: string;
+    time: string;
+  }): void {
+    if (this.appointmentActionId) return;
+    const { appointment, ...details } = event;
+    this.appointmentActionId = appointment.id;
+    this.authService
+      .requestAppointmentReschedule(appointment.id, details)
+      .subscribe({
+        next: () => {
+          this.appointmentActionId = '';
+          this.loadAppointments();
+        },
+        error: (error) => {
+          this.appointmentActionId = '';
+          this.profileError = error.message;
+        },
+      });
+  }
+
+  // Called when a barber approves/rejects a pending customer request.
+  protected resolveAppointmentRequest(event: {
+    requestId: string;
+    action: 'APPROVE' | 'REJECT';
+  }): void {
+    this.authService
+      .resolveAppointmentRequest(event.requestId, event.action)
+      .subscribe({
+        next: () => this.loadAppointments(),
+        error: (error) => (this.profileError = error.message),
+      });
   }
 
   private loadAppointments(): void {

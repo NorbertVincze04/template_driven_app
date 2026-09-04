@@ -20,3 +20,21 @@ appointmentRouter.delete(
   authMiddleware,
   (req, res) => AppointmentController.deleteMine(req, res),
 );
+appointmentRouter.post(
+  "/mine/:id/cancel-request",
+  tenantMiddleware,
+  authMiddleware,
+  (req, res) => AppointmentController.requestCancel(req, res),
+);
+appointmentRouter.post(
+  "/mine/:id/reschedule-request",
+  tenantMiddleware,
+  authMiddleware,
+  (req, res) => AppointmentController.requestReschedule(req, res),
+);
+appointmentRouter.patch(
+  "/requests/:id",
+  tenantMiddleware,
+  authMiddleware,
+  (req, res) => AppointmentController.resolveRequest(req, res),
+);

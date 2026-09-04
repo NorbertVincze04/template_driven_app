@@ -21,16 +21,26 @@ import { environment } from '../../../environments/environment';
 import { TenantService } from './tenant.service';
 import { Router } from '@angular/router';
 
+export interface AppointmentChangeRequest {
+  id: string;
+  type: 'CANCEL' | 'RESCHEDULE';
+  requestedDate: string | null;
+  requestedTime: string | null;
+  reason: string | null;
+}
+
 export interface Appointment {
   id: string;
   status: string;
   date: string;
+  serviceId: string;
   serviceName: string;
   hour: string;
   customerName?: string | null;
   guestName?: string | null;
   guestEmail?: string | null;
   guestPhone?: string | null;
+  pendingRequest?: AppointmentChangeRequest | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -144,10 +154,6 @@ export class AuthService {
 
             this.currentUserSubject.next(userWithToken);
             this.persistCurrentUser(userWithToken);
-            this.tenantService.setUserThemeContext(
-              userWithToken.id || null,
-              userWithToken.tenantId,
-            );
           }
         }),
         map((response) => ({
@@ -159,7 +165,6 @@ export class AuthService {
 
   logout(): void {
     this.currentUserSubject.next(null);
-    this.tenantService.setUserThemeContext(null);
     localStorage.removeItem(environment.CURRENT_USER_STORAGE);
 
     if (this.router.url !== '/login') {
@@ -213,11 +218,42 @@ export class AuthService {
       );
   }
 
-  updateAppointmentStatus(id: string, status: string): Observable<void> {
+  // Lets a barber reschedule an appointment or change its service.
+  updateAppointmentDetails(
+    id: string,
+    details: { date: string; time: string; serviceId: string },
+  ): Observable<Appointment> {
     return this.http
-      .patch(
-        `${environment.apiUrl}/appointments/mine/${id}`,
-        { status },
+      .patch<any>(`${environment.apiUrl}/appointments/mine/${id}`, details, {
+        headers: {
+          'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+        },
+      })
+      .pipe(
+        map((response) => response.payload as Appointment),
+        this.throwApiError(),
+      );
+  }
+
+  deleteAppointment(id: string): Observable<void> {
+    return this.http
+      .delete(`${environment.apiUrl}/appointments/mine/${id}`, {
+        headers: {
+          'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+        },
+      })
+      .pipe(
+        map(() => undefined),
+        this.throwApiError(),
+      );
+  }
+
+  // Lets a customer request a cancellation; the barber approves/rejects it.
+  requestAppointmentCancel(id: string, reason?: string): Observable<void> {
+    return this.http
+      .post(
+        `${environment.apiUrl}/appointments/mine/${id}/cancel-request`,
+        { reason },
         {
           headers: {
             'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
@@ -230,13 +266,42 @@ export class AuthService {
       );
   }
 
-  deleteAppointment(id: string): Observable<void> {
+  // Lets a customer propose a new date/time; the barber approves/rejects it.
+  requestAppointmentReschedule(
+    id: string,
+    details: { date: string; time: string; reason?: string },
+  ): Observable<void> {
     return this.http
-      .delete(`${environment.apiUrl}/appointments/mine/${id}`, {
-        headers: {
-          'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+      .post(
+        `${environment.apiUrl}/appointments/mine/${id}/reschedule-request`,
+        details,
+        {
+          headers: {
+            'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+          },
         },
-      })
+      )
+      .pipe(
+        map(() => undefined),
+        this.throwApiError(),
+      );
+  }
+
+  // Lets a barber approve or reject a customer's pending change request.
+  resolveAppointmentRequest(
+    requestId: string,
+    action: 'APPROVE' | 'REJECT',
+  ): Observable<void> {
+    return this.http
+      .patch(
+        `${environment.apiUrl}/appointments/requests/${requestId}`,
+        { action },
+        {
+          headers: {
+            'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+          },
+        },
+      )
       .pipe(
         map(() => undefined),
         this.throwApiError(),

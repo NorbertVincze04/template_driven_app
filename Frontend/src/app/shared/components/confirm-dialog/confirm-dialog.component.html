@@ -1,0 +1,35 @@
+@if (isOpen) {
+  <div class="modal-backdrop" (click)="cancel.emit()" role="presentation">
+    <div
+      class="modal-card"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-labelledby="confirm-dialog-title"
+      aria-modal="true"
+    >
+      <div class="modal-header">
+        <h3 id="confirm-dialog-title">{{ title }}</h3>
+        <button
+          type="button"
+          class="modal-close-btn"
+          aria-label="Close dialog"
+          (click)="cancel.emit()"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="cancel.emit()">
+          Cancel
+        </button>
+        <app-action-button
+          [config]="{ label: confirmLabel, variant: 'danger' }"
+          (action)="confirm.emit()"
+        ></app-action-button>
+      </div>
+    </div>
+  </div>
+}

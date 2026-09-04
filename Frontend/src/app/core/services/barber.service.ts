@@ -126,4 +126,16 @@ export class BarberService {
       }>(`${this.baseUrl}/services`, details, this.options())
       .pipe(map((response) => response.payload));
   }
+
+  updateService(id: string, details: object) {
+    return this.http
+      .patch<{
+        payload: ServiceOption;
+      }>(`${this.baseUrl}/services/${id}`, details, this.options())
+      .pipe(map((response) => response.payload));
+  }
+
+  deleteService(id: string) {
+    return this.http.delete(`${this.baseUrl}/services/${id}`, this.options());
+  }
 }

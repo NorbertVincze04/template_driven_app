@@ -8,7 +8,7 @@
       <h2 id="appointments-title">My appointments</h2>
     </div>
     <div class="appointment-tools">
-      <span class="appointment-count">{{ appointments.length }}</span>
+      <span class="appointment-count">{{ filteredAppointments().length }}</span>
       @if (userType === "BARBER") {
         <app-action-button
           [config]="{
@@ -22,57 +22,252 @@
       }
     </div>
   </div>
-  @if (appointments.length) {
+  <div class="status-filter" role="tablist" aria-label="Filter by status">
+    <button
+      type="button"
+      role="tab"
+      [attr.aria-selected]="statusFilter() === 'SCHEDULED'"
+      [class.active]="statusFilter() === 'SCHEDULED'"
+      (click)="setStatusFilter('SCHEDULED')"
+    >
+      Scheduled
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [attr.aria-selected]="statusFilter() === 'COMPLETED'"
+      [class.active]="statusFilter() === 'COMPLETED'"
+      (click)="setStatusFilter('COMPLETED')"
+    >
+      Completed
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [attr.aria-selected]="statusFilter() === 'ALL'"
+      [class.active]="statusFilter() === 'ALL'"
+      (click)="setStatusFilter('ALL')"
+    >
+      All
+    </button>
+  </div>
+  @if (filteredAppointments().length) {
     <div class="appointments-table" role="table" aria-label="My appointments">
-      <div class="table-row table-header" role="row">
+      <div
+        class="table-row table-header"
+        [class.barber-row]="userType === 'BARBER'"
+        [class.customer-row]="userType !== 'BARBER'"
+        role="row"
+      >
         <span role="columnheader">Status</span
         ><span role="columnheader">Date</span
         ><span role="columnheader">Service</span
         ><span role="columnheader">Hour</span>
         @if (userType === "BARBER") {
-          <span role="columnheader">Customer</span
-          ><span role="columnheader">Actions</span>
+          <span role="columnheader">Customer</span>
         }
+        <span role="columnheader">Actions</span>
       </div>
-      @for (appointment of appointments; track appointment.id) {
-        <div class="table-row" role="row">
-          <span role="cell" class="status" [attr.data-status]="appointment.status">{{
-            appointment.status
-          }}</span>
-          <span role="cell">{{ appointment.date | date: "mediumDate" }}</span>
-          <span role="cell">{{ appointment.serviceName }}</span>
-          <span role="cell">{{ appointment.hour }}</span>
-          @if (userType === "BARBER") {
-            <span role="cell">{{
-              appointment.customerName || appointment.guestName || "Guest"
-            }}</span>
-            <span role="cell" class="appointment-actions">
-              <select
-                [value]="appointment.status"
-                [disabled]="actionId === appointment.id"
-                (change)="onStatusSelect(appointment, $any($event.target).value)"
-                aria-label="Update appointment status"
+      @for (appointment of filteredAppointments(); track appointment.id) {
+        <div
+          class="table-row"
+          [class.barber-row]="userType === 'BARBER'"
+          [class.customer-row]="userType !== 'BARBER'"
+          role="row"
+        >
+          @if (editingId === appointment.id) {
+            <form
+              class="inline-row-form"
+              [formGroup]="editForm"
+              (ngSubmit)="saveEdit(appointment.id)"
+            >
+              <span
+                role="cell"
+                class="status"
+                [attr.data-status]="appointment.status"
+                >{{ appointment.status }}</span
               >
-                <option value="SCHEDULED">Scheduled</option>
-                <option value="CONFIRMED">Confirmed</option>
-                <option value="COMPLETED">Completed</option>
-                <option value="CANCELLED">Cancelled</option>
-              </select>
-              <app-action-button
-                [config]="{
-                  label: 'Delete',
-                  variant: 'danger',
-                  size: 'sm',
-                  disabled: actionId === appointment.id,
-                }"
-                (action)="deleteAppointment.emit(appointment)"
-              ></app-action-button>
+              <span role="cell"
+                ><input type="date" formControlName="date" required
+              /></span>
+              <span role="cell">
+                <select formControlName="serviceId" required>
+                  @for (service of services; track service.id) {
+                    <option [value]="service.id">{{ service.name }}</option>
+                  }
+                </select>
+              </span>
+              <span role="cell"
+                ><input type="time" formControlName="time" required
+              /></span>
+              <span role="cell">{{
+                appointment.customerName || appointment.guestName || "Guest"
+              }}</span>
+              <span role="cell" class="appointment-actions">
+                <app-action-button
+                  buttonType="submit"
+                  [config]="{ label: 'Save', variant: 'primary', size: 'sm' }"
+                ></app-action-button>
+                <app-action-button
+                  [config]="{
+                    label: 'Cancel',
+                    variant: 'secondary',
+                    size: 'sm',
+                  }"
+                  (action)="cancelEdit()"
+                ></app-action-button>
+              </span>
+            </form>
+          } @else if (reschedulingId === appointment.id) {
+            <form
+              class="inline-row-form"
+              [formGroup]="rescheduleForm"
+              (ngSubmit)="submitRescheduleRequest(appointment)"
+            >
+              <span
+                role="cell"
+                class="status"
+                [attr.data-status]="appointment.status"
+                >{{ appointment.status }}</span
+              >
+              <span role="cell"
+                ><input type="date" formControlName="date" required
+              /></span>
+              <span role="cell">{{ appointment.serviceName }}</span>
+              <span role="cell"
+                ><input type="time" formControlName="time" required
+              /></span>
+              <span role="cell" class="appointment-actions">
+                <app-action-button
+                  buttonType="submit"
+                  [config]="{
+                    label: 'Send request',
+                    variant: 'primary',
+                    size: 'sm',
+                  }"
+                ></app-action-button>
+                <app-action-button
+                  [config]="{
+                    label: 'Cancel',
+                    variant: 'secondary',
+                    size: 'sm',
+                  }"
+                  (action)="cancelRescheduleRequest()"
+                ></app-action-button>
+              </span>
+            </form>
+          } @else {
+            <span
+              role="cell"
+              class="status"
+              [attr.data-status]="appointment.status"
+              >{{ appointment.status }}</span
+            >
+            <span role="cell">{{ appointment.date | date: "mediumDate" }}</span>
+            <span role="cell">{{ appointment.serviceName }}</span>
+            <span role="cell">{{ appointment.hour }}</span>
+            @if (userType === "BARBER") {
+              <span role="cell">{{
+                appointment.customerName || appointment.guestName || "Guest"
+              }}</span>
+            }
+            <span role="cell" class="appointment-actions">
+              @if (userType === "BARBER") {
+                @if (appointment.pendingRequest) {
+                  <span class="pending-badge">{{
+                    pendingLabel(appointment)
+                  }}</span>
+                  <app-action-button
+                    [config]="{
+                      label: 'Approve',
+                      variant: 'primary',
+                      size: 'sm',
+                    }"
+                    (action)="approveRequest(appointment.pendingRequest!.id)"
+                  ></app-action-button>
+                  <app-action-button
+                    [config]="{
+                      label: 'Reject',
+                      variant: 'danger',
+                      size: 'sm',
+                    }"
+                    (action)="rejectRequest(appointment.pendingRequest!.id)"
+                  ></app-action-button>
+                } @else {
+                  <app-action-button
+                    [config]="{
+                      label: 'Edit',
+                      variant: 'secondary',
+                      size: 'sm',
+                      disabled: actionId === appointment.id,
+                    }"
+                    (action)="startEdit(appointment)"
+                  ></app-action-button>
+                  <app-action-button
+                    [config]="{
+                      label: 'Delete',
+                      variant: 'danger',
+                      size: 'sm',
+                      disabled: actionId === appointment.id,
+                    }"
+                    (action)="requestDelete(appointment)"
+                  ></app-action-button>
+                }
+              } @else {
+                @if (appointment.pendingRequest) {
+                  <span class="pending-badge">{{
+                    pendingLabel(appointment)
+                  }}</span>
+                } @else {
+                  <app-action-button
+                    [config]="{
+                      label: 'Request cancel',
+                      variant: 'danger',
+                      size: 'sm',
+                      disabled: actionId === appointment.id,
+                    }"
+                    (action)="requestCancelConfirm(appointment)"
+                  ></app-action-button>
+                  <app-action-button
+                    [config]="{
+                      label: 'Request reschedule',
+                      variant: 'secondary',
+                      size: 'sm',
+                      disabled: actionId === appointment.id,
+                    }"
+                    (action)="startRescheduleRequest(appointment)"
+                  ></app-action-button>
+                }
+              }
             </span>
           }
         </div>
       }
     </div>
   } @else {
-    <p class="empty-state">No appointments have been scheduled yet.</p>
+    <p class="empty-state">No appointments match this filter.</p>
   }
 </section>
+
+<app-confirm-dialog
+  [isOpen]="confirmTarget() !== null"
+  [title]="
+    confirmMode === 'delete' ? 'Delete this booking?' : 'Request cancellation?'
+  "
+  [message]="
+    (confirmMode === 'delete'
+      ? 'Are you sure you want to delete this booking: '
+      : 'Are you sure you want to request cancelling this booking: ') +
+    (confirmTarget()?.serviceName || '') +
+    ' on ' +
+    (confirmTarget()?.date | date: 'mediumDate') +
+    ' at ' +
+    (confirmTarget()?.hour || '') +
+    ' for ' +
+    (confirmTarget()?.customerName || confirmTarget()?.guestName || 'Guest') +
+    '?'
+  "
+  [confirmLabel]="confirmMode === 'delete' ? 'Delete' : 'Request cancel'"
+  (confirm)="confirmAction()"
+  (cancel)="cancelConfirm()"
+></app-confirm-dialog>

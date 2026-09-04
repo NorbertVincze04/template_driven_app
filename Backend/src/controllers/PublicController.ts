@@ -33,12 +33,10 @@ export class PublicController {
 
   static async listMyServices(req: Request, res: Response) {
     if (req.user!.role !== "BARBER")
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Only barbers can view their services.",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Only barbers can view their services.",
+      });
     return res.json({
       success: true,
       payload: await BarberRepository.listServices(req.shop!.id, req.user!.id),
@@ -53,12 +51,10 @@ export class PublicController {
       typeof date !== "string" ||
       !/^\d{4}-\d{2}-\d{2}$/.test(date)
     ) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "barberId, serviceId and date are required.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "barberId, serviceId and date are required.",
+      });
     }
     const result = await BarberRepository.availability(
       req.shop!.id,
@@ -112,12 +108,10 @@ export class PublicController {
   static async createAccountAppointment(req: Request, res: Response) {
     const { barberId, serviceId, date, time } = req.body;
     if (!barberId || !serviceId || !date || !time) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Barber, service, date and time are required.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Barber, service, date and time are required.",
+      });
     }
     const appointment = await BarberRepository.createAppointment({
       shopId: req.shop!.id,
@@ -132,12 +126,10 @@ export class PublicController {
 
   static async getSchedule(req: Request, res: Response) {
     if (req.user!.role !== "BARBER")
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Only barbers can manage schedules.",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Only barbers can manage schedules.",
+      });
     const barberId = req.user!.id;
     return res.json({
       success: true,
@@ -153,12 +145,10 @@ export class PublicController {
 
   static async saveSchedule(req: Request, res: Response) {
     if (req.user!.role !== "BARBER")
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Only barbers can manage schedules.",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Only barbers can manage schedules.",
+      });
     const barberId = req.user!.id;
     await BarberRepository.saveWorkingHours(
       req.shop!.id,
@@ -170,40 +160,34 @@ export class PublicController {
 
   static async blockTime(req: Request, res: Response) {
     if (req.user!.role !== "BARBER")
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Only barbers can manage schedules.",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Only barbers can manage schedules.",
+      });
     const barberId = req.user!.id;
     const { startsAt, endsAt, reason } = req.body;
     if (!startsAt || !endsAt)
       return res
         .status(400)
         .json({ success: false, message: "Start and end are required." });
-    return res
-      .status(201)
-      .json({
-        success: true,
-        payload: await BarberRepository.addBlockedPeriod(
-          req.shop!.id,
-          barberId,
-          startsAt,
-          endsAt,
-          reason,
-        ),
-      });
+    return res.status(201).json({
+      success: true,
+      payload: await BarberRepository.addBlockedPeriod(
+        req.shop!.id,
+        barberId,
+        startsAt,
+        endsAt,
+        reason,
+      ),
+    });
   }
 
   static async unblockTime(req: Request, res: Response) {
     if (req.user!.role !== "BARBER")
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Only barbers can manage schedules.",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Only barbers can manage schedules.",
+      });
     const blockedId = req.params.id;
     if (typeof blockedId !== "string")
       return res
@@ -215,6 +199,37 @@ export class PublicController {
       blockedId,
     );
     return res.status(204).send();
+  }
+
+  static async updateBlockedTime(req: Request, res: Response) {
+    if (req.user!.role !== "BARBER")
+      return res.status(403).json({
+        success: false,
+        message: "Only barbers can manage schedules.",
+      });
+    const blockedId = req.params.id;
+    if (typeof blockedId !== "string")
+      return res
+        .status(400)
+        .json({ success: false, message: "A blocked period is required." });
+    const { startsAt, endsAt, reason } = req.body;
+    if (!startsAt || !endsAt)
+      return res
+        .status(400)
+        .json({ success: false, message: "Start and end are required." });
+    const period = await BarberRepository.updateBlockedPeriod(
+      req.shop!.id,
+      req.user!.id,
+      blockedId,
+      startsAt,
+      endsAt,
+      reason,
+    );
+    return period
+      ? res.json({ success: true, payload: period })
+      : res
+          .status(404)
+          .json({ success: false, message: "Blocked period not found." });
   }
 
   static async createService(req: Request, res: Response) {
@@ -229,12 +244,10 @@ export class PublicController {
       Number(durationMinutes) <= 0 ||
       Number(price) < 0
     ) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Name, duration and a valid price are required.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Name, duration and a valid price are required.",
+      });
     }
     const service = await BarberRepository.createService(
       req.shop!.id,
@@ -244,5 +257,60 @@ export class PublicController {
       Number(price),
     );
     return res.status(201).json({ success: true, payload: service });
+  }
+
+  static async updateService(req: Request, res: Response) {
+    if (req.user!.role !== "BARBER")
+      return res
+        .status(403)
+        .json({ success: false, message: "Only barbers can manage services." });
+    const serviceId = req.params.id;
+    if (typeof serviceId !== "string")
+      return res
+        .status(400)
+        .json({ success: false, message: "A service is required." });
+    const { name, durationMinutes, price } = req.body;
+    if (
+      !name ||
+      !Number.isInteger(Number(durationMinutes)) ||
+      Number(durationMinutes) <= 0 ||
+      Number(price) < 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, duration and a valid price are required.",
+      });
+    }
+    const service = await BarberRepository.updateService(
+      req.shop!.id,
+      req.user!.id,
+      serviceId,
+      name,
+      Number(durationMinutes),
+      Number(price),
+    );
+    return service
+      ? res.json({ success: true, payload: service })
+      : res.status(404).json({ success: false, message: "Service not found." });
+  }
+
+  static async deleteService(req: Request, res: Response) {
+    if (req.user!.role !== "BARBER")
+      return res
+        .status(403)
+        .json({ success: false, message: "Only barbers can manage services." });
+    const serviceId = req.params.id;
+    if (typeof serviceId !== "string")
+      return res
+        .status(400)
+        .json({ success: false, message: "A service is required." });
+    const deleted = await BarberRepository.deleteService(
+      req.shop!.id,
+      req.user!.id,
+      serviceId,
+    );
+    return deleted
+      ? res.status(204).send()
+      : res.status(404).json({ success: false, message: "Service not found." });
   }
 }

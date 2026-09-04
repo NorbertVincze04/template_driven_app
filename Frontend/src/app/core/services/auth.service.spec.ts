@@ -28,7 +28,6 @@ describe('AuthService', () => {
           provide: TenantService,
           useValue: {
             config: () => ({ tenantId: 'default' }),
-            setUserThemeContext: () => undefined,
           },
         },
       ],

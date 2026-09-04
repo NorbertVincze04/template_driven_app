@@ -199,6 +199,40 @@ export class BarberScheduleComponent {
     });
   }
 
+  // Called by app-barber-services-manager when a barber saves an edit.
+  protected updateService(value: {
+    id: string;
+    name: string;
+    durationMinutes: number;
+    price: number;
+  }): void {
+    const { id, ...body } = value;
+    this.barberApi.updateService(id, body).subscribe({
+      next: (service) => {
+        this.services.update((services) =>
+          services.map((item) => (item.id === id ? service : item)),
+        );
+        this.error = '';
+      },
+      error: (error) =>
+        (this.error = this.apiMessage(error, 'Could not update this service.')),
+    });
+  }
+
+  // Called by app-barber-services-manager's "Delete" confirmation.
+  protected deleteService(id: string): void {
+    this.barberApi.deleteService(id).subscribe({
+      next: () => {
+        this.services.update((services) =>
+          services.filter((item) => item.id !== id),
+        );
+        this.error = '';
+      },
+      error: (error) =>
+        (this.error = this.apiMessage(error, 'Could not delete this service.')),
+    });
+  }
+
   // Called by app-blocked-time-manager when a new blocked period is submitted.
   protected blockTime(value: {
     startsAt: string;
@@ -238,6 +272,39 @@ export class BarberScheduleComponent {
           (this.error = this.apiMessage(
             error,
             'Could not remove this blocked period.',
+          )),
+      });
+  }
+
+  // Called by app-blocked-time-manager when a barber saves an inline edit.
+  protected editBlockedTime(value: {
+    id: string;
+    startsAt: string;
+    endsAt: string;
+    reason: string;
+  }): void {
+    const { id, ...body } = value;
+    this.http
+      .patch<{
+        payload: BlockedPeriod;
+      }>(
+        `${environment.apiUrl}/public/schedule/blocked/${id}`,
+        body,
+        this.options(),
+      )
+      .subscribe({
+        next: (response) => {
+          this.blockedPeriods.update((periods) =>
+            periods.map((period) =>
+              period.id === id ? response.payload : period,
+            ),
+          );
+          this.error = '';
+        },
+        error: (error) =>
+          (this.error = this.apiMessage(
+            error,
+            'Could not update this blocked period.',
           )),
       });
   }

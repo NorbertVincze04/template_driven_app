@@ -32,11 +32,20 @@ publicRouter.put("/schedule", authMiddleware, (req, res) =>
 publicRouter.post("/schedule/blocked", authMiddleware, (req, res) =>
   PublicController.blockTime(req, res),
 );
+publicRouter.patch("/schedule/blocked/:id", authMiddleware, (req, res) =>
+  PublicController.updateBlockedTime(req, res),
+);
 publicRouter.delete("/schedule/blocked/:id", authMiddleware, (req, res) =>
   PublicController.unblockTime(req, res),
 );
 publicRouter.post("/services", authMiddleware, (req, res) =>
   PublicController.createService(req, res),
+);
+publicRouter.patch("/services/:id", authMiddleware, (req, res) =>
+  PublicController.updateService(req, res),
+);
+publicRouter.delete("/services/:id", authMiddleware, (req, res) =>
+  PublicController.deleteService(req, res),
 );
 publicRouter.get("/services/mine", authMiddleware, (req, res) =>
   PublicController.listMyServices(req, res),

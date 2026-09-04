@@ -11,9 +11,9 @@ import { BlockedPeriod } from '../../../core/models/barber-schedule.models';
 
 /**
  * Lets a barber block out a time range (e.g. holiday, lunch break) and
- * lists/removes existing blocked periods. Owns its own form and date-range
- * validation; the parent (BarberScheduleComponent) performs the API calls
- * and supplies the current `blockedPeriods` list.
+ * lists/edits/removes existing blocked periods. Owns its own forms and
+ * date-range validation; the parent (BarberScheduleComponent) performs the
+ * API calls and supplies the current `blockedPeriods` list.
  */
 @Component({
   selector: 'app-blocked-time-manager',
@@ -33,6 +33,13 @@ export class BlockedTimeManagerComponent {
   }>();
   // Emitted with the id of the period to remove.
   @Output() unblock = new EventEmitter<string>();
+  // Emitted with the id + validated new values when a barber saves an edit.
+  @Output() editPeriod = new EventEmitter<{
+    id: string;
+    startsAt: string;
+    endsAt: string;
+    reason: string;
+  }>();
 
   protected readonly blockForm = new FormGroup({
     startsAt: new FormControl('', {
@@ -48,6 +55,21 @@ export class BlockedTimeManagerComponent {
   // Local, form-level validation error (kept separate from the parent's API error).
   protected validationError = '';
 
+  // Id of the period currently being edited inline, or '' if none.
+  protected editingId = '';
+  protected readonly editForm = new FormGroup({
+    startsAt: new FormControl('', {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    endsAt: new FormControl('', {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    reason: new FormControl('', { nonNullable: true }),
+  });
+  protected editValidationError = '';
+
   protected submit(): void {
     if (this.blockForm.invalid) {
       this.blockForm.markAllAsTouched();
@@ -61,5 +83,41 @@ export class BlockedTimeManagerComponent {
     this.validationError = '';
     this.block.emit(values);
     this.blockForm.reset();
+  }
+
+  protected startEdit(period: BlockedPeriod): void {
+    this.editingId = period.id;
+    this.editValidationError = '';
+    this.editForm.setValue({
+      startsAt: this.toDatetimeLocal(period.startsAt),
+      endsAt: this.toDatetimeLocal(period.endsAt),
+      reason: period.reason || '',
+    });
+  }
+
+  protected cancelEdit(): void {
+    this.editingId = '';
+    this.editValidationError = '';
+  }
+
+  protected saveEdit(id: string): void {
+    if (this.editForm.invalid) {
+      this.editForm.markAllAsTouched();
+      return;
+    }
+    const values = this.editForm.getRawValue();
+    if (values.startsAt >= values.endsAt) {
+      this.editValidationError = 'End time must be after start time.';
+      return;
+    }
+    this.editValidationError = '';
+    this.editPeriod.emit({ id, ...values });
+    this.editingId = '';
+  }
+
+  private toDatetimeLocal(value: string): string {
+    const date = new Date(value);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
 }

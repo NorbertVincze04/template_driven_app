@@ -1,30 +1,82 @@
-<h3>Block time</h3>
-<form [formGroup]="blockForm" (ngSubmit)="submit()">
-  <input type="datetime-local" formControlName="startsAt" required /><input
-    type="datetime-local"
-    formControlName="endsAt"
-    required
-  /><input
-    type="text"
-    formControlName="reason"
-    placeholder="Reason (optional)"
-  /><app-action-button
-    buttonType="submit"
-    [config]="{ label: 'Block appointment time', variant: 'secondary' }"
-  ></app-action-button>
-</form>
-@if (validationError) {
-  <p class="error">{{ validationError }}</p>
-}
-@for (period of blockedPeriods; track period.id) {
-  <div class="blocked-period">
-    <span
-      >{{ period.startsAt | date: "medium" }} -
-      {{ period.endsAt | date: "medium" }}</span
-    >
-    <app-action-button
-      [config]="{ label: 'Remove', variant: 'danger', size: 'sm' }"
-      (action)="unblock.emit(period.id)"
-    ></app-action-button>
+<section class="profile-section" aria-labelledby="blocked-time-title">
+  <div class="section-heading">
+    <div>
+      <p class="section-kicker">Schedule</p>
+      <h2 id="blocked-time-title">Block appointment time</h2>
+    </div>
+    <!-- <span class="item-count">{{ blockedPeriods.length }}</span> -->
   </div>
-}
+  <form [formGroup]="blockForm" (ngSubmit)="submit()">
+    <input type="datetime-local" formControlName="startsAt" required /><input
+      type="datetime-local"
+      formControlName="endsAt"
+      required
+    /><input
+      type="text"
+      formControlName="reason"
+      placeholder="Reason (optional)"
+    /><app-action-button
+      buttonType="submit"
+      [config]="{ label: 'Block appointment time', variant: 'primary' }"
+    ></app-action-button>
+  </form>
+  @if (validationError) {
+    <p class="error">{{ validationError }}</p>
+  }
+  @for (period of blockedPeriods; track period.id) {
+    <div class="blocked-period">
+      @if (editingId === period.id) {
+        <form
+          class="edit-period-form"
+          [formGroup]="editForm"
+          (ngSubmit)="saveEdit(period.id)"
+        >
+          <input
+            type="datetime-local"
+            formControlName="startsAt"
+            required
+          /><input
+            type="datetime-local"
+            formControlName="endsAt"
+            required
+          /><input
+            type="text"
+            formControlName="reason"
+            placeholder="Reason (optional)"
+          />
+          @if (editValidationError) {
+            <p class="error">{{ editValidationError }}</p>
+          }
+          <span class="period-actions">
+            <app-action-button
+              buttonType="submit"
+              [config]="{ label: 'Save', variant: 'primary', size: 'sm' }"
+            ></app-action-button>
+            <app-action-button
+              [config]="{ label: 'Cancel', variant: 'secondary', size: 'sm' }"
+              (action)="cancelEdit()"
+            ></app-action-button>
+          </span>
+        </form>
+      } @else {
+        <span class="period-dates"
+          >{{ period.startsAt | date: "medium" }} -
+          {{ period.endsAt | date: "medium" }}</span
+        >
+        <span class="period-reason">{{
+          period.reason || "No reason provided"
+        }}</span>
+        <span class="period-actions">
+          <app-action-button
+            [config]="{ label: 'Edit', variant: 'secondary', size: 'sm' }"
+            (action)="startEdit(period)"
+          ></app-action-button>
+          <app-action-button
+            [config]="{ label: 'Remove', variant: 'danger', size: 'sm' }"
+            (action)="unblock.emit(period.id)"
+          ></app-action-button>
+        </span>
+      }
+    </div>
+  }
+</section>

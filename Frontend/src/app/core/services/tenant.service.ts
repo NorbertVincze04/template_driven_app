@@ -11,6 +11,11 @@ import { Observable, catchError, map, tap } from 'rxjs';
 import { TenantConfig, TenantThemeMode } from '../models/tenant.model';
 import { environment } from '../../../environments/environment';
 
+// Tenant-agnostic fallback key: lets the pre-bootstrap inline script in
+// index.html (and first-time visitors without a tenant-scoped choice yet)
+// restore the user's last explicit theme choice before the tenant loads.
+const GLOBAL_THEME_KEY = 'lastThemeMode';
+
 @Injectable({ providedIn: 'root' })
 export class TenantService {
   private readonly document = inject(DOCUMENT);
@@ -18,7 +23,6 @@ export class TenantService {
   private readonly http = inject(HttpClient);
   private readonly _config = signal<TenantConfig | null>(null);
   private readonly _themeMode = signal<TenantThemeMode>('light');
-  private activeUserId: string | null = null;
   private activeTenantId: string | null = null;
 
   readonly config = this._config.asReadonly();
@@ -44,12 +48,18 @@ export class TenantService {
   setTenant(config: TenantConfig): void {
     this._config.set(config);
     this.activeTenantId = config.tenantId;
-    const storedUserId = this.getStoredUserId();
-    if (this.activeUserId === null) {
-      this.activeUserId = storedUserId;
-    }
-    const savedMode = this.readSavedTheme(config.tenantId, this.activeUserId);
-    this.applyThemeMode(savedMode || config.style?.mode, false);
+    // Theme preference is shared by every page (auth pages included) and
+    // survives login/logout: it's stored per tenant only, in localStorage.
+    // Falls back to the tenant's configured default, then the browser's
+    // prefers-color-scheme, if the user never picked a theme themselves.
+    const savedMode = this.readSavedTheme(config.tenantId);
+    this.applyThemeMode(
+      savedMode ||
+        config.style?.mode ||
+        this.readBrowserPreference() ||
+        undefined,
+      false,
+    );
     this.applyCssVariables(config);
 
     if (config.fontFamily) {
@@ -119,16 +129,6 @@ export class TenantService {
     this.document.head.appendChild(link);
   }
 
-  setUserThemeContext(userId: string | null, tenantId?: string): void {
-    this.activeUserId = userId;
-    this.activeTenantId = tenantId || this.activeTenantId;
-    const config = this._config();
-    if (config) {
-      const savedMode = this.readSavedTheme(config.tenantId, userId);
-      this.applyThemeMode(savedMode || config.style?.mode, false);
-    }
-  }
-
   setThemeMode(mode?: TenantThemeMode): void {
     this.applyThemeMode(mode, true);
   }
@@ -146,36 +146,30 @@ export class TenantService {
     }
   }
 
-  private themeStorageKey(tenantId: string, userId: string | null): string {
-    return `themeMode:${tenantId}:${userId || 'guest'}`;
+  private themeStorageKey(tenantId: string): string {
+    return `themeMode:${tenantId}`;
   }
 
-  private readSavedTheme(
-    tenantId: string,
-    userId: string | null,
-  ): TenantThemeMode | null {
+  private readSavedTheme(tenantId: string): TenantThemeMode | null {
     if (!this.isBrowser) return null;
-    const saved = localStorage.getItem(this.themeStorageKey(tenantId, userId));
+    const saved =
+      localStorage.getItem(this.themeStorageKey(tenantId)) ||
+      localStorage.getItem(GLOBAL_THEME_KEY);
     return saved === 'dark' || saved === 'light' ? saved : null;
   }
 
-  private saveTheme(mode: TenantThemeMode): void {
-    if (!this.isBrowser || !this.activeTenantId) return;
-    localStorage.setItem(
-      this.themeStorageKey(this.activeTenantId, this.activeUserId),
-      mode,
-    );
+  private readBrowserPreference(): TenantThemeMode | null {
+    if (!this.isBrowser || !window.matchMedia) return null;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : null;
   }
 
-  private getStoredUserId(): string | null {
-    if (!this.isBrowser) return null;
-    try {
-      const storedUser = JSON.parse(
-        localStorage.getItem(environment.CURRENT_USER_STORAGE) || 'null',
-      ) as { id?: string } | null;
-      return storedUser?.id || null;
-    } catch {
-      return null;
+  private saveTheme(mode: TenantThemeMode): void {
+    if (!this.isBrowser) return;
+    localStorage.setItem(GLOBAL_THEME_KEY, mode);
+    if (this.activeTenantId) {
+      localStorage.setItem(this.themeStorageKey(this.activeTenantId), mode);
     }
   }
 

@@ -9,12 +9,15 @@
   <app-barber-services-manager
     [services]="services()"
     (addService)="addService($event)"
+    (updateService)="updateService($event)"
+    (deleteService)="deleteService($event)"
   ></app-barber-services-manager>
 
   <app-blocked-time-manager
     [blockedPeriods]="blockedPeriods()"
     (block)="blockTime($event)"
     (unblock)="unblockTime($event)"
+    (editPeriod)="editBlockedTime($event)"
   ></app-blocked-time-manager>
 
   @if (error) {

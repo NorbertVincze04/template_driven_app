@@ -1,43 +1,45 @@
-<div class="section-heading">
-  <div>
-    <p class="section-kicker">Barber tools</p>
-    <h2 id="schedule-title">Working calendar</h2>
-  </div>
-</div>
-<div class="days">
-  @for (day of days; track day.weekday) {
-    <div class="day">
-      <label class="day-toggle"
-        ><input
-          type="checkbox"
-          [checked]="day.isActive"
-          (change)="onToggle(day, $any($event.target).checked)"
-        />
-        {{ day.label }}</label
-      >
-      <div class="times">
-        <input
-          type="time"
-          [value]="day.startTime"
-          [disabled]="!day.isActive"
-          (change)="onTimeChange(day, 'startTime', $any($event.target).value)"
-        /><span>to</span
-        ><input
-          type="time"
-          [value]="day.endTime"
-          [disabled]="!day.isActive"
-          (change)="onTimeChange(day, 'endTime', $any($event.target).value)"
-        />
-      </div>
+<section class="profile-section" aria-labelledby="schedule-title">
+  <div class="section-heading">
+    <div>
+      <p class="section-kicker">Barber tools</p>
+      <h2 id="schedule-title">Working calendar</h2>
     </div>
-  }
-</div>
-<div class="save-action-row">
-  <app-action-button
-    [config]="{ label: 'Save working hours', variant: 'primary' }"
-    (action)="save.emit()"
-  ></app-action-button>
-  @if (saved) {
-    <span class="success">Saved.</span>
-  }
-</div>
+  </div>
+  <div class="days">
+    @for (day of days; track day.weekday) {
+      <div class="day">
+        <label class="day-toggle"
+          ><input
+            type="checkbox"
+            [checked]="day.isActive"
+            (change)="onToggle(day, $any($event.target).checked)"
+          />
+          {{ day.label }}</label
+        >
+        <div class="times">
+          <input
+            type="time"
+            [value]="day.startTime"
+            [disabled]="!day.isActive"
+            (change)="onTimeChange(day, 'startTime', $any($event.target).value)"
+          /><span>to</span
+          ><input
+            type="time"
+            [value]="day.endTime"
+            [disabled]="!day.isActive"
+            (change)="onTimeChange(day, 'endTime', $any($event.target).value)"
+          />
+        </div>
+      </div>
+    }
+  </div>
+  <div class="save-action-row">
+    <app-action-button
+      [config]="{ label: 'Save working hours', variant: 'primary' }"
+      (action)="save.emit()"
+    ></app-action-button>
+    @if (saved) {
+      <span class="success">Saved.</span>
+    }
+  </div>
+</section>

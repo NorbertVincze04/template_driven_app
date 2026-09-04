@@ -155,15 +155,17 @@
       <app-barber-schedule></app-barber-schedule>
     }
 
-    <!-- Appointments table + status/delete actions are delegated to app-appointments-list -->
+    <!-- Appointments table + edit/delete/request actions are delegated to app-appointments-list -->
     <app-appointments-list
       [appointments]="appointments()"
       [userType]="currentUser()?.type"
       [actionId]="appointmentActionId"
-      (statusChange)="
-        updateAppointmentStatus($event.appointment, $event.status)
-      "
+      [services]="services()"
+      (editAppointment)="editAppointment($event)"
       (deleteAppointment)="deleteAppointment($event)"
+      (requestCancel)="requestAppointmentCancel($event)"
+      (requestReschedule)="requestAppointmentReschedule($event)"
+      (resolveRequest)="resolveAppointmentRequest($event)"
       (refresh)="refreshAppointments()"
     ></app-appointments-list>
   </div>

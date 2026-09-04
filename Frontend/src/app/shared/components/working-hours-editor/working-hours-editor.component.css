@@ -2,6 +2,16 @@
   display: block;
 }
 
+.profile-section {
+  margin-top: 2.5rem;
+  padding: 2rem;
+  /* background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-top: 3px solid var(--tenant-primary, #111827);
+  border-radius: 0.75rem;
+  box-shadow: var(--theme-shadow-sm); */
+}
+
 .section-heading {
   margin-bottom: 1rem;
 }
@@ -61,6 +71,10 @@
 }
 
 @media (max-width: 600px) {
+  .profile-section {
+    padding: 1.25rem;
+  }
+
   .day {
     align-items: flex-start;
     flex-direction: column;

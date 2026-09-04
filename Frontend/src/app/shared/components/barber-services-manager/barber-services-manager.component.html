@@ -1,35 +1,129 @@
-<h3>My services</h3>
-<div class="service-list">
-  @for (service of services; track service.id) {
-    <span
-      >{{ service.name }} · {{ service.durationMinutes }} min ·
-      {{ service.price }} lei</span
-    >
-  } @empty {
-    <p>No services created yet.</p>
+<section
+  class="profile-section services-section"
+  aria-labelledby="services-title"
+>
+  <div class="section-heading">
+    <div>
+      <p class="section-kicker">Services</p>
+      <h2 id="services-title">My services</h2>
+    </div>
+    <span class="item-count">{{ services.length }}</span>
+  </div>
+  @if (services.length) {
+    <div class="data-table" role="table" aria-label="My services">
+      <div class="table-row table-header" role="row">
+        <span role="columnheader">Name</span
+        ><span role="columnheader">Duration</span
+        ><span role="columnheader">Price</span
+        ><span role="columnheader">Actions</span>
+      </div>
+      @for (service of services; track service.id) {
+        <div class="table-row" role="row">
+          @if (editingId === service.id) {
+            <form
+              class="inline-row-form"
+              [formGroup]="editForm"
+              (ngSubmit)="saveEdit(service.id)"
+            >
+              <span role="cell"
+                ><input
+                  type="text"
+                  formControlName="name"
+                  placeholder="Service name"
+                  required
+              /></span>
+              <span role="cell"
+                ><input
+                  type="number"
+                  formControlName="durationMinutes"
+                  min="1"
+                  placeholder="Minutes"
+                  required
+              /></span>
+              <span role="cell"
+                ><input
+                  type="number"
+                  formControlName="price"
+                  min="0"
+                  step="1"
+                  placeholder="Price (RON)"
+                  required
+              /></span>
+              <span role="cell" class="item-actions">
+                <app-action-button
+                  buttonType="submit"
+                  [config]="{ label: 'Save', variant: 'primary', size: 'sm' }"
+                ></app-action-button>
+                <app-action-button
+                  [config]="{
+                    label: 'Cancel',
+                    variant: 'secondary',
+                    size: 'sm',
+                  }"
+                  (action)="cancelEdit()"
+                ></app-action-button>
+              </span>
+            </form>
+          } @else {
+            <span role="cell">{{ service.name }}</span>
+            <span role="cell">{{ service.durationMinutes }} min</span>
+            <span role="cell">{{ service.price }} lei</span>
+            <span role="cell" class="item-actions">
+              <app-action-button
+                [config]="{ label: 'Edit', variant: 'secondary', size: 'sm' }"
+                (action)="startEdit(service)"
+              ></app-action-button>
+              <app-action-button
+                [config]="{ label: 'Delete', variant: 'danger', size: 'sm' }"
+                (action)="requestDelete(service)"
+              ></app-action-button>
+            </span>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="empty-state">No services created yet.</p>
   }
-</div>
-<form [formGroup]="serviceForm" (ngSubmit)="submit()">
-  <input
-    type="text"
-    formControlName="name"
-    placeholder="Service name"
-    required
-  /><input
-    type="number"
-    formControlName="durationMinutes"
-    min="1"
-    placeholder="Minutes"
-    required
-  /><input
-    type="number"
-    formControlName="price"
-    min="0"
-    step="1"
-    placeholder="Price (RON)"
-    required
-  /><app-action-button
-    buttonType="submit"
-    [config]="{ label: 'Add service', variant: 'primary' }"
-  ></app-action-button>
-</form>
+  <form
+    class="add-service-form"
+    [formGroup]="serviceForm"
+    (ngSubmit)="submit()"
+  >
+    <input
+      type="text"
+      formControlName="name"
+      placeholder="Service name"
+      required
+    /><input
+      type="number"
+      formControlName="durationMinutes"
+      min="1"
+      placeholder="Minutes"
+      required
+    /><input
+      type="number"
+      formControlName="price"
+      min="0"
+      step="1"
+      placeholder="Price (RON)"
+      required
+    /><app-action-button
+      buttonType="submit"
+      [config]="{ label: 'Add service', variant: 'primary' }"
+    ></app-action-button>
+  </form>
+</section>
+
+<app-confirm-dialog
+  [isOpen]="confirmTarget() !== null"
+  title="Delete this service?"
+  [message]="
+    'Are you sure you want to delete ' +
+    (confirmTarget()?.name || 'this service') +
+    '? This cannot be undone.'
+  "
+  confirmLabel="Delete"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()"
+></app-confirm-dialog>
