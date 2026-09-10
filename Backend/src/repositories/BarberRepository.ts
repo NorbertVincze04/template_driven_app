@@ -447,7 +447,7 @@ export class BarberRepository {
         ],
       );
       await client.query("COMMIT");
-      return result.rows[0];
+      return { ...result.rows[0], serviceName: service.name };
     } catch (error) {
       await client.query("ROLLBACK");
       if ((error as { code?: string }).code === "23P01") {

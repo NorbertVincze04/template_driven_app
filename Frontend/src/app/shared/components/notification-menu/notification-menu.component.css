@@ -1,0 +1,214 @@
+:host {
+  display: block;
+}
+
+.notifications-menu {
+  position: relative;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0.25rem;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--theme-muted);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.icon-btn:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--tenant-primary, #111827) 10%,
+    transparent
+  );
+  color: var(--tenant-primary, #111827);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--theme-danger, #dc2626);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: 320px;
+  max-width: calc(100vw - 2rem);
+  border: 1px solid var(--theme-border);
+  border-top: 3px solid var(--tenant-primary, #111827);
+  background: var(--theme-surface);
+  box-shadow: 0 12px 28px rgb(15 23 42 / 16%);
+  animation: notification-menu-in 0.16s ease-out;
+}
+
+.notification-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.notification-dropdown-header strong {
+  color: var(--theme-text);
+  font-size: 0.9rem;
+}
+
+.mark-all-read-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--tenant-primary, #111827);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mark-all-read-btn:hover {
+  text-decoration: underline;
+}
+
+.notification-list {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.7rem 2.75rem 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--theme-border);
+  background: transparent;
+  color: var(--theme-text-soft);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background: color-mix(
+    in srgb,
+    var(--tenant-primary, #111827) 9%,
+    transparent
+  );
+}
+
+.notification-item:focus-visible {
+  outline: 2px solid var(--tenant-primary, #111827);
+  outline-offset: -2px;
+}
+
+.notification-item.unread {
+  background: color-mix(
+    in srgb,
+    var(--tenant-primary, #111827) 5%,
+    transparent
+  );
+}
+
+.notification-item.unread .notification-item-title::before {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.4rem;
+  border-radius: 50%;
+  background: var(--tenant-primary, #111827);
+  content: "";
+}
+
+.notification-item-title {
+  color: var(--theme-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.notification-item-message {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.notification-item-time {
+  color: var(--theme-muted);
+  font-size: 0.7rem;
+}
+
+.notification-delete-btn {
+  display: grid;
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.55rem;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--theme-muted);
+  cursor: pointer;
+}
+
+.notification-delete-btn:hover,
+.notification-delete-btn:focus-visible {
+  background: color-mix(in srgb, var(--theme-danger, #dc2626) 10%, transparent);
+  color: var(--theme-danger, #dc2626);
+}
+
+.notification-delete-btn:focus-visible {
+  outline: 2px solid var(--theme-danger, #dc2626);
+  outline-offset: 1px;
+}
+
+.notification-delete-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.notification-empty {
+  padding: 1.5rem 0.85rem;
+  color: var(--theme-muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+@keyframes notification-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

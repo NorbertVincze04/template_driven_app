@@ -14,6 +14,7 @@ export interface AppointmentRecord {
   guest_name: string | null;
   guest_email: string | null;
   guest_phone: string | null;
+  customer_id?: string | null;
   request_id?: string | null;
   request_type?: string | null;
   request_date?: string | null;
@@ -101,7 +102,7 @@ export class AppointmentRepository {
       UPDATE appointments a
       SET status = $4, updated_at = NOW()
       WHERE a.id = $1 AND a.barber_id = $2 AND a.shop_id = $3
-      RETURNING a.id, a.appointment_date, a.appointment_time, a.status, a.service_id,
+      RETURNING a.id, a.appointment_date, a.appointment_time, a.status, a.service_id, a.customer_id,
         (SELECT s.name FROM services s WHERE s.id = a.service_id) AS service_name,
         (SELECT u.full_name FROM users u WHERE u.id = a.customer_id) AS customer_name,
         a.guest_name, a.guest_email, a.guest_phone
@@ -139,7 +140,7 @@ export class AppointmentRepository {
         SET appointment_date = $4, appointment_time = $5, service_id = $6,
           starts_at = $7, ends_at = $8, updated_at = NOW()
         WHERE a.id = $1 AND a.barber_id = $2 AND a.shop_id = $3
-        RETURNING a.id, a.appointment_date, a.appointment_time, a.status, a.service_id,
+        RETURNING a.id, a.appointment_date, a.appointment_time, a.status, a.service_id, a.customer_id,
           (SELECT s.name FROM services s WHERE s.id = a.service_id) AS service_name,
           (SELECT u.full_name FROM users u WHERE u.id = a.customer_id) AS customer_name,
           a.guest_name, a.guest_email, a.guest_phone

@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { BarberRepository } from "../repositories/BarberRepository.ts";
+import { NotificationService } from "../services/NotificationService.ts";
 
 export class PublicController {
   static async listBarbers(req: Request, res: Response) {
@@ -105,6 +106,12 @@ export class PublicController {
       guestEmail,
       guestPhone,
     });
+    await NotificationService.notifyAppointmentBooked(req.shop!.id, barberId, {
+      customerName: guestName,
+      serviceName: appointment.serviceName,
+      date: appointment.date,
+      time: String(appointment.time).slice(0, 5),
+    });
     return res.status(201).json({ success: true, payload: appointment });
   }
 
@@ -123,6 +130,12 @@ export class PublicController {
       date,
       time,
       customerId: req.user!.id,
+    });
+    await NotificationService.notifyAppointmentBooked(req.shop!.id, barberId, {
+      customerName: req.user!.fullName,
+      serviceName: appointment.serviceName,
+      date: appointment.date,
+      time: String(appointment.time).slice(0, 5),
     });
     return res.status(201).json({ success: true, payload: appointment });
   }

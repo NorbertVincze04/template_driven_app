@@ -9,6 +9,7 @@ import { userRouter } from "./routes/user.routes.ts";
 import { appointmentRouter } from "./routes/appointment.routes.ts";
 import { publicRouter } from "./routes/public.routes.ts";
 import { reviewRouter } from "./routes/review.routes.ts";
+import { notificationRouter } from "./routes/notification.routes.ts";
 import { apiRateLimiter } from "./middleware/rateLimit.middleware.ts";
 
 export function createApp() {
@@ -36,6 +37,7 @@ export function createApp() {
   app.use("/api/appointments", appointmentRouter);
   app.use("/api/public", publicRouter);
   app.use("/api/reviews", reviewRouter);
+  app.use("/api/notifications", notificationRouter);
   app.use(errorHandler);
 
   return app;

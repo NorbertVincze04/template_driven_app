@@ -1,5 +1,6 @@
 import { pool } from "../db.ts";
 import { bucharestTimeToUtc, BarberRepository } from "./BarberRepository.ts";
+import { NotificationService } from "../services/NotificationService.ts";
 
 export interface ChangeRequestRecord {
   id: string;
@@ -37,13 +38,23 @@ export class AppointmentRequestRepository {
   static async createCancelRequest(
     shopId: string,
     customerId: string,
+    customerName: string,
     appointmentId: string,
     reason?: string,
   ): Promise<ChangeRequestRecord> {
-    const appointment = await pool.query(
-      `SELECT id FROM appointments
-       WHERE id = $1 AND customer_id = $2 AND shop_id = $3
-         AND status NOT IN ('COMPLETED', 'CANCELLED')`,
+    const appointment = await pool.query<{
+      id: string;
+      barberId: string;
+      serviceName: string;
+      date: string;
+      time: string;
+    }>(
+      `SELECT a.id, a.barber_id AS "barberId", s.name AS "serviceName",
+         a.appointment_date::text AS date, a.appointment_time::text AS time
+       FROM appointments a
+       INNER JOIN services s ON s.id = a.service_id
+       WHERE a.id = $1 AND a.customer_id = $2 AND a.shop_id = $3
+         AND a.status NOT IN ('COMPLETED', 'CANCELLED')`,
       [appointmentId, customerId, shopId],
     );
     if (!appointment.rowCount)
@@ -58,6 +69,14 @@ export class AppointmentRequestRepository {
             requested_time::text AS "requestedTime", reason`,
         [shopId, appointmentId, customerId, reason ?? null],
       );
+      const { barberId, serviceName, date, time } = appointment.rows[0];
+      await NotificationService.notifyChangeRequested(shopId, barberId, {
+        requesterName: customerName,
+        type: "CANCEL",
+        serviceName,
+        date,
+        time: time.slice(0, 5),
+      });
       return rows[0];
     } catch (error) {
       friendlyConflictError(error);
@@ -67,6 +86,7 @@ export class AppointmentRequestRepository {
   static async createRescheduleRequest(
     shopId: string,
     customerId: string,
+    customerName: string,
     appointmentId: string,
     date: string,
     time: string,
@@ -78,8 +98,10 @@ export class AppointmentRequestRepository {
       id: string;
       barberId: string;
       durationMinutes: number;
+      serviceName: string;
     }>(
-      `SELECT a.id, a.barber_id AS "barberId", s.duration_minutes AS "durationMinutes"
+      `SELECT a.id, a.barber_id AS "barberId", s.duration_minutes AS "durationMinutes",
+         s.name AS "serviceName"
        FROM appointments a
        INNER JOIN services s ON s.id = a.service_id
        WHERE a.id = $1 AND a.customer_id = $2 AND a.shop_id = $3
@@ -89,7 +111,7 @@ export class AppointmentRequestRepository {
     if (!appointment.rowCount)
       throw new Error("Appointment not found or can no longer be changed.");
 
-    const { barberId, durationMinutes } = appointment.rows[0];
+    const { barberId, durationMinutes, serviceName } = appointment.rows[0];
     await BarberRepository.assertAvailable(
       shopId,
       barberId,
@@ -115,6 +137,13 @@ export class AppointmentRequestRepository {
           reason ?? null,
         ],
       );
+      await NotificationService.notifyChangeRequested(shopId, barberId, {
+        requesterName: customerName,
+        type: "RESCHEDULE",
+        serviceName,
+        date: requestedDate,
+        time: requestedTime,
+      });
       return rows[0];
     } catch (error) {
       friendlyConflictError(error);
@@ -138,10 +167,12 @@ export class AppointmentRequestRepository {
         type: "CANCEL" | "RESCHEDULE";
         requestedDate: string | null;
         requestedTime: string | null;
+        requestedBy: string;
       }>(
         `SELECT r.id, r.appointment_id AS "appointmentId", r.type,
            r.requested_date::text AS "requestedDate",
-           r.requested_time::text AS "requestedTime"
+           r.requested_time::text AS "requestedTime",
+           r.requested_by AS "requestedBy"
          FROM appointment_change_requests r
          INNER JOIN appointments a ON a.id = r.appointment_id
          WHERE r.id = $1 AND r.shop_id = $2 AND a.barber_id = $3 AND r.status = 'PENDING'
@@ -160,6 +191,14 @@ export class AppointmentRequestRepository {
           [requestId],
         );
         await client.query("COMMIT");
+        await NotificationService.notifyChangeResolved(
+          shopId,
+          request.requestedBy,
+          {
+            approved: false,
+            type: request.type,
+          },
+        );
         return "REJECTED";
       }
 
@@ -206,6 +245,14 @@ export class AppointmentRequestRepository {
         [requestId],
       );
       await client.query("COMMIT");
+      await NotificationService.notifyChangeResolved(
+        shopId,
+        request.requestedBy,
+        {
+          approved: true,
+          type: request.type,
+        },
+      );
       return "APPROVED";
     } catch (error) {
       await client.query("ROLLBACK");

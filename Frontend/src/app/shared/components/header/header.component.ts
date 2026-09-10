@@ -11,13 +11,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/services/auth.service';
 import { TenantService } from '../../../core/services/tenant.service';
 import { ActionButtonComponent } from '../action-button/action-button.component';
+import { NotificationMenuComponent } from '../notification-menu/notification-menu.component';
 import { User } from '../../../core/models/user.model';
 import { TenantConfig } from '../../../core/models/tenant.model';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [ActionButtonComponent],
+  imports: [ActionButtonComponent, NotificationMenuComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
@@ -48,6 +49,7 @@ export class HeaderComponent {
         : 'inherit',
     };
   });
+
   protected profileMenuOpen = false;
 
   scrollToSection(sectionId: string): void {

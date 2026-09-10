@@ -80,6 +80,7 @@
   color: var(--theme-muted);
   padding: 0.25rem;
   border-radius: 50%;
+  position: relative;
   transition:
     color 0.2s ease,
     background-color 0.2s ease;

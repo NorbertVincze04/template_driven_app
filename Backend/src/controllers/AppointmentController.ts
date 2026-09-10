@@ -4,6 +4,7 @@ import {
   type AppointmentRecord,
 } from "../repositories/AppointmentRepository.ts";
 import { AppointmentRequestRepository } from "../repositories/AppointmentRequestRepository.ts";
+import { NotificationService } from "../services/NotificationService.ts";
 
 function toPayload(appointment: AppointmentRecord) {
   return {
@@ -75,6 +76,18 @@ export class AppointmentController {
         req.shop!.id,
         status,
       );
+      if (appointment?.customer_id) {
+        await NotificationService.notifyAppointmentStatusChanged(
+          req.shop!.id,
+          appointment.customer_id,
+          {
+            status: appointment.status,
+            serviceName: appointment.service_name,
+            date: appointment.appointment_date,
+            time: appointment.appointment_time.slice(0, 5),
+          },
+        );
+      }
     } else if (date && time && serviceId) {
       try {
         appointment = await AppointmentRepository.updateDetailsForBarber(
@@ -83,6 +96,18 @@ export class AppointmentController {
           req.shop!.id,
           { date, time, serviceId },
         );
+        if (appointment?.customer_id) {
+          await NotificationService.notifyAppointmentStatusChanged(
+            req.shop!.id,
+            appointment.customer_id,
+            {
+              status: "RESCHEDULED",
+              serviceName: appointment.service_name,
+              date: appointment.appointment_date,
+              time: appointment.appointment_time.slice(0, 5),
+            },
+          );
+        }
       } catch (error) {
         return res.status(409).json({
           success: false,
@@ -142,6 +167,7 @@ export class AppointmentController {
       const request = await AppointmentRequestRepository.createCancelRequest(
         req.shop!.id,
         req.user!.id,
+        req.user!.fullName,
         req.params.id,
         req.body.reason,
       );
@@ -180,6 +206,7 @@ export class AppointmentController {
         await AppointmentRequestRepository.createRescheduleRequest(
           req.shop!.id,
           req.user!.id,
+          req.user!.fullName,
           req.params.id,
           date,
           time,

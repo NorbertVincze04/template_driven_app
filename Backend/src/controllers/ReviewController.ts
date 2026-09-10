@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { ReviewRepository } from "../repositories/ReviewRepository.ts";
+import { NotificationService } from "../services/NotificationService.ts";
 
 export class ReviewController {
   static async list(req: Request, res: Response): Promise<Response> {
@@ -41,6 +42,10 @@ export class ReviewController {
       numericRating,
       comment.trim(),
     );
+    await NotificationService.notifyReviewReceived(req.shop!.id, {
+      authorName: review.authorName,
+      rating: review.rating,
+    });
     return res.status(201).json({ success: true, payload: review });
   }
 }
