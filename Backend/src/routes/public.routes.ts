@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { PublicController } from "../controllers/PublicController.ts";
+import { BarberRatingController } from "../controllers/BarberRatingController.ts";
 import { tenantMiddleware } from "../middleware/tenant.middleware.ts";
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 
@@ -10,6 +11,18 @@ publicRouter.get("/barbers", (req, res) =>
 );
 publicRouter.get("/barbers/:barberId", (req, res) =>
   PublicController.getBarber(req, res),
+);
+publicRouter.get("/barbers/:barberId/rating", (req, res) =>
+  BarberRatingController.summary(req, res),
+);
+publicRouter.get("/barbers/:barberId/rating/mine", authMiddleware, (req, res) =>
+  BarberRatingController.mine(req, res),
+);
+publicRouter.post("/barbers/:barberId/rating", authMiddleware, (req, res) =>
+  BarberRatingController.rate(req, res),
+);
+publicRouter.delete("/barbers/:barberId/rating", authMiddleware, (req, res) =>
+  BarberRatingController.remove(req, res),
 );
 publicRouter.get("/services", (req, res) =>
   PublicController.listServices(req, res),

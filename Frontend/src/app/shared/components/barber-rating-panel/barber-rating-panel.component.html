@@ -1,0 +1,54 @@
+@if (status()?.eligible) {
+  <section class="barber-rating-panel">
+    <h3>Your rating</h3>
+    @if (status()?.rating; as myRating) {
+      <div class="my-rating">
+        <app-barber-rating-summary
+          [rating]="myRating.rating"
+          [ratingCount]="1"
+        ></app-barber-rating-summary>
+        <p class="my-comment">{{ myRating.comment }}</p>
+        <div class="rating-actions">
+          @if (status()?.canRate) {
+            <app-action-button
+              [config]="{
+                label: 'Update rating',
+                variant: 'secondary',
+                size: 'sm',
+              }"
+              (action)="openModal()"
+            ></app-action-button>
+          } @else if (status()?.nextEligibleDate) {
+            <p class="cooldown-note">
+              You can rate again on
+              {{ status()?.nextEligibleDate | date: "mediumDate" }}, or delete
+              your rating to rate sooner.
+            </p>
+          }
+          <app-action-button
+            [config]="{ label: 'Delete rating', variant: 'danger', size: 'sm' }"
+            (action)="deleteRating()"
+          ></app-action-button>
+        </div>
+      </div>
+    } @else {
+      <app-action-button
+        [config]="{ label: 'Rate this barber', variant: 'primary', size: 'sm' }"
+        (action)="openModal()"
+      ></app-action-button>
+    }
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+  </section>
+}
+
+<app-barber-rating-form-modal
+  [isOpen]="modalOpen()"
+  [initialRating]="status()?.rating?.rating || 5"
+  [initialComment]="status()?.rating?.comment || ''"
+  [saving]="saving"
+  [errorMessage]="error()"
+  (submitRating)="submit($event)"
+  (closeModal)="closeModal()"
+></app-barber-rating-form-modal>

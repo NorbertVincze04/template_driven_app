@@ -1,0 +1,83 @@
+@if (isOpen) {
+  <div class="modal-backdrop" (click)="close()" role="presentation">
+    <div
+      class="modal-card"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-labelledby="rating-modal-title"
+      aria-modal="true"
+    >
+      <div class="modal-header">
+        <h3 id="rating-modal-title">Rate this barber</h3>
+        <button
+          type="button"
+          class="modal-close-btn"
+          aria-label="Close dialog"
+          (click)="close()"
+        >
+          &times;
+        </button>
+      </div>
+
+      <form (submit)="$event.preventDefault(); submit()" class="modal-form">
+        @if (localError || errorMessage) {
+          <div class="form-error-alert" role="alert">
+            {{ localError || errorMessage }}
+          </div>
+        }
+
+        <div class="form-group">
+          <label for="barber-rating-picker">Rating</label>
+          <div id="barber-rating-picker" class="star-rating-input">
+            @for (star of [1, 2, 3, 4, 5]; track star) {
+              <button
+                type="button"
+                class="star-btn"
+                [class.active]="star <= rating"
+                (click)="setRating(star)"
+                [attr.aria-label]="'Rate ' + star + ' stars'"
+              >
+                <svg class="star-icon" viewBox="0 0 24 24">
+                  <polygon
+                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                  />
+                </svg>
+              </button>
+            }
+            <span class="rating-label">{{ rating }} out of 5 stars</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="barber-rating-comment"
+            >Your Comment <span class="required">*</span></label
+          >
+          <textarea
+            id="barber-rating-comment"
+            [(ngModel)]="comment"
+            name="comment"
+            rows="4"
+            placeholder="Tell us about your experience with this barber..."
+            required
+          ></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="close()">
+            Cancel
+          </button>
+          <app-action-button
+            [buttonType]="'submit'"
+            [isLoading]="saving"
+            [config]="{
+              label: 'Submit Rating',
+              loadingLabel: 'Saving...',
+              variant: 'primary',
+              size: 'md',
+            }"
+          ></app-action-button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

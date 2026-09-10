@@ -4,6 +4,7 @@
   }
   @if (barber(); as profile) {
     <app-barber-profile-header [barber]="profile"></app-barber-profile-header>
+    <app-barber-rating-panel [barberId]="profile.id"></app-barber-rating-panel>
     <section class="booking-panel" aria-labelledby="booking-title">
       <p class="eyebrow">Appointments</p>
       <h2 id="booking-title">Book a visit</h2>

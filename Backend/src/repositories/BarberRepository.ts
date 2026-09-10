@@ -57,6 +57,8 @@ export interface BarberProfile {
   profileImageUrl: string | null;
   profileImagePositionX: number;
   profileImagePositionY: number;
+  rating: number | null;
+  ratingCount: number;
 }
 
 export interface ServiceRecord {
@@ -217,10 +219,12 @@ export class BarberRepository {
 
   static async list(shopId: string): Promise<BarberProfile[]> {
     const { rows } = await pool.query(
-      `SELECT id, full_name AS name, email, phone_number AS "phoneNumber",
-        profile_image_url AS "profileImageUrl", profile_image_position_x AS "profileImagePositionX", profile_image_position_y AS "profileImagePositionY"
-       FROM users WHERE shop_id = $1 AND role = 'BARBER' AND is_active = TRUE
-       ORDER BY full_name`,
+      `SELECT u.id, u.full_name AS name, u.email, u.phone_number AS "phoneNumber",
+        u.profile_image_url AS "profileImageUrl", u.profile_image_position_x AS "profileImagePositionX", u.profile_image_position_y AS "profileImagePositionY",
+        (SELECT ROUND(AVG(r.rating)::numeric, 1) FROM barber_ratings r WHERE r.barber_id = u.id) AS rating,
+        (SELECT COUNT(*) FROM barber_ratings r WHERE r.barber_id = u.id)::int AS "ratingCount"
+       FROM users u WHERE u.shop_id = $1 AND u.role = 'BARBER' AND u.is_active = TRUE
+       ORDER BY u.full_name`,
       [shopId],
     );
     return rows;
@@ -231,9 +235,11 @@ export class BarberRepository {
     barberId: string,
   ): Promise<BarberProfile | null> {
     const { rows } = await pool.query(
-      `SELECT id, full_name AS name, email, phone_number AS "phoneNumber",
-        profile_image_url AS "profileImageUrl", profile_image_position_x AS "profileImagePositionX", profile_image_position_y AS "profileImagePositionY"
-       FROM users WHERE id = $1 AND shop_id = $2 AND role = 'BARBER' AND is_active = TRUE`,
+      `SELECT u.id, u.full_name AS name, u.email, u.phone_number AS "phoneNumber",
+        u.profile_image_url AS "profileImageUrl", u.profile_image_position_x AS "profileImagePositionX", u.profile_image_position_y AS "profileImagePositionY",
+        (SELECT ROUND(AVG(r.rating)::numeric, 1) FROM barber_ratings r WHERE r.barber_id = u.id) AS rating,
+        (SELECT COUNT(*) FROM barber_ratings r WHERE r.barber_id = u.id)::int AS "ratingCount"
+       FROM users u WHERE u.id = $1 AND u.shop_id = $2 AND u.role = 'BARBER' AND u.is_active = TRUE`,
       [barberId, shopId],
     );
     return rows[0] ?? null;

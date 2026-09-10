@@ -11,6 +11,7 @@ import { FooterComponent } from './shared/components/footer/footer.component';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { TenantService } from './core/services/tenant.service';
 import { TopBarComponent } from './shared/components/top-bar/top-bar.component';
+import { NotificationService } from './core/services/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,10 @@ export class AppComponent {
   showBars = true;
   private readonly tenantService = inject(TenantService);
   private readonly platformId = inject(PLATFORM_ID);
+  // Constructed here (rather than only when the header's notification menu
+  // renders) so unread notifications are fetched the instant the app loads,
+  // on every visit, regardless of what the current route/layout shows.
+  private readonly notificationService = inject(NotificationService);
   private destroy$ = new Subject<void>();
 
   constructor(

@@ -19,6 +19,7 @@ import { ActionButtonComponent } from '../../shared/components/action-button/act
 import { ProfileImageEditorComponent } from '../../shared/components/profile-image-editor/profile-image-editor.component';
 import { AppointmentsListComponent } from '../../shared/components/appointments-list/appointments-list.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { BarberRatingSummaryComponent } from '../../shared/components/barber-rating-summary/barber-rating-summary.component';
 import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -39,6 +40,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ProfileImageEditorComponent,
     AppointmentsListComponent,
     ConfirmDialogComponent,
+    BarberRatingSummaryComponent,
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
@@ -56,6 +58,9 @@ export class UserProfileComponent {
   protected readonly appointments = signal<Appointment[]>([]);
   // Only populated for barbers, to feed the appointments edit form's service dropdown.
   protected readonly services = signal<ServiceOption[]>([]);
+  // Only populated for barbers, to show their own average rating below.
+  protected readonly myRating = signal<number | null>(null);
+  protected readonly myRatingCount = signal(0);
   protected profileError = '';
   protected profileSaved = false;
   protected profileSaving = false;
@@ -108,6 +113,13 @@ export class UserProfileComponent {
     if (user?.type === 'BARBER') {
       this.barberApi.listMyServices().subscribe({
         next: (services) => this.services.set(services),
+        error: () => undefined,
+      });
+      this.barberApi.getBarber(user.id!).subscribe({
+        next: (barber) => {
+          this.myRating.set(barber.rating ?? null);
+          this.myRatingCount.set(barber.ratingCount ?? 0);
+        },
         error: () => undefined,
       });
     }

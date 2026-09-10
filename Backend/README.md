@@ -80,12 +80,16 @@ sql/009_client_reviews.sql
 sql/010_appointment_change_requests.sql
 sql/011_phone_number_integrity.sql
 sql/012_preserve_completed_appointments_on_profile_delete.sql
+sql/013_notifications.sql
+sql/014_notification_read_at.sql
+sql/015_barber_ratings.sql
 ```
 
 The later migrations create working hours, blocked periods, service prices,
 barber-owned services, guest booking fields, appointment overlap protection,
 Romanian local-time booking, shared-service compatibility, the default
-tenant content used by the frontend, and customer cancel/reschedule requests.
+tenant content used by the frontend, customer cancel/reschedule requests,
+in-app notifications, and customer ratings of barbers.
 
 The `shops.config` JSONB column stores the website configuration. To add another
 tenant, insert a shop and map one or more domains:

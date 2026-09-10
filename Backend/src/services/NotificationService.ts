@@ -1,4 +1,5 @@
 import { NotificationRepository } from "../repositories/NotificationRepository.ts";
+import { BarberRatingRepository } from "../repositories/BarberRatingRepository.ts";
 import type { NotificationType } from "../types/notification.types.ts";
 
 // Notifications should never break the action that triggered them.
@@ -9,6 +10,7 @@ async function safeCreate(
   title: string,
   message: string,
   link: string | null = null,
+  relatedId: string | null = null,
 ): Promise<void> {
   try {
     await NotificationRepository.create(
@@ -18,6 +20,7 @@ async function safeCreate(
       title,
       message,
       link,
+      relatedId,
     );
   } catch (error) {
     console.error("Failed to create notification:", error);
@@ -129,6 +132,39 @@ export class NotificationService {
           "/user-profile",
         ),
       ),
+    );
+  }
+
+  // Lazily invoked whenever a customer's notifications are read: for every
+  // barber they've had a completed appointment with but never rated, sends a
+  // reminder starting a week after the visit and repeating weekly until they
+  // leave a rating (dedup relies on the most recent RATING_REMINDER for that barber).
+  static async syncRatingReminders(
+    shopId: string,
+    customerId: string,
+  ): Promise<void> {
+    const pending = await BarberRatingRepository.findBarbersNeedingReminder(
+      shopId,
+      customerId,
+    );
+    await Promise.all(
+      pending.map(async ({ barberId, barberName }) => {
+        const lastSentAt = await BarberRatingRepository.lastReminderSentAt(
+          shopId,
+          customerId,
+          barberId,
+        );
+        if (!BarberRatingRepository.isReminderDue(lastSentAt)) return;
+        await safeCreate(
+          shopId,
+          customerId,
+          "RATING_REMINDER",
+          "Rate your barber",
+          `How was your visit with ${barberName}? Leave a rating.`,
+          `/book?barberId=${barberId}`,
+          barberId,
+        );
+      }),
     );
   }
 }

@@ -1,8 +1,12 @@
 import type { Request, Response } from "express";
 import { NotificationRepository } from "../repositories/NotificationRepository.ts";
+import { NotificationService } from "../services/NotificationService.ts";
 
 export class NotificationController {
   static async list(req: Request, res: Response): Promise<Response> {
+    if (req.user!.role === "CUSTOMER") {
+      await NotificationService.syncRatingReminders(req.shop!.id, req.user!.id);
+    }
     const notifications = await NotificationRepository.listForUser(
       req.shop!.id,
       req.user!.id,

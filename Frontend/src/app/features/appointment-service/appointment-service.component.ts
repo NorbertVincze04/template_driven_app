@@ -23,6 +23,7 @@ import {
   ActionConfig,
 } from '../../shared/components/action-button/action-button.component';
 import { BarberProfileHeaderComponent } from '../../shared/components/barber-profile-header/barber-profile-header.component';
+import { BarberRatingPanelComponent } from '../../shared/components/barber-rating-panel/barber-rating-panel.component';
 import { TimeSlotPickerComponent } from '../../shared/components/time-slot-picker/time-slot-picker.component';
 import { GuestDetailsFormComponent } from '../../shared/components/guest-details-form/guest-details-form.component';
 
@@ -58,6 +59,7 @@ function todayInBucharest(): string {
     ReactiveFormsModule,
     ActionButtonComponent,
     BarberProfileHeaderComponent,
+    BarberRatingPanelComponent,
     TimeSlotPickerComponent,
     GuestDetailsFormComponent,
   ],

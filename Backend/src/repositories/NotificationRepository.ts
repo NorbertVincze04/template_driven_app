@@ -12,11 +12,12 @@ export class NotificationRepository {
     title: string,
     message: string,
     link: string | null = null,
+    relatedId: string | null = null,
   ): Promise<void> {
     await pool.query(
-      `INSERT INTO notifications (shop_id, recipient_id, type, title, message, link)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      [shopId, recipientId, type, title, message, link],
+      `INSERT INTO notifications (shop_id, recipient_id, type, title, message, link, related_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [shopId, recipientId, type, title, message, link, relatedId],
     );
   }
 

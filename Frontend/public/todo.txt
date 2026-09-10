@@ -3,5 +3,6 @@ services section updated by owner
 
 upgrade membership from user to barber by owner
 
-users should have the possibility to rate barbers 
-(rating should be shown also in the book page of the barber below the barbers phone number and barbers should be able to see their rating in their profile inside personal details)
+report bug from footer menu
+
+reschedule date fix

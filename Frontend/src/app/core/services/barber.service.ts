@@ -11,6 +11,8 @@ import {
   Barber,
   BarberAvailability,
   BarberService as ServiceOption,
+  MyBarberRating,
+  MyBarberRatingStatus,
 } from '../models/barber.model';
 
 @Injectable({ providedIn: 'root' })
@@ -140,5 +142,38 @@ export class BarberService {
 
   deleteService(id: string) {
     return this.http.delete(`${this.baseUrl}/services/${id}`, this.options());
+  }
+
+  // The logged-in customer's rating status for this barber: whether they're
+  // eligible (had a completed appointment) and whether they can (re)rate now.
+  getMyRating(barberId: string): Observable<MyBarberRatingStatus> {
+    return this.http
+      .get<{
+        payload: MyBarberRatingStatus;
+      }>(`${this.baseUrl}/barbers/${barberId}/rating/mine`, this.options())
+      .pipe(map((response) => response.payload));
+  }
+
+  rateBarber(
+    barberId: string,
+    rating: number,
+    comment: string,
+  ): Observable<MyBarberRating> {
+    return this.http
+      .post<{
+        payload: MyBarberRating;
+      }>(
+        `${this.baseUrl}/barbers/${barberId}/rating`,
+        { rating, comment },
+        this.options(),
+      )
+      .pipe(map((response) => response.payload));
+  }
+
+  deleteMyRating(barberId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.baseUrl}/barbers/${barberId}/rating`,
+      this.options(),
+    );
   }
 }

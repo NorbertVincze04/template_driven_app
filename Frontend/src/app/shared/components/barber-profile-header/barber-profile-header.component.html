@@ -15,5 +15,9 @@
     @if (barber.phoneNumber) {
       <p>{{ barber.phoneNumber }}</p>
     }
+    <app-barber-rating-summary
+      [rating]="barber.rating"
+      [ratingCount]="barber.ratingCount"
+    ></app-barber-rating-summary>
   </div>
 </header>

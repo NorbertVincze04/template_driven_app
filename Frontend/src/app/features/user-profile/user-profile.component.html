@@ -51,6 +51,17 @@
               <dt>Email address</dt>
               <dd>{{ currentUser()?.email }}</dd>
             </div>
+            @if (currentUser()?.type === "BARBER") {
+              <div>
+                <dt>Rating</dt>
+                <dd>
+                  <app-barber-rating-summary
+                    [rating]="myRating()"
+                    [ratingCount]="myRatingCount()"
+                  ></app-barber-rating-summary>
+                </dd>
+              </div>
+            }
           </dl>
         </div>
         <div class="edit-profile-action">

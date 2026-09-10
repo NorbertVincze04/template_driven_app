@@ -4,6 +4,7 @@ import {
   Injectable,
   PLATFORM_ID,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -39,6 +40,16 @@ export class NotificationService {
       } else {
         this._notifications.set([]);
         this.stopPolling();
+      }
+    });
+
+    // This service may be constructed before the tenant resolves (e.g. when
+    // eagerly created at app start), which would otherwise send the first
+    // refresh() with the wrong/default tenant header. Re-fires the instant
+    // the real tenant is known so the very first fetch is always accurate.
+    effect(() => {
+      if (this.tenantService.config() && this.authService.currentUserValue) {
+        this.refresh();
       }
     });
 

@@ -8,6 +8,7 @@ export interface Barber {
   profileImagePositionY: number;
   role?: string;
   rating?: number | null;
+  ratingCount?: number;
 }
 
 export interface BarberService {
@@ -21,4 +22,18 @@ export interface BarberAvailability {
   barber: Barber;
   service: BarberService;
   slots: string[];
+}
+
+export interface MyBarberRating {
+  id: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface MyBarberRatingStatus {
+  rating: MyBarberRating | null;
+  eligible: boolean;
+  canRate: boolean;
+  nextEligibleDate: string | null;
 }

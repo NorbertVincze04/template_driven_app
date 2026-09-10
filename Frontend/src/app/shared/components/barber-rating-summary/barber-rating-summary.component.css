@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+.barber-rating-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star-icon {
+  width: 16px;
+  height: 16px;
+  fill: var(--theme-border);
+  stroke: none;
+}
+
+.star-icon.filled {
+  fill: #f59e0b;
+}
+
+.rating-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.rating-count {
+  font-size: 0.8rem;
+  color: var(--theme-muted);
+}
+
+.no-ratings {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--theme-muted);
+}
