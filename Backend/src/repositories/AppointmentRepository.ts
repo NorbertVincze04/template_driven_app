@@ -9,6 +9,8 @@ export interface AppointmentRecord {
   service_id: string;
   service_name: string;
   customer_name: string | null;
+  barber_id: string;
+  barber_name: string | null;
   guest_name: string | null;
   guest_email: string | null;
   guest_phone: string | null;
@@ -43,7 +45,7 @@ export class AppointmentRepository {
     const { rows } = await pool.query<AppointmentRecord>(
       `
       SELECT a.id, a.appointment_date::text, a.appointment_time::text, a.status, a.service_id,
-        s.name AS service_name, u.full_name AS customer_name,
+        s.name AS service_name, u.full_name AS customer_name, a.barber_id, b.full_name AS barber_name,
         a.guest_name, a.guest_email, a.guest_phone,
         r.id AS request_id, r.type AS request_type,
         to_char(r.requested_date, 'YYYY-MM-DD') AS request_date,
@@ -52,6 +54,7 @@ export class AppointmentRepository {
       FROM appointments a
       INNER JOIN services s ON s.id = a.service_id AND s.shop_id = a.shop_id
       LEFT JOIN users u ON u.id = a.customer_id
+      LEFT JOIN users b ON b.id = a.barber_id
       LEFT JOIN appointment_change_requests r ON r.appointment_id = a.id AND r.status = 'PENDING'
       WHERE a.customer_id = $1 AND a.shop_id = $2
       ORDER BY a.appointment_date ASC, a.appointment_time ASC

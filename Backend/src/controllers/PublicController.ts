@@ -44,12 +44,14 @@ export class PublicController {
   }
 
   static async availability(req: Request, res: Response) {
-    const { barberId, serviceId, date } = req.query;
+    const { barberId, serviceId, date, excludeAppointmentId } = req.query;
     if (
       typeof barberId !== "string" ||
       typeof serviceId !== "string" ||
       typeof date !== "string" ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(date)
+      !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+      (excludeAppointmentId !== undefined &&
+        typeof excludeAppointmentId !== "string")
     ) {
       return res.status(400).json({
         success: false,
@@ -61,6 +63,7 @@ export class PublicController {
       barberId,
       serviceId,
       date,
+      excludeAppointmentId,
     );
     return result
       ? res.json({ success: true, payload: result })

@@ -4,6 +4,7 @@ import {
   Input,
   Output,
   computed,
+  inject,
   input,
   signal,
 } from '@angular/core';
@@ -16,6 +17,7 @@ import {
 } from '@angular/forms';
 import { Appointment } from '../../../core/services/auth.service';
 import { BarberService as ServiceOption } from '../../../core/models/barber.model';
+import { BarberService } from '../../../core/services/barber.service';
 import { ActionButtonComponent } from '../action-button/action-button.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
@@ -47,6 +49,8 @@ export type AppointmentStatusFilter =
   styleUrl: './appointments-list.component.css',
 })
 export class AppointmentsListComponent {
+  private readonly barberApi = inject(BarberService);
+
   // Signal input (not @Input) so `filteredAppointments` reactively recomputes
   // whenever the parent passes a new array reference (e.g. after a delete).
   readonly appointments = input<Appointment[]>([]);
@@ -133,6 +137,13 @@ export class AppointmentsListComponent {
   protected readonly confirmTarget = signal<Appointment | null>(null);
   protected confirmMode: 'delete' | 'cancel' = 'delete';
 
+  // Real available hours for the appointment currently being rescheduled,
+  // fetched from the barber's live availability so the picker only ever
+  // offers slots that will actually be accepted.
+  protected readonly rescheduleSlots = signal<string[]>([]);
+  protected readonly rescheduleSlotsLoading = signal(false);
+  private reschedulingAppointment: Appointment | null = null;
+
   protected setStatusFilter(filter: AppointmentStatusFilter): void {
     this.statusFilter.set(filter);
   }
@@ -161,14 +172,57 @@ export class AppointmentsListComponent {
 
   protected startRescheduleRequest(appointment: Appointment): void {
     this.reschedulingId = appointment.id;
+    this.reschedulingAppointment = appointment;
     this.rescheduleForm.setValue({
       date: appointment.date.slice(0, 10),
       time: appointment.hour,
     });
+    this.loadRescheduleSlots(appointment.hour);
   }
 
   protected cancelRescheduleRequest(): void {
     this.reschedulingId = '';
+    this.reschedulingAppointment = null;
+    this.rescheduleSlots.set([]);
+  }
+
+  // Called from the template whenever the customer picks a new date, so the
+  // hour dropdown always reflects that date's real availability.
+  protected onRescheduleDateChange(): void {
+    this.rescheduleForm.controls.time.setValue('');
+    this.loadRescheduleSlots();
+  }
+
+  private loadRescheduleSlots(keepTime?: string): void {
+    const appointment = this.reschedulingAppointment;
+    const date = this.rescheduleForm.controls.date.value;
+    if (!appointment?.barberId || !date) {
+      this.rescheduleSlots.set([]);
+      return;
+    }
+    this.rescheduleSlotsLoading.set(true);
+    this.barberApi
+      .availability(
+        appointment.barberId,
+        appointment.serviceId,
+        date,
+        appointment.id,
+      )
+      .subscribe({
+        next: (result) => {
+          const slots = result.slots;
+          this.rescheduleSlots.set(slots);
+          const time = keepTime ?? this.rescheduleForm.controls.time.value;
+          this.rescheduleForm.controls.time.setValue(
+            slots.includes(time) ? time : '',
+          );
+          this.rescheduleSlotsLoading.set(false);
+        },
+        error: () => {
+          this.rescheduleSlots.set([]);
+          this.rescheduleSlotsLoading.set(false);
+        },
+      });
   }
 
   protected submitRescheduleRequest(appointment: Appointment): void {
@@ -181,6 +235,8 @@ export class AppointmentsListComponent {
       ...this.rescheduleForm.getRawValue(),
     });
     this.reschedulingId = '';
+    this.reschedulingAppointment = null;
+    this.rescheduleSlots.set([]);
   }
 
   protected requestDelete(appointment: Appointment): void {

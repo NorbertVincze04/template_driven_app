@@ -37,6 +37,8 @@ export interface Appointment {
   serviceName: string;
   hour: string;
   customerName?: string | null;
+  barberId?: string | null;
+  barberName?: string | null;
   guestName?: string | null;
   guestEmail?: string | null;
   guestPhone?: string | null;

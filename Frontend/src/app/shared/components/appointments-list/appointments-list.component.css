@@ -76,15 +76,17 @@
 }
 
 .appointments-table {
-  overflow-x: auto;
+  width: 100%;
 }
 
 .table-row {
   display: grid;
-  grid-template-columns: 1.1fr 1.2fr 1.6fr 0.8fr;
+  grid-template-columns:
+    minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(0, 1.1fr)
+    minmax(0, 1fr);
   gap: 1rem;
   align-items: center;
-  min-width: 560px;
+  width: 100%;
   padding: 0.9rem 0;
   border-top: 1px solid var(--theme-border);
   color: var(--theme-text-soft);
@@ -92,12 +94,37 @@
 }
 
 .table-row.barber-row {
-  grid-template-columns: 1fr 1.1fr 1.4fr 0.7fr 1.1fr 1.2fr;
+  grid-template-columns:
+    minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 0.9fr)
+    minmax(0, 1.1fr) minmax(0, 1.2fr);
 }
 
 .table-row.customer-row {
-  grid-template-columns: 1fr 1.1fr 1.5fr 0.7fr 1.6fr;
-  min-width: 640px;
+  grid-template-columns:
+    minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr)
+    minmax(0, 1fr) minmax(0, 1.6fr);
+}
+
+.table-row [role="cell"],
+.table-row [role="columnheader"] {
+  min-width: 0;
+  overflow-wrap: break-word;
+  text-align: center;
+}
+
+.service-cell {
+  max-width: 12ch;
+  white-space: normal;
+  overflow-wrap: break-word;
+  margin: 0 auto;
+}
+
+.hour-cell {
+  white-space: nowrap;
+}
+
+.hour-cell input[type="time"] {
+  min-width: 6.5rem;
 }
 
 .appointment-actions {
@@ -105,6 +132,7 @@
   flex-wrap: wrap;
   gap: 0.45rem;
   align-items: center;
+  justify-content: center;
 }
 
 .pending-badge {

@@ -8,9 +8,12 @@ export class UserRepository {
       await client.query("BEGIN");
 
       await client.query(
-        `UPDATE appointments
-         SET customer_id = NULL, updated_at = NOW()
-         WHERE customer_id = $1 AND shop_id = $2 AND status = 'COMPLETED'`,
+        `UPDATE appointments a
+         SET customer_id = NULL,
+             guest_name = COALESCE(a.guest_name, u.full_name),
+             updated_at = NOW()
+         FROM users u
+         WHERE a.customer_id = $1 AND u.id = $1 AND a.shop_id = $2 AND a.status = 'COMPLETED'`,
         [userId, shopId],
       );
 

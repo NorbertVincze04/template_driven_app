@@ -258,6 +258,7 @@ export class BarberRepository {
     barberId: string,
     serviceId: string,
     date: string,
+    excludeAppointmentId?: string,
   ) {
     const barber = await this.find(shopId, barberId);
     if (!barber) return null;
@@ -289,9 +290,10 @@ export class BarberRepository {
     const appointmentsResult = await pool.query(
       `SELECT starts_at, ends_at FROM appointments
        WHERE shop_id = $1 AND barber_id = $2 AND status <> 'CANCELLED'
+         AND ($4::uuid IS NULL OR id <> $4)
          AND starts_at < (($3::date + INTERVAL '1 day') AT TIME ZONE '${BOOKING_TIME_ZONE}')
          AND ends_at > ($3::date AT TIME ZONE '${BOOKING_TIME_ZONE}')`,
-      [shopId, barberId, date],
+      [shopId, barberId, date, excludeAppointmentId ?? null],
     );
 
     const hours = hoursResult.rows[0];
@@ -318,6 +320,56 @@ export class BarberRepository {
       }
     }
     return { barber, service, slots };
+  }
+
+  // Rejects a date/time that falls outside working hours, inside a blocked
+  // period, or overlapping another appointment. Shared by direct booking and
+  // by reschedule requests so both paths only offer times the barber can honor.
+  static async assertAvailable(
+    shopId: string,
+    barberId: string,
+    date: string,
+    time: string,
+    durationMinutes: number,
+    excludeAppointmentId?: string,
+  ): Promise<void> {
+    const startsAt = bucharestTimeToUtc(date, time).toISOString();
+    const endsAt = new Date(
+      new Date(startsAt).getTime() + durationMinutes * 60000,
+    ).toISOString();
+    const weekday = new Date(`${date}T12:00:00Z`).getUTCDay();
+    const hoursResult = await pool.query(
+      `SELECT start_time::text, end_time::text FROM barber_working_hours
+       WHERE shop_id = $1 AND barber_id = $2 AND weekday = $3 AND is_active = TRUE`,
+      [shopId, barberId, weekday],
+    );
+    const hours = hoursResult.rows[0];
+    if (
+      !hours ||
+      timeToMinutes(time) < timeToMinutes(hours.start_time) ||
+      timeToMinutes(formatBucharestTime(new Date(endsAt))) >
+        timeToMinutes(hours.end_time)
+    ) {
+      throw new Error("This time is outside the barber's working hours.");
+    }
+    const blockedResult = await pool.query(
+      `SELECT 1 FROM barber_blocked_periods
+       WHERE shop_id = $1 AND barber_id = $2 AND starts_at < $4 AND ends_at > $3 LIMIT 1`,
+      [shopId, barberId, startsAt, endsAt],
+    );
+    if (blockedResult.rowCount)
+      throw new Error("This time is blocked by the barber.");
+
+    const overlapResult = await pool.query(
+      `SELECT 1 FROM appointments
+       WHERE shop_id = $1 AND barber_id = $2 AND status <> 'CANCELLED'
+         AND starts_at < $4 AND ends_at > $3
+         AND ($5::uuid IS NULL OR id <> $5)
+       LIMIT 1`,
+      [shopId, barberId, startsAt, endsAt, excludeAppointmentId ?? null],
+    );
+    if (overlapResult.rowCount)
+      throw new Error("This time overlaps with another appointment.");
   }
 
   static async createAppointment(input: {

@@ -14,6 +14,8 @@ function toPayload(appointment: AppointmentRecord) {
     serviceId: appointment.service_id,
     serviceName: appointment.service_name,
     customerName: appointment.customer_name,
+    barberId: appointment.barber_id,
+    barberName: appointment.barber_name,
     guestName: appointment.guest_name,
     guestEmail: appointment.guest_email,
     guestPhone: appointment.guest_phone,

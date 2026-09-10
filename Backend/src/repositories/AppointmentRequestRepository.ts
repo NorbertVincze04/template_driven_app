@@ -1,5 +1,5 @@
 import { pool } from "../db.ts";
-import { bucharestTimeToUtc } from "./BarberRepository.ts";
+import { bucharestTimeToUtc, BarberRepository } from "./BarberRepository.ts";
 
 export interface ChangeRequestRecord {
   id: string;
@@ -74,14 +74,30 @@ export class AppointmentRequestRepository {
   ): Promise<ChangeRequestRecord> {
     const requestedDate = calendarDate(date);
     const requestedTime = clockTime(time);
-    const appointment = await pool.query(
-      `SELECT id FROM appointments
-       WHERE id = $1 AND customer_id = $2 AND shop_id = $3
-         AND status NOT IN ('COMPLETED', 'CANCELLED')`,
+    const appointment = await pool.query<{
+      id: string;
+      barberId: string;
+      durationMinutes: number;
+    }>(
+      `SELECT a.id, a.barber_id AS "barberId", s.duration_minutes AS "durationMinutes"
+       FROM appointments a
+       INNER JOIN services s ON s.id = a.service_id
+       WHERE a.id = $1 AND a.customer_id = $2 AND a.shop_id = $3
+         AND a.status NOT IN ('COMPLETED', 'CANCELLED')`,
       [appointmentId, customerId, shopId],
     );
     if (!appointment.rowCount)
       throw new Error("Appointment not found or can no longer be changed.");
+
+    const { barberId, durationMinutes } = appointment.rows[0];
+    await BarberRepository.assertAvailable(
+      shopId,
+      barberId,
+      requestedDate,
+      requestedTime,
+      durationMinutes,
+      appointmentId,
+    );
 
     try {
       const { rows } = await pool.query<ChangeRequestRecord>(

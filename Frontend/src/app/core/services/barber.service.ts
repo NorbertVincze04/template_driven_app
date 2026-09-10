@@ -75,6 +75,7 @@ export class BarberService {
     barberId: string,
     serviceId: string,
     date: string,
+    excludeAppointmentId?: string,
   ): Observable<BarberAvailability> {
     if (environment.useLocalBarberFixtures) {
       const barber = LOCAL_BARBERS.find((item) => item.id === barberId)!;
@@ -92,7 +93,9 @@ export class BarberService {
         payload: BarberAvailability;
       }>(`${this.baseUrl}/availability`, {
         ...this.options(),
-        params: { barberId, serviceId, date },
+        params: excludeAppointmentId
+          ? { barberId, serviceId, date, excludeAppointmentId }
+          : { barberId, serviceId, date },
       })
       .pipe(map((response) => response.payload));
   }

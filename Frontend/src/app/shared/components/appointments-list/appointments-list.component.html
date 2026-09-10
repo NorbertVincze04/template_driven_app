@@ -74,6 +74,8 @@
         ><span role="columnheader">Hour</span>
         @if (userType === "BARBER") {
           <span role="columnheader">Customer</span>
+        } @else {
+          <span role="columnheader">Barber</span>
         }
         <span role="columnheader">Actions</span>
       </div>
@@ -99,14 +101,14 @@
               <span role="cell"
                 ><input type="date" formControlName="date" required
               /></span>
-              <span role="cell">
+              <span role="cell" class="service-cell">
                 <select formControlName="serviceId" required>
                   @for (service of services; track service.id) {
                     <option [value]="service.id">{{ service.name }}</option>
                   }
                 </select>
               </span>
-              <span role="cell"
+              <span role="cell" class="hour-cell"
                 ><input type="time" formControlName="time" required
               /></span>
               <span role="cell">{{
@@ -117,6 +119,7 @@
                   buttonType="submit"
                   [config]="{ label: 'Save', variant: 'primary', size: 'sm' }"
                 ></app-action-button>
+
                 <app-action-button
                   [config]="{
                     label: 'Cancel',
@@ -140,12 +143,32 @@
                 >{{ appointment.status }}</span
               >
               <span role="cell"
-                ><input type="date" formControlName="date" required
+                ><input
+                  type="date"
+                  formControlName="date"
+                  required
+                  (change)="onRescheduleDateChange()"
               /></span>
-              <span role="cell">{{ appointment.serviceName }}</span>
-              <span role="cell"
-                ><input type="time" formControlName="time" required
-              /></span>
+              <span role="cell" class="service-cell">{{
+                appointment.serviceName
+              }}</span>
+              <span role="cell" class="hour-cell">
+                <select formControlName="time" required>
+                  <option value="" disabled>
+                    {{
+                      rescheduleSlotsLoading()
+                        ? "Loading..."
+                        : rescheduleSlots().length
+                          ? "Select hour"
+                          : "No hours available"
+                    }}
+                  </option>
+                  @for (slot of rescheduleSlots(); track slot) {
+                    <option [value]="slot">{{ slot }}</option>
+                  }
+                </select>
+              </span>
+              <span role="cell">{{ appointment.barberName || "—" }}</span>
               <span role="cell" class="appointment-actions">
                 <app-action-button
                   buttonType="submit"
@@ -153,6 +176,7 @@
                     label: 'Send request',
                     variant: 'primary',
                     size: 'sm',
+                    disabled: !rescheduleForm.controls.time.value,
                   }"
                 ></app-action-button>
                 <app-action-button
@@ -173,79 +197,85 @@
               >{{ appointment.status }}</span
             >
             <span role="cell">{{ appointment.date | date: "mediumDate" }}</span>
-            <span role="cell">{{ appointment.serviceName }}</span>
-            <span role="cell">{{ appointment.hour }}</span>
+            <span role="cell" class="service-cell">{{
+              appointment.serviceName
+            }}</span>
+            <span role="cell" class="hour-cell">{{ appointment.hour }}</span>
             @if (userType === "BARBER") {
               <span role="cell">{{
                 appointment.customerName || appointment.guestName || "Guest"
               }}</span>
+            } @else {
+              <span role="cell">{{ appointment.barberName || "—" }}</span>
             }
             <span role="cell" class="appointment-actions">
-              @if (userType === "BARBER") {
-                @if (appointment.pendingRequest) {
-                  <span class="pending-badge">{{
-                    pendingLabel(appointment)
-                  }}</span>
-                  <app-action-button
-                    [config]="{
-                      label: 'Approve',
-                      variant: 'primary',
-                      size: 'sm',
-                    }"
-                    (action)="approveRequest(appointment.pendingRequest!.id)"
-                  ></app-action-button>
-                  <app-action-button
-                    [config]="{
-                      label: 'Reject',
-                      variant: 'danger',
-                      size: 'sm',
-                    }"
-                    (action)="rejectRequest(appointment.pendingRequest!.id)"
-                  ></app-action-button>
+              @if (appointment.status === "SCHEDULED") {
+                @if (userType === "BARBER") {
+                  @if (appointment.pendingRequest) {
+                    <span class="pending-badge">{{
+                      pendingLabel(appointment)
+                    }}</span>
+                    <app-action-button
+                      [config]="{
+                        label: 'Approve',
+                        variant: 'primary',
+                        size: 'sm',
+                      }"
+                      (action)="approveRequest(appointment.pendingRequest!.id)"
+                    ></app-action-button>
+                    <app-action-button
+                      [config]="{
+                        label: 'Reject',
+                        variant: 'danger',
+                        size: 'sm',
+                      }"
+                      (action)="rejectRequest(appointment.pendingRequest!.id)"
+                    ></app-action-button>
+                  } @else {
+                    <app-action-button
+                      [config]="{
+                        label: 'Edit',
+                        variant: 'secondary',
+                        size: 'sm',
+                        disabled: actionId === appointment.id,
+                      }"
+                      (action)="startEdit(appointment)"
+                    ></app-action-button>
+                    <app-action-button
+                      [config]="{
+                        label: 'Delete',
+                        variant: 'danger',
+                        size: 'sm',
+                        disabled: actionId === appointment.id,
+                      }"
+                      (action)="requestDelete(appointment)"
+                    ></app-action-button>
+                  }
                 } @else {
-                  <app-action-button
-                    [config]="{
-                      label: 'Edit',
-                      variant: 'secondary',
-                      size: 'sm',
-                      disabled: actionId === appointment.id,
-                    }"
-                    (action)="startEdit(appointment)"
-                  ></app-action-button>
-                  <app-action-button
-                    [config]="{
-                      label: 'Delete',
-                      variant: 'danger',
-                      size: 'sm',
-                      disabled: actionId === appointment.id,
-                    }"
-                    (action)="requestDelete(appointment)"
-                  ></app-action-button>
-                }
-              } @else {
-                @if (appointment.pendingRequest) {
-                  <span class="pending-badge">{{
-                    pendingLabel(appointment)
-                  }}</span>
-                } @else {
-                  <app-action-button
-                    [config]="{
-                      label: 'Request cancel',
-                      variant: 'danger',
-                      size: 'sm',
-                      disabled: actionId === appointment.id,
-                    }"
-                    (action)="requestCancelConfirm(appointment)"
-                  ></app-action-button>
-                  <app-action-button
-                    [config]="{
-                      label: 'Request reschedule',
-                      variant: 'secondary',
-                      size: 'sm',
-                      disabled: actionId === appointment.id,
-                    }"
-                    (action)="startRescheduleRequest(appointment)"
-                  ></app-action-button>
+                  @if (appointment.pendingRequest) {
+                    <span class="pending-badge">{{
+                      pendingLabel(appointment)
+                    }}</span>
+                  } @else {
+                    <app-action-button
+                      [config]="{
+                        label: 'Cancel',
+                        variant: 'danger',
+                        size: 'sm',
+                        disabled: actionId === appointment.id,
+                      }"
+                      (action)="requestCancelConfirm(appointment)"
+                    ></app-action-button>
+                    <app-action-button
+                      [config]="{
+                        label: 'Reschedule',
+                        variant: 'secondary',
+                        size: 'sm',
+                        disabled: actionId === appointment.id,
+                      }"
+                      (action)="startRescheduleRequest(appointment)"
+                    ></app-action-button>
+                  }
                 }
               }
             </span>
@@ -276,7 +306,7 @@
     (confirmTarget()?.customerName || confirmTarget()?.guestName || 'Guest') +
     '?'
   "
-  [confirmLabel]="confirmMode === 'delete' ? 'Delete' : 'Request cancel'"
+  [confirmLabel]="confirmMode === 'delete' ? 'Delete' : 'Cancel'"
   (confirm)="confirmAction()"
   (cancel)="cancelConfirm()"
 ></app-confirm-dialog>
