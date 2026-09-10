@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   FormControl,
@@ -8,6 +16,8 @@ import {
 } from '@angular/forms';
 import { ActionButtonComponent } from '../action-button/action-button.component';
 import { BlockedPeriod } from '../../../core/models/barber-schedule.models';
+import { interval } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Lets a barber block out a time range (e.g. holiday, lunch break) and
@@ -23,6 +33,8 @@ import { BlockedPeriod } from '../../../core/models/barber-schedule.models';
   styleUrl: './blocked-time-manager.component.css',
 })
 export class BlockedTimeManagerComponent {
+  private readonly destroyRef = inject(DestroyRef);
+
   @Input() blockedPeriods: BlockedPeriod[] = [];
 
   // Emitted with a validated {startsAt, endsAt, reason}; the parent calls the API.
@@ -69,6 +81,26 @@ export class BlockedTimeManagerComponent {
     reason: new FormControl('', { nonNullable: true }),
   });
   protected editValidationError = '';
+  protected readonly statusFilter = signal<'ongoing' | 'passed'>('ongoing');
+  private readonly currentTime = signal(Date.now());
+
+  constructor() {
+    interval(60_000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.currentTime.set(Date.now()));
+  }
+
+  protected visibleBlockedPeriods(): BlockedPeriod[] {
+    return this.blockedPeriods.filter(
+      (period) => this.periodStatus(period) === this.statusFilter(),
+    );
+  }
+
+  protected periodStatus(period: BlockedPeriod): 'ongoing' | 'passed' {
+    return new Date(period.endsAt).getTime() > this.currentTime()
+      ? 'ongoing'
+      : 'passed';
+  }
 
   protected submit(): void {
     if (this.blockForm.invalid) {

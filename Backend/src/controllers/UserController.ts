@@ -2,6 +2,21 @@ import type { Request, Response } from "express";
 import { UserRepository } from "../repositories/UserRepository.ts";
 
 export class UserController {
+  static async deleteProfile(req: Request, res: Response): Promise<Response> {
+    try {
+      await UserRepository.deleteProfile(req.user!.id, req.shop!.id);
+      return res.json({ success: true });
+    } catch (error: any) {
+      if (error.message === "User profile was not found.") {
+        return res.status(404).json({ success: false, message: error.message });
+      }
+      console.error("Profile deletion failed:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Profile deletion failed." });
+    }
+  }
+
   static async updateProfile(req: Request, res: Response): Promise<Response> {
     const {
       fullName,

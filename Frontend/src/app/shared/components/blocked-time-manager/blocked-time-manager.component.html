@@ -6,24 +6,39 @@
     </div>
     <!-- <span class="item-count">{{ blockedPeriods.length }}</span> -->
   </div>
-  <form [formGroup]="blockForm" (ngSubmit)="submit()">
-    <input type="datetime-local" formControlName="startsAt" required /><input
-      type="datetime-local"
-      formControlName="endsAt"
-      required
-    /><input
-      type="text"
-      formControlName="reason"
-      placeholder="Reason (optional)"
-    /><app-action-button
+  <form class="block-form" [formGroup]="blockForm" (ngSubmit)="submit()">
+    <label>
+      From
+      <input type="datetime-local" formControlName="startsAt" required />
+    </label>
+    <label>
+      Until
+      <input type="datetime-local" formControlName="endsAt" required />
+    </label>
+    <label class="reason-field">
+      Reason
+      <input type="text" formControlName="reason" placeholder="Optional" />
+    </label>
+    <app-action-button
       buttonType="submit"
       [config]="{ label: 'Block appointment time', variant: 'primary' }"
     ></app-action-button>
   </form>
+  <div class="period-filter">
+    <label for="period-status">Show</label>
+    <select
+      id="period-status"
+      [value]="statusFilter()"
+      (change)="statusFilter.set($any($event.target).value)"
+    >
+      <option value="ongoing">Ongoing</option>
+      <option value="passed">Passed</option>
+    </select>
+  </div>
   @if (validationError) {
     <p class="error">{{ validationError }}</p>
   }
-  @for (period of blockedPeriods; track period.id) {
+  @for (period of visibleBlockedPeriods(); track period.id) {
     <div class="blocked-period">
       @if (editingId === period.id) {
         <form
@@ -31,19 +46,22 @@
           [formGroup]="editForm"
           (ngSubmit)="saveEdit(period.id)"
         >
-          <input
-            type="datetime-local"
-            formControlName="startsAt"
-            required
-          /><input
-            type="datetime-local"
-            formControlName="endsAt"
-            required
-          /><input
-            type="text"
-            formControlName="reason"
-            placeholder="Reason (optional)"
-          />
+          <label>
+            From
+            <input type="datetime-local" formControlName="startsAt" required />
+          </label>
+          <label>
+            Until
+            <input type="datetime-local" formControlName="endsAt" required />
+          </label>
+          <label>
+            Reason
+            <input
+              type="text"
+              formControlName="reason"
+              placeholder="Optional"
+            />
+          </label>
           @if (editValidationError) {
             <p class="error">{{ editValidationError }}</p>
           }
@@ -59,23 +77,33 @@
           </span>
         </form>
       } @else {
-        <span class="period-dates"
-          >{{ period.startsAt | date: "medium" }} -
-          {{ period.endsAt | date: "medium" }}</span
-        >
-        <span class="period-reason">{{
-          period.reason || "No reason provided"
-        }}</span>
-        <span class="period-actions">
-          <app-action-button
-            [config]="{ label: 'Edit', variant: 'secondary', size: 'sm' }"
-            (action)="startEdit(period)"
-          ></app-action-button>
-          <app-action-button
-            [config]="{ label: 'Remove', variant: 'danger', size: 'sm' }"
-            (action)="unblock.emit(period.id)"
-          ></app-action-button>
-        </span>
+        <div class="period-header">
+          <span class="period-dates"
+            >{{ period.startsAt | date: "medium" }} -
+            {{ period.endsAt | date: "medium" }}</span
+          >
+          <span class="period-actions">
+            <app-action-button
+              [config]="{ label: 'Edit', variant: 'secondary', size: 'sm' }"
+              (action)="startEdit(period)"
+            ></app-action-button>
+            <app-action-button
+              [config]="{ label: 'Remove', variant: 'danger', size: 'sm' }"
+              (action)="unblock.emit(period.id)"
+            ></app-action-button>
+          </span>
+        </div>
+        <div class="period-details">
+          <span class="period-reason">{{
+            period.reason || "No reason provided"
+          }}</span>
+          <span
+            class="period-status"
+            [class.period-status-passed]="periodStatus(period) === 'passed'"
+          >
+            {{ periodStatus(period) }}
+          </span>
+        </div>
       }
     </div>
   }

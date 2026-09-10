@@ -19,7 +19,11 @@ import { BarberService as ServiceOption } from '../../../core/models/barber.mode
 import { ActionButtonComponent } from '../action-button/action-button.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
-export type AppointmentStatusFilter = 'SCHEDULED' | 'COMPLETED' | 'ALL';
+export type AppointmentStatusFilter =
+  | 'SCHEDULED'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'ALL';
 
 /**
  * Displays the signed-in user's appointments as a table with status
@@ -88,6 +92,8 @@ export class AppointmentsListComponent {
     if (filter === 'ALL') return appointments;
     if (filter === 'COMPLETED')
       return appointments.filter((a) => a.status === 'COMPLETED');
+    if (filter === 'CANCELLED')
+      return appointments.filter((a) => a.status === 'CANCELLED');
     return appointments.filter(
       (a) => a.status !== 'COMPLETED' && a.status !== 'CANCELLED',
     );

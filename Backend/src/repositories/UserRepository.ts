@@ -2,6 +2,41 @@ import type { UserRecord } from "../types/user.types.ts";
 import { pool } from "../db.ts";
 
 export class UserRepository {
+  static async deleteProfile(userId: string, shopId: string): Promise<void> {
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+
+      await client.query(
+        `UPDATE appointments
+         SET customer_id = NULL, updated_at = NOW()
+         WHERE customer_id = $1 AND shop_id = $2 AND status = 'COMPLETED'`,
+        [userId, shopId],
+      );
+
+      await client.query(
+        `DELETE FROM appointments
+         WHERE customer_id = $1 AND shop_id = $2 AND status <> 'COMPLETED'`,
+        [userId, shopId],
+      );
+
+      const result = await client.query(
+        `DELETE FROM users WHERE id = $1 AND shop_id = $2 RETURNING id`,
+        [userId, shopId],
+      );
+      if (result.rowCount !== 1) {
+        throw new Error("User profile was not found.");
+      }
+
+      await client.query("COMMIT");
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
   static async findByEmail(
     shopId: string,
     email: string,

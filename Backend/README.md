@@ -78,6 +78,8 @@ sql/007_shared_services_compatibility.sql
 sql/008_default_tenant_config.sql
 sql/009_client_reviews.sql
 sql/010_appointment_change_requests.sql
+sql/011_phone_number_integrity.sql
+sql/012_preserve_completed_appointments_on_profile_delete.sql
 ```
 
 The later migrations create working hours, blocked periods, service prices,

@@ -29,6 +29,20 @@ describe("validateRegisterRequest", () => {
       "phoneNumber is required",
     ]);
   });
+
+  it("rejects phone numbers that do not match the frontend format", () => {
+    const result = validateRegisterRequest({
+      fullName: "Ada Lovelace",
+      email: "ada@example.com",
+      password: "s3cret-pass",
+      phoneNumber: "071234567",
+    });
+
+    assert.equal(result.valid, false);
+    assert.deepEqual(result.errors, [
+      "phoneNumber must contain 10 digits and start with 02, 03, or 07",
+    ]);
+  });
 });
 
 describe("validateLoginRequest", () => {

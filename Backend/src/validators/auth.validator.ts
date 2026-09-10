@@ -27,6 +27,10 @@ export function validateRegisterRequest(data: any): {
   }
   if (!data.phoneNumber || typeof data.phoneNumber !== "string") {
     errors.push("phoneNumber is required");
+  } else if (!/^0[237]\d{8}$/.test(data.phoneNumber)) {
+    errors.push(
+      "phoneNumber must contain 10 digits and start with 02, 03, or 07",
+    );
   }
   return {
     valid: errors.length === 0,

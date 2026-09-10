@@ -44,6 +44,15 @@
     <button
       type="button"
       role="tab"
+      [attr.aria-selected]="statusFilter() === 'CANCELLED'"
+      [class.active]="statusFilter() === 'CANCELLED'"
+      (click)="setStatusFilter('CANCELLED')"
+    >
+      Cancelled
+    </button>
+    <button
+      type="button"
+      role="tab"
       [attr.aria-selected]="statusFilter() === 'ALL'"
       [class.active]="statusFilter() === 'ALL'"
       (click)="setStatusFilter('ALL')"

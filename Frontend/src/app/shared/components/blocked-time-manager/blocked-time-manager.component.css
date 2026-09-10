@@ -53,6 +53,49 @@ form {
   margin-top: 0.75rem;
 }
 
+.block-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.block-form label,
+.edit-period-form label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--theme-text-soft);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.block-form .reason-field,
+.block-form app-action-button {
+  grid-column: 1 / -1;
+}
+
+.block-form app-action-button {
+  justify-self: start;
+}
+
+.period-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+  color: var(--theme-text-soft);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.period-filter select {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  font: inherit;
+}
+
 form input {
   padding: 0.65rem;
   border: 1px solid var(--theme-border);
@@ -63,15 +106,24 @@ form input {
 }
 
 .blocked-period {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: center;
+  display: grid;
+  gap: 0.75rem;
   margin-top: 0.75rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--theme-border);
   border-radius: 6px;
   background: var(--theme-card-bg);
+}
+
+.period-header,
+.period-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.period-header {
+  justify-content: space-between;
 }
 
 .period-dates {
@@ -83,10 +135,25 @@ form input {
   font-style: italic;
 }
 
+.period-status {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tenant-primary) 15%, transparent);
+  color: var(--tenant-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.period-status-passed {
+  background: color-mix(in srgb, var(--theme-text-soft) 15%, transparent);
+  color: var(--theme-text-soft);
+}
+
 .period-actions {
   display: flex;
   gap: 0.5rem;
-  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .edit-period-form {
@@ -106,9 +173,29 @@ form input {
   font: inherit;
 }
 
+.edit-period-form label {
+  flex: 1 1 180px;
+}
+
 @media (max-width: 560px) {
   .profile-section {
     padding: 1.25rem;
+  }
+
+  .block-form {
+    grid-template-columns: 1fr;
+  }
+
+  .block-form .reason-field,
+  .block-form app-action-button {
+    grid-column: auto;
+  }
+
+  .period-header,
+  .period-details {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
 

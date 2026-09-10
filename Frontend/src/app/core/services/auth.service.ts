@@ -81,10 +81,9 @@ export class AuthService {
   }
 
   private persistCurrentUser(user: User): void {
-    const { phoneNumber, ...storedUser } = user;
     localStorage.setItem(
       environment.CURRENT_USER_STORAGE,
-      JSON.stringify(storedUser),
+      JSON.stringify(user),
     );
   }
 
@@ -201,6 +200,19 @@ export class AuthService {
           this.persistCurrentUser(updatedUser);
           return updatedUser;
         }),
+        this.throwApiError(),
+      );
+  }
+
+  deleteProfile(): Observable<void> {
+    return this.http
+      .delete(`${environment.apiUrl}/users/me`, {
+        headers: {
+          'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+        },
+      })
+      .pipe(
+        map(() => undefined),
         this.throwApiError(),
       );
   }

@@ -18,6 +18,7 @@ import { BarberScheduleComponent } from '../barber-schedule/barber-schedule.comp
 import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
 import { ProfileImageEditorComponent } from '../../shared/components/profile-image-editor/profile-image-editor.component';
 import { AppointmentsListComponent } from '../../shared/components/appointments-list/appointments-list.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -37,6 +38,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ActionButtonComponent,
     ProfileImageEditorComponent,
     AppointmentsListComponent,
+    ConfirmDialogComponent,
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
@@ -57,6 +59,8 @@ export class UserProfileComponent {
   protected profileError = '';
   protected profileSaved = false;
   protected profileSaving = false;
+  protected profileDeleting = false;
+  protected deleteDialogOpen = false;
   protected appointmentActionId = '';
   protected readonly editingProfile = signal(false);
   protected profileForm = new FormGroup({
@@ -142,6 +146,34 @@ export class UserProfileComponent {
     this.profileError = '';
     this.profileSaved = false;
     this.editingProfile.set(true);
+  }
+
+  protected openDeleteProfileDialog(): void {
+    this.deleteDialogOpen = true;
+  }
+
+  protected closeDeleteProfileDialog(): void {
+    if (!this.profileDeleting) {
+      this.deleteDialogOpen = false;
+    }
+  }
+
+  protected deleteProfile(): void {
+    if (this.profileDeleting) return;
+    this.profileDeleting = true;
+    this.profileError = '';
+    this.authService.deleteProfile().subscribe({
+      next: () => {
+        this.profileDeleting = false;
+        this.deleteDialogOpen = false;
+        this.authService.logout();
+      },
+      error: (error) => {
+        this.profileDeleting = false;
+        this.profileError = error.message;
+        this.deleteDialogOpen = false;
+      },
+    });
   }
 
   protected cancelEdit(): void {

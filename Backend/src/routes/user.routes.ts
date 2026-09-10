@@ -8,3 +8,6 @@ export const userRouter = Router();
 userRouter.patch("/me", tenantMiddleware, authMiddleware, (req, res) =>
   UserController.updateProfile(req, res),
 );
+userRouter.delete("/me", tenantMiddleware, authMiddleware, (req, res) =>
+  UserController.deleteProfile(req, res),
+);
