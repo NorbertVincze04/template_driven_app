@@ -83,6 +83,7 @@ sql/012_preserve_completed_appointments_on_profile_delete.sql
 sql/013_notifications.sql
 sql/014_notification_read_at.sql
 sql/015_barber_ratings.sql
+sql/016_update_default_location_cluj_napoca.sql
 ```
 
 The later migrations create working hours, blocked periods, service prices,

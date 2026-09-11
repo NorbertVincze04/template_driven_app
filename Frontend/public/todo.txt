@@ -6,3 +6,5 @@ upgrade membership from user to barber by owner
 report bug from footer menu
 
 reschedule date fix
+
+photo gallery for barbers
