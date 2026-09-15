@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
 import { BarberRatingRepository } from "../repositories/BarberRatingRepository.ts";
 import { NotificationService } from "../services/NotificationService.ts";
+import { hasRole } from "../types/user.types.ts";
 
 export class BarberRatingController {
   static async mineReceived(req: Request, res: Response): Promise<Response> {
-    if (req.user!.role !== "BARBER") {
+    if (!hasRole(req.user!, "BARBER")) {
       return res.status(403).json({
         success: false,
         message: "Only barbers can view their received ratings.",

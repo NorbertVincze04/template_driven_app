@@ -5,6 +5,7 @@ import {
 } from "../repositories/AppointmentRepository.ts";
 import { AppointmentRequestRepository } from "../repositories/AppointmentRequestRepository.ts";
 import { NotificationService } from "../services/NotificationService.ts";
+import { hasRole } from "../types/user.types.ts";
 
 function toPayload(appointment: AppointmentRecord) {
   return {
@@ -35,7 +36,7 @@ function toPayload(appointment: AppointmentRecord) {
 export class AppointmentController {
   static async listMine(req: Request, res: Response): Promise<Response> {
     const appointments =
-      req.user!.role === "BARBER"
+      hasRole(req.user!, "BARBER")
         ? await AppointmentRepository.findForBarber(req.user!.id, req.shop!.id)
         : await AppointmentRepository.findForCustomer(
             req.user!.id,
@@ -48,7 +49,7 @@ export class AppointmentController {
   }
 
   static async updateMine(req: Request, res: Response): Promise<Response> {
-    if (req.user!.role !== "BARBER") {
+    if (!hasRole(req.user!, "BARBER")) {
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage appointments.",
@@ -128,7 +129,7 @@ export class AppointmentController {
   }
 
   static async deleteMine(req: Request, res: Response): Promise<Response> {
-    if (req.user!.role !== "BARBER") {
+    if (!hasRole(req.user!, "BARBER")) {
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage appointments.",
@@ -152,7 +153,7 @@ export class AppointmentController {
   }
 
   static async requestCancel(req: Request, res: Response): Promise<Response> {
-    if (req.user!.role === "BARBER") {
+    if (hasRole(req.user!, "BARBER")) {
       return res.status(403).json({
         success: false,
         message: "Only customers can request a cancellation.",
@@ -183,7 +184,7 @@ export class AppointmentController {
     req: Request,
     res: Response,
   ): Promise<Response> {
-    if (req.user!.role === "BARBER") {
+    if (hasRole(req.user!, "BARBER")) {
       return res.status(403).json({
         success: false,
         message: "Only customers can request a reschedule.",
@@ -221,7 +222,7 @@ export class AppointmentController {
   }
 
   static async resolveRequest(req: Request, res: Response): Promise<Response> {
-    if (req.user!.role !== "BARBER") {
+    if (!hasRole(req.user!, "BARBER")) {
       return res.status(403).json({
         success: false,
         message: "Only barbers can resolve change requests.",

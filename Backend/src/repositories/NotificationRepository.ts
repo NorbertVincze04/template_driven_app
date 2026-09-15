@@ -25,7 +25,7 @@ export class NotificationRepository {
   static async findAdminRecipientIds(shopId: string): Promise<string[]> {
     const { rows } = await pool.query<{ id: string }>(
       `SELECT id FROM users
-       WHERE shop_id = $1 AND role = 'ADMIN' AND is_active = TRUE`,
+        WHERE shop_id = $1 AND (role = 'ADMIN' OR 'OWNER' = ANY(roles)) AND is_active = TRUE`,
       [shopId],
     );
     return rows.map((row) => row.id);

@@ -57,6 +57,7 @@ export interface BarberProfile {
   profileImageUrl: string | null;
   profileImagePositionX: number;
   profileImagePositionY: number;
+  roles: string[];
   rating: number | null;
   ratingCount: number;
 }
@@ -77,7 +78,8 @@ export class BarberRepository {
     price: number,
   ) {
     const barber = await pool.query(
-      `SELECT id FROM users WHERE id = $1 AND shop_id = $2 AND role = 'BARBER' AND is_active = TRUE`,
+      `SELECT id FROM users
+       WHERE id = $1 AND shop_id = $2 AND 'BARBER' = ANY(roles) AND is_active = TRUE`,
       [barberId, shopId],
     );
     if (!barber.rowCount) throw new Error("Barber not found.");
@@ -221,9 +223,10 @@ export class BarberRepository {
     const { rows } = await pool.query(
       `SELECT u.id, u.full_name AS name, u.email, u.phone_number AS "phoneNumber",
         u.profile_image_url AS "profileImageUrl", u.profile_image_position_x AS "profileImagePositionX", u.profile_image_position_y AS "profileImagePositionY",
+        u.roles,
         (SELECT ROUND(AVG(r.rating)::numeric, 1) FROM barber_ratings r WHERE r.barber_id = u.id) AS rating,
         (SELECT COUNT(*) FROM barber_ratings r WHERE r.barber_id = u.id)::int AS "ratingCount"
-       FROM users u WHERE u.shop_id = $1 AND u.role = 'BARBER' AND u.is_active = TRUE
+      FROM users u WHERE u.shop_id = $1 AND 'BARBER' = ANY(u.roles) AND u.is_active = TRUE
        ORDER BY u.full_name`,
       [shopId],
     );
@@ -237,9 +240,10 @@ export class BarberRepository {
     const { rows } = await pool.query(
       `SELECT u.id, u.full_name AS name, u.email, u.phone_number AS "phoneNumber",
         u.profile_image_url AS "profileImageUrl", u.profile_image_position_x AS "profileImagePositionX", u.profile_image_position_y AS "profileImagePositionY",
+        u.roles,
         (SELECT ROUND(AVG(r.rating)::numeric, 1) FROM barber_ratings r WHERE r.barber_id = u.id) AS rating,
         (SELECT COUNT(*) FROM barber_ratings r WHERE r.barber_id = u.id)::int AS "ratingCount"
-       FROM users u WHERE u.id = $1 AND u.shop_id = $2 AND u.role = 'BARBER' AND u.is_active = TRUE`,
+      FROM users u WHERE u.id = $1 AND u.shop_id = $2 AND 'BARBER' = ANY(u.roles) AND u.is_active = TRUE`,
       [barberId, shopId],
     );
     return rows[0] ?? null;

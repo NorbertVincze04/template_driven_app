@@ -83,6 +83,7 @@ export class UserController {
           profileImagePositionX: user.profile_image_position_x,
           profileImagePositionY: user.profile_image_position_y,
           role: user.role,
+          roles: user.roles,
           shopId: req.shop!.id,
           shopSlug: req.shop!.slug,
         },

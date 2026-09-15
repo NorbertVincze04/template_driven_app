@@ -7,6 +7,7 @@ export interface Barber {
   profileImagePositionX: number;
   profileImagePositionY: number;
   role?: string;
+  roles?: string[];
   rating?: number | null;
   ratingCount?: number;
 }

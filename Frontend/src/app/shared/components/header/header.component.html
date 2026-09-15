@@ -49,6 +49,12 @@
       </button>
     }
 
+    @if (showAdminButton()) {
+      <button type="button" class="nav-link admin-link" (click)="openAdmin()">
+        Admin
+      </button>
+    }
+
     @if (tenantConfig()?.layout?.header?.showThemeToggle === true) {
       <button
         class="icon-btn"

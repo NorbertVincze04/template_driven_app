@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import type { UserPayload } from "../types/user.types.ts";
+import type { UserPayload, UserRole } from "../types/user.types.ts";
 import { JWT_EXPIRES_IN, JWT_SECRET } from "../config.ts";
 
 // jwt token used for authentication and authorization
@@ -13,6 +13,7 @@ export function generateToken(user: UserPayload): string {
       fullName: user.fullName,
       email: user.email,
       role: user.role,
+      roles: user.roles,
     },
     JWT_SECRET,
     {
@@ -35,10 +36,28 @@ export function verifyToken(token: string): UserPayload | null {
       typeof payload.shopSlug !== "string" ||
       typeof payload.fullName !== "string" ||
       typeof payload.email !== "string" ||
-      !["ADMIN", "BARBER", "CUSTOMER"].includes(payload.role ?? "")
+      !["OWNER", "ADMIN", "BARBER", "CUSTOMER"].includes(
+        payload.role ?? "",
+      )
     ) {
       return null;
     }
+
+    const primaryRole = payload.role as UserRole;
+    const roles: UserRole[] = Array.isArray(payload.roles)
+      ? payload.roles
+      : [primaryRole];
+    if (
+      !roles.every(
+        (role) =>
+          typeof role === "string" &&
+          ["OWNER", "ADMIN", "BARBER", "CUSTOMER"].includes(role),
+      )
+    ) {
+      return null;
+    }
+
+    payload.roles = roles;
 
     return payload as UserPayload;
   } catch (error) {

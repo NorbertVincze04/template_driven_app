@@ -5,6 +5,7 @@ export interface User {
   phoneNumber?: string | null;
   password: string;
   type: string;
+  roles?: string[];
   profileImageUrl?: string;
   profileImagePositionX?: number;
   profileImagePositionY?: number;

@@ -78,6 +78,16 @@ export class AuthService {
     return this.currentUserSubject.value?.type;
   }
 
+  get userRoles(): string[] {
+    const user = this.currentUserSubject.value;
+    return user ? user.roles || [user.type] : [];
+  }
+
+  hasRole(role: string): boolean {
+    const user = this.currentUserSubject.value;
+    return !!user && (user.type === role || (user.roles || []).includes(role));
+  }
+
   get currentUserValue(): User | null {
     return this.currentUserSubject.value;
   }
@@ -144,6 +154,7 @@ export class AuthService {
               name: response.payload.fullName,
               email: response.payload.email,
               type: response.payload.role,
+              roles: response.payload.roles || [response.payload.role],
               token: response.payload.token,
               password: '',
               tenantId: response.payload.shopSlug,
@@ -197,6 +208,8 @@ export class AuthService {
             profileImageUrl: response.payload.profileImageUrl,
             profileImagePositionX: response.payload.profileImagePositionX,
             profileImagePositionY: response.payload.profileImagePositionY,
+            type: response.payload.role,
+            roles: response.payload.roles || [response.payload.role],
           };
           this.currentUserSubject.next(updatedUser);
           this.persistCurrentUser(updatedUser);

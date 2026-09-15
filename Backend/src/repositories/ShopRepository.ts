@@ -28,4 +28,18 @@ export class ShopRepository {
 
     return rows[0] ?? null;
   }
+
+  static async updatePricing(
+    shopId: string,
+    pricing: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> {
+    const { rows } = await pool.query<{ config: Record<string, unknown> }>(
+      `UPDATE shops
+       SET config = jsonb_set(config, '{pricing}', $2::jsonb, true), updated_at = NOW()
+       WHERE id = $1 AND is_active = TRUE
+       RETURNING config`,
+      [shopId, JSON.stringify(pricing)],
+    );
+    return rows[0]?.config ?? {};
+  }
 }

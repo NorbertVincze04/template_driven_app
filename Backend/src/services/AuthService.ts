@@ -16,6 +16,7 @@ export class AuthService {
     fullName: string;
     email: string;
     role: string;
+    roles: string[];
     shopId: string;
     shopSlug: string;
     phoneNumber: string | null;
@@ -48,6 +49,7 @@ export class AuthService {
       fullName: user.full_name,
       email: user.email,
       role: user.role,
+      roles: user.roles,
       shopId: shop.id,
       shopSlug: shop.slug,
       phoneNumber: user.phone_number,
@@ -66,6 +68,7 @@ export class AuthService {
     fullName: string;
     email: string;
     role: string;
+    roles: string[];
     shopId: string;
     shopSlug: string;
     phoneNumber: string | null;
@@ -89,6 +92,7 @@ export class AuthService {
       fullName: user.full_name,
       email: user.email,
       role: user.role,
+      roles: user.roles,
     };
 
     const token = generateToken(userPayload);
@@ -98,6 +102,7 @@ export class AuthService {
       fullName: user.full_name,
       email: user.email,
       role: user.role,
+      roles: user.roles,
       shopId: user.shop_id,
       shopSlug: user.shop_slug,
       phoneNumber: user.phone_number,

@@ -70,6 +70,22 @@
   color: var(--tenant-primary, #111827);
 }
 
+.admin-link {
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--tenant-primary, #111827);
+  border-radius: 6px;
+  color: var(--tenant-primary, #111827);
+  font-weight: 700;
+}
+
+.admin-link:hover {
+  background: color-mix(
+    in srgb,
+    var(--tenant-primary, #111827) 10%,
+    transparent
+  );
+}
+
 .icon-btn {
   display: flex;
   align-items: center;

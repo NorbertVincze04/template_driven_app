@@ -86,6 +86,7 @@ sql/015_barber_ratings.sql
 sql/016_update_default_location_cluj_napoca.sql
 sql/017_barber_photo_gallery.sql
 sql/018_barber_gallery_photo_position.sql
+sql/019_owner_roles.sql
 ```
 
 The later migrations create working hours, blocked periods, service prices,
@@ -93,7 +94,29 @@ barber-owned services, guest booking fields, appointment overlap protection,
 Romanian local-time booking, shared-service compatibility, the default
 tenant content used by the frontend, customer cancel/reschedule requests,
 in-app notifications, customer ratings of barbers, barber photo galleries, and
-gallery photo preview positioning.
+gallery photo preview positioning, and owner/multi-role accounts.
+
+To promote a user to owner for a tenant by email, run:
+
+```sql
+UPDATE users
+SET role = 'OWNER',
+      roles = ARRAY['OWNER']::TEXT[],
+      updated_at = NOW()
+WHERE shop_id = (SELECT id FROM shops WHERE slug = 'default')
+   AND lower(email) = lower('owner@example.com');
+```
+
+If that owner should also appear and behave as a barber, use:
+
+```sql
+UPDATE users
+SET role = 'OWNER',
+      roles = ARRAY['OWNER', 'BARBER']::TEXT[],
+      updated_at = NOW()
+WHERE shop_id = (SELECT id FROM shops WHERE slug = 'default')
+   AND lower(email) = lower('owner@example.com');
+```
 
 The `shops.config` JSONB column stores the website configuration. To add another
 tenant, insert a shop and map one or more domains:

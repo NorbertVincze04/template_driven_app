@@ -10,6 +10,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { AppointmentServiceComponent } from './features/appointment-service/appointment-service.component';
 import { ServicesComponent } from './features/barber-services/barber-services.component';
 import { BarbersPreviewComponent } from './features/barbers-preview/barbers-preview.component';
+import { OwnerAdminComponent } from './features/owner-admin/owner-admin.component';
 
 export const routes: Routes = [
   {
@@ -80,6 +81,12 @@ export const routes: Routes = [
   {
     path: 'user-profile',
     component: UserProfileComponent,
+    canActivate: [AuthGuard],
+    data: { showBars: true },
+  },
+  {
+    path: 'admin',
+    component: OwnerAdminComponent,
     canActivate: [AuthGuard],
     data: { showBars: true },
   },

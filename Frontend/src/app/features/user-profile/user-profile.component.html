@@ -9,7 +9,7 @@
           <p class="section-kicker">Account</p>
           <h2 id="account-title">Personal details</h2>
         </div>
-        <span class="role">{{ currentUser()?.type }}</span>
+        <span class="role">{{ roleLabel() }}</span>
       </div>
       @if (!editingProfile()) {
         <div class="account-summary">
@@ -51,7 +51,7 @@
               <dt>Email address</dt>
               <dd>{{ currentUser()?.email }}</dd>
             </div>
-            @if (currentUser()?.type === "BARBER") {
+            @if (isBarberUser()) {
               <div>
                 <dt>Rating</dt>
                 <dd>
@@ -176,7 +176,7 @@
       (cancel)="closeDeleteProfileDialog()"
     ></app-confirm-dialog>
 
-    @if (currentUser()?.type === "BARBER") {
+    @if (isBarberUser()) {
       <app-barber-schedule></app-barber-schedule>
 
       <section class="profile-section" aria-labelledby="barber-gallery-title">
@@ -227,7 +227,7 @@
     <!-- Appointments table + edit/delete/request actions are delegated to app-appointments-list -->
     <app-appointments-list
       [appointments]="appointments()"
-      [userType]="currentUser()?.type"
+      [userType]="appointmentsUserType()"
       [actionId]="appointmentActionId"
       [services]="services()"
       (editAppointment)="editAppointment($event)"

@@ -1,0 +1,106 @@
+<main class="admin-page" [style]="tenantStyles()">
+  <div class="admin-content">
+    <p class="eyebrow">Owner admin</p>
+    <h1>Admin</h1>
+
+    <section class="admin-section" aria-labelledby="home-services-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Section 1</p>
+          <h2 id="home-services-title">Home page services</h2>
+        </div>
+        <app-action-button
+          [config]="{
+            label: 'Save changes',
+            loadingLabel: 'Saving...',
+            variant: 'primary',
+          }"
+          [isLoading]="saving"
+          (action)="savePricing()"
+        ></app-action-button>
+      </div>
+
+      <div class="intro-grid">
+        <label>
+          Section label
+          <input [(ngModel)]="sectionLabel" name="sectionLabel" />
+        </label>
+        <label>
+          Title
+          <input [(ngModel)]="title" name="title" />
+        </label>
+        <label class="wide-field">
+          Description
+          <textarea [(ngModel)]="description" name="description" rows="3"></textarea>
+        </label>
+      </div>
+
+      <div class="plan-list">
+        @for (plan of plans; track $index; let index = $index) {
+          <article class="plan-editor">
+            <div class="plan-editor-header">
+              <h3>Service card {{ index + 1 }}</h3>
+              <button type="button" class="remove-btn" (click)="removePlan(index)">
+                Remove
+              </button>
+            </div>
+
+            <div class="editor-grid">
+              <label>
+                Name
+                <input [(ngModel)]="plan.name" [name]="'name-' + index" />
+              </label>
+              <label>
+                Price
+                <input [(ngModel)]="plan.price" [name]="'price-' + index" />
+              </label>
+              <label class="wide-field">
+                Description
+                <textarea [(ngModel)]="plan.description" [name]="'description-' + index" rows="3"></textarea>
+              </label>
+              <label class="wide-field">
+                Bullet points
+                <textarea [(ngModel)]="plan.featuresText" [name]="'features-' + index" rows="4" placeholder="One bullet per line"></textarea>
+              </label>
+              <label>
+                Button text
+                <input [(ngModel)]="plan.ctaText" [name]="'ctaText-' + index" />
+              </label>
+              <label>
+                Link button to service
+                <select #serviceSelect (change)="selectService(plan, serviceSelect.value)">
+                  <option value="">All services</option>
+                  @for (service of services; track service.id) {
+                    <option [value]="service.name">{{ service.name }}</option>
+                  }
+                </select>
+              </label>
+              <label class="checkbox-field">
+                <input type="checkbox" [(ngModel)]="plan.featured" [name]="'featured-' + index" />
+                Most popular
+              </label>
+            </div>
+          </article>
+        }
+      </div>
+
+      <button type="button" class="add-btn" (click)="addPlan()">Add service card</button>
+      @if (saved) {
+        <p class="success-message">Home page services saved.</p>
+      }
+      @if (error) {
+        <p class="error-message">{{ error }}</p>
+      }
+    </section>
+
+    <section class="admin-section muted-section" aria-label="Future admin section">
+      <p class="section-kicker">Section 2</p>
+      <h2>Coming next</h2>
+    </section>
+
+    <section class="admin-section muted-section" aria-label="Future admin section">
+      <p class="section-kicker">Section 3</p>
+      <h2>Coming next</h2>
+    </section>
+  </div>
+</main>

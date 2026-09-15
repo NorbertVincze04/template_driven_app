@@ -1,12 +1,13 @@
 import type { Request, Response } from "express";
 import { BarberGalleryRepository } from "../repositories/BarberGalleryRepository.ts";
+import { hasRole } from "../types/user.types.ts";
 
 const MAX_GALLERY_PHOTOS = 12;
 const MAX_IMAGE_DATA_LENGTH = 2_500_000;
 
 export class BarberGalleryController {
   static async listMine(req: Request, res: Response): Promise<Response> {
-    if (req.user!.role !== "BARBER") {
+    if (!hasRole(req.user!, "BARBER")) {
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage a photo gallery.",
@@ -39,7 +40,7 @@ export class BarberGalleryController {
   }
 
   static async createMine(req: Request, res: Response): Promise<Response> {
-    if (req.user!.role !== "BARBER") {
+    if (!hasRole(req.user!, "BARBER")) {
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage a photo gallery.",
@@ -91,7 +92,7 @@ export class BarberGalleryController {
   }
 
   static async deleteMine(req: Request, res: Response): Promise<Response> {
-    if (req.user!.role !== "BARBER") {
+    if (!hasRole(req.user!, "BARBER")) {
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage a photo gallery.",

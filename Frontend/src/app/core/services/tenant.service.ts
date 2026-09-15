@@ -8,7 +8,11 @@ import {
   signal,
 } from '@angular/core';
 import { Observable, catchError, map, tap } from 'rxjs';
-import { TenantConfig, TenantThemeMode } from '../models/tenant.model';
+import {
+  TenantConfig,
+  TenantPricingContent,
+  TenantThemeMode,
+} from '../models/tenant.model';
 import { environment } from '../../../environments/environment';
 
 // Tenant-agnostic fallback key: lets the pre-bootstrap inline script in
@@ -42,6 +46,20 @@ export class TenantService {
         catchError(() => this.http.get<TenantConfig>('tenants/default.json')),
         tap((config) => this.setTenant(config)),
         map(() => undefined),
+      );
+  }
+
+  updatePricing(pricing: TenantPricingContent): Observable<TenantConfig> {
+    return this.http
+      .patch<{
+        success: boolean;
+        payload: TenantConfig;
+      }>(`${environment.apiUrl}/tenant/pricing`, pricing, {
+        headers: { 'X-Tenant-Slug': this.activeTenantId || 'default' },
+      })
+      .pipe(
+        map((response) => response.payload),
+        tap((config) => this.setTenant(config)),
       );
   }
 

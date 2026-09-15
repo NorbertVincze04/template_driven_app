@@ -44,7 +44,12 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(320) NOT NULL,
   password_hash TEXT NOT NULL,
   role VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER'
-    CHECK (role IN ('ADMIN', 'BARBER', 'CUSTOMER')),
+    CHECK (role IN ('OWNER', 'ADMIN', 'BARBER', 'CUSTOMER')),
+  roles TEXT[] NOT NULL DEFAULT ARRAY['CUSTOMER']
+    CHECK (
+      array_length(roles, 1) >= 1
+      AND roles <@ ARRAY['OWNER', 'ADMIN', 'BARBER', 'CUSTOMER']::TEXT[]
+    ),
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

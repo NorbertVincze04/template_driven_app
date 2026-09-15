@@ -46,11 +46,24 @@ export class PricingComponent {
     };
   });
 
-  protected readonly plans = computed(
-    (): TenantPricingPlan[] => this.pricing().plans || [],
-  );
+  protected readonly plans = computed((): TenantPricingPlan[] => {
+    const plans = this.pricing().plans || [];
+    const featuredIndex = plans.findIndex((plan) => plan.featured);
+    if (featuredIndex < 0 || plans.length < 2) {
+      return plans;
+    }
+
+    const orderedPlans = [...plans];
+    const [featuredPlan] = orderedPlans.splice(featuredIndex, 1);
+    orderedPlans.splice(Math.floor(plans.length / 2), 0, featuredPlan);
+    return orderedPlans;
+  });
 
   protected choosePlan(plan: TenantPricingPlan): void {
+    if (plan.ctaLink) {
+      void this.router.navigateByUrl(plan.ctaLink);
+      return;
+    }
     void this.router.navigate(['/services', slugify(plan.name)]);
   }
 

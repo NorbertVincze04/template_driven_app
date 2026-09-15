@@ -49,7 +49,7 @@ export class UserRepository {
             SELECT u.id, u.shop_id, s.slug AS shop_slug, u.full_name,
               u.email, u.phone_number, u.profile_image_url,
               u.profile_image_position_x, u.profile_image_position_y,
-              u.password_hash, u.role
+              u.password_hash, u.role, u.roles
             FROM users u
             INNER JOIN shops s ON s.id = u.shop_id
             WHERE u.shop_id = $1 AND u.email = $2 AND u.is_active = TRUE
@@ -65,17 +65,17 @@ export class UserRepository {
     email: string,
     passwordHash: string,
     shopId: string,
-    role: "ADMIN" | "BARBER" | "CUSTOMER" = "CUSTOMER",
+    role: "OWNER" | "ADMIN" | "BARBER" | "CUSTOMER" = "CUSTOMER",
     phoneNumber: string | null = null,
   ): Promise<UserRecord> {
     const { rows } = await pool.query<UserRecord>(
       `
       INSERT INTO users
-        (shop_id, full_name, email, password_hash, role, phone_number)
+        (shop_id, full_name, email, password_hash, role, roles, phone_number)
       VALUES
-        ($1, $2, $3, $4, $5, $6)
+        ($1, $2, $3, $4, $5, ARRAY[$5]::TEXT[], $6)
       RETURNING id, shop_id, full_name, email, phone_number, profile_image_url,
-        password_hash, role
+        password_hash, role, roles
       `,
       [shopId, fullName, email, passwordHash, role, phoneNumber],
     );
@@ -101,7 +101,7 @@ export class UserRepository {
           profile_image_position_y = $8, updated_at = NOW()
       WHERE id = $1 AND shop_id = $2 AND is_active = TRUE
       RETURNING id, shop_id, full_name, email, phone_number, profile_image_url,
-        profile_image_position_x, profile_image_position_y, password_hash, role
+        profile_image_position_x, profile_image_position_y, password_hash, role, roles
       `,
       [
         userId,

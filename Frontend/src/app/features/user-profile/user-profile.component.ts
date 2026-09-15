@@ -127,6 +127,25 @@ export class UserProfileComponent {
     };
   });
 
+  protected readonly currentUserRoles = computed((): string[] => {
+    const user = this.currentUser();
+    return user ? user.roles || [user.type] : [];
+  });
+
+  protected readonly roleLabel = computed((): string =>
+    this.currentUserRoles()
+      .map((role) => role.charAt(0) + role.slice(1).toLowerCase())
+      .join(' / '),
+  );
+
+  protected readonly isBarberUser = computed((): boolean =>
+    this.currentUserRoles().includes('BARBER'),
+  );
+
+  protected readonly appointmentsUserType = computed((): string =>
+    this.isBarberUser() ? 'BARBER' : this.currentUser()?.type || '',
+  );
+
   constructor() {
     const user = this.currentUser();
     this.profileForm.patchValue({
@@ -138,7 +157,7 @@ export class UserProfileComponent {
       profileImagePositionY: user?.profileImagePositionY ?? 50,
     });
     this.loadAppointments();
-    if (user?.type === 'BARBER') {
+    if (user && (user.roles || [user.type]).includes('BARBER')) {
       this.barberApi.listMyServices().subscribe({
         next: (services) => this.services.set(services),
         error: () => undefined,

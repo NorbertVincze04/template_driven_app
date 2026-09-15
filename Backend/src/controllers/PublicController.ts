@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { BarberRepository } from "../repositories/BarberRepository.ts";
 import { NotificationService } from "../services/NotificationService.ts";
+import { hasRole } from "../types/user.types.ts";
 
 export class PublicController {
   static async listBarbers(req: Request, res: Response) {
@@ -33,7 +34,7 @@ export class PublicController {
   }
 
   static async listMyServices(req: Request, res: Response) {
-    if (req.user!.role !== "BARBER")
+    if (!hasRole(req.user!, "BARBER"))
       return res.status(403).json({
         success: false,
         message: "Only barbers can view their services.",
@@ -141,7 +142,7 @@ export class PublicController {
   }
 
   static async getSchedule(req: Request, res: Response) {
-    if (req.user!.role !== "BARBER")
+    if (!hasRole(req.user!, "BARBER"))
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage schedules.",
@@ -160,7 +161,7 @@ export class PublicController {
   }
 
   static async saveSchedule(req: Request, res: Response) {
-    if (req.user!.role !== "BARBER")
+    if (!hasRole(req.user!, "BARBER"))
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage schedules.",
@@ -175,7 +176,7 @@ export class PublicController {
   }
 
   static async blockTime(req: Request, res: Response) {
-    if (req.user!.role !== "BARBER")
+    if (!hasRole(req.user!, "BARBER"))
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage schedules.",
@@ -199,7 +200,7 @@ export class PublicController {
   }
 
   static async unblockTime(req: Request, res: Response) {
-    if (req.user!.role !== "BARBER")
+    if (!hasRole(req.user!, "BARBER"))
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage schedules.",
@@ -218,7 +219,7 @@ export class PublicController {
   }
 
   static async updateBlockedTime(req: Request, res: Response) {
-    if (req.user!.role !== "BARBER")
+    if (!hasRole(req.user!, "BARBER"))
       return res.status(403).json({
         success: false,
         message: "Only barbers can manage schedules.",
@@ -249,7 +250,7 @@ export class PublicController {
   }
 
   static async createService(req: Request, res: Response) {
-    if (req.user!.role !== "BARBER")
+    if (!hasRole(req.user!, "BARBER"))
       return res
         .status(403)
         .json({ success: false, message: "Only barbers can create services." });
@@ -276,7 +277,7 @@ export class PublicController {
   }
 
   static async updateService(req: Request, res: Response) {
-    if (req.user!.role !== "BARBER")
+    if (!hasRole(req.user!, "BARBER"))
       return res
         .status(403)
         .json({ success: false, message: "Only barbers can manage services." });
@@ -311,7 +312,7 @@ export class PublicController {
   }
 
   static async deleteService(req: Request, res: Response) {
-    if (req.user!.role !== "BARBER")
+    if (!hasRole(req.user!, "BARBER"))
       return res
         .status(403)
         .json({ success: false, message: "Only barbers can manage services." });
