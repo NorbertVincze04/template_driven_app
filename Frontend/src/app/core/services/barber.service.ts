@@ -10,6 +10,7 @@ import {
 import {
   Barber,
   BarberAvailability,
+  BarberReceivedRating,
   BarberService as ServiceOption,
   MyBarberRating,
   MyBarberRatingStatus,
@@ -151,6 +152,25 @@ export class BarberService {
       .get<{
         payload: MyBarberRatingStatus;
       }>(`${this.baseUrl}/barbers/${barberId}/rating/mine`, this.options())
+      .pipe(map((response) => response.payload));
+  }
+
+  listMyReceivedRatings(): Observable<BarberReceivedRating[]> {
+    return this.http
+      .get<{
+        payload: BarberReceivedRating[];
+      }>(`${this.baseUrl}/barbers/me/ratings`, this.options())
+      .pipe(map((response) => response.payload));
+  }
+
+  listRatingsForBarber(barberId: string): Observable<BarberReceivedRating[]> {
+    if (environment.useLocalBarberFixtures) {
+      return of([]);
+    }
+    return this.http
+      .get<{
+        payload: BarberReceivedRating[];
+      }>(`${this.baseUrl}/barbers/${barberId}/ratings`, this.options())
       .pipe(map((response) => response.payload));
   }
 

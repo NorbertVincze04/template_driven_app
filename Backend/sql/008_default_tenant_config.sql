@@ -128,7 +128,8 @@ SET config = $$
       "showInstagram": true,
       "showFacebook": true,
       "showHelpCenter": true,
-      "showTerms": true
+      "showTerms": true,
+      "showReportBug": true
     },
     "hero": {
       "variant": "profile-gallery",

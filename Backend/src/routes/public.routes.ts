@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { PublicController } from "../controllers/PublicController.ts";
 import { BarberRatingController } from "../controllers/BarberRatingController.ts";
+import { BugReportController } from "../controllers/BugReportController.ts";
 import { tenantMiddleware } from "../middleware/tenant.middleware.ts";
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 
@@ -14,6 +15,12 @@ publicRouter.get("/barbers/:barberId", (req, res) =>
 );
 publicRouter.get("/barbers/:barberId/rating", (req, res) =>
   BarberRatingController.summary(req, res),
+);
+publicRouter.get("/barbers/me/ratings", authMiddleware, (req, res) =>
+  BarberRatingController.mineReceived(req, res),
+);
+publicRouter.get("/barbers/:barberId/ratings", (req, res) =>
+  BarberRatingController.list(req, res),
 );
 publicRouter.get("/barbers/:barberId/rating/mine", authMiddleware, (req, res) =>
   BarberRatingController.mine(req, res),
@@ -35,6 +42,9 @@ publicRouter.post("/appointments", (req, res) =>
 );
 publicRouter.post("/appointments/account", authMiddleware, (req, res) =>
   PublicController.createAccountAppointment(req, res),
+);
+publicRouter.post("/bug-reports", (req, res) =>
+  BugReportController.create(req, res),
 );
 publicRouter.get("/schedule", authMiddleware, (req, res) =>
   PublicController.getSchedule(req, res),

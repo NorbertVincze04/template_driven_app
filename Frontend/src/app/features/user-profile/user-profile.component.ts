@@ -8,18 +8,22 @@ import {
   Validators,
 } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TenantConfig } from '../../core/models/tenant.model';
+import { TenantConfig, TenantReviewItem } from '../../core/models/tenant.model';
 import { User } from '../../core/models/user.model';
 import { Appointment, AuthService } from '../../core/services/auth.service';
 import { TenantService } from '../../core/services/tenant.service';
 import { BarberService } from '../../core/services/barber.service';
-import { BarberService as ServiceOption } from '../../core/models/barber.model';
+import {
+  BarberReceivedRating,
+  BarberService as ServiceOption,
+} from '../../core/models/barber.model';
 import { BarberScheduleComponent } from '../barber-schedule/barber-schedule.component';
 import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
 import { ProfileImageEditorComponent } from '../../shared/components/profile-image-editor/profile-image-editor.component';
 import { AppointmentsListComponent } from '../../shared/components/appointments-list/appointments-list.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { BarberRatingSummaryComponent } from '../../shared/components/barber-rating-summary/barber-rating-summary.component';
+import { ReviewsListComponent } from '../../shared/components/reviews-list/reviews-list.component';
 import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -41,6 +45,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     AppointmentsListComponent,
     ConfirmDialogComponent,
     BarberRatingSummaryComponent,
+    ReviewsListComponent,
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
@@ -61,6 +66,19 @@ export class UserProfileComponent {
   // Only populated for barbers, to show their own average rating below.
   protected readonly myRating = signal<number | null>(null);
   protected readonly myRatingCount = signal(0);
+  protected readonly myReceivedRatings = signal<BarberReceivedRating[]>([]);
+  protected readonly myReceivedRatingReviews = computed(
+    (): TenantReviewItem[] =>
+      this.myReceivedRatings().map((rating) => ({
+        id: rating.id,
+        authorName: rating.authorName,
+        authorRole: 'Client',
+        authorAvatarUrl: rating.authorAvatarUrl || undefined,
+        rating: rating.rating,
+        comment: rating.comment,
+        date: rating.date,
+      })),
+  );
   protected profileError = '';
   protected profileSaved = false;
   protected profileSaving = false;
@@ -120,6 +138,10 @@ export class UserProfileComponent {
           this.myRating.set(barber.rating ?? null);
           this.myRatingCount.set(barber.ratingCount ?? 0);
         },
+        error: () => undefined,
+      });
+      this.barberApi.listMyReceivedRatings().subscribe({
+        next: (ratings) => this.myReceivedRatings.set(ratings),
         error: () => undefined,
       });
     }

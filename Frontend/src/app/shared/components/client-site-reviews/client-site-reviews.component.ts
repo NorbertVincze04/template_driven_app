@@ -11,6 +11,7 @@ import {
   ReviewFormModalComponent,
   ReviewSubmission,
 } from '../review-form-modal/review-form-modal.component';
+import { SubmissionThankYouModalComponent } from '../submission-thank-you-modal/submission-thank-you-modal.component';
 import { environment } from '../../../../environments/environment';
 
 /**
@@ -29,6 +30,7 @@ import { environment } from '../../../../environments/environment';
     ActionButtonComponent,
     ReviewsListComponent,
     ReviewFormModalComponent,
+    SubmissionThankYouModalComponent,
   ],
   templateUrl: './client-site-reviews.component.html',
   styleUrl: './client-site-reviews.component.css',
@@ -83,6 +85,7 @@ export class ClientSiteReviewsComponent {
 
   // Whether <app-review-form-modal> is currently shown.
   protected readonly isModalOpen = signal(false);
+  protected readonly isThankYouOpen = signal(false);
   // Error from the last failed submit attempt; shown inside the modal.
   protected readonly submitError = signal<string | null>(null);
 
@@ -113,6 +116,10 @@ export class ClientSiteReviewsComponent {
     this.isModalOpen.set(false);
   }
 
+  protected closeThankYouModal(): void {
+    this.isThankYouOpen.set(false);
+  }
+
   // Called when <app-review-form-modal> emits a validated review; performs the API call.
   protected handleReviewSubmit(review: ReviewSubmission): void {
     this.http
@@ -134,6 +141,7 @@ export class ClientSiteReviewsComponent {
         next: (response) => {
           this.localReviews.update((prev) => [response.payload, ...prev]);
           this.isModalOpen.set(false);
+          this.isThankYouOpen.set(true);
         },
         error: (error) =>
           this.submitError.set(

@@ -41,14 +41,16 @@
   </div>
 } @else {
   <div class="empty-reviews">
-    <p>No reviews yet. Be the first to share your experience!</p>
-    <app-action-button
-      [config]="{
-        label: 'Write First Review',
-        variant: 'outline',
-        size: 'sm',
-      }"
-      (action)="writeReview.emit()"
-    ></app-action-button>
+    <p>{{ emptyMessage }}</p>
+    @if (showWriteAction) {
+      <app-action-button
+        [config]="{
+          label: 'Write First Review',
+          variant: 'outline',
+          size: 'sm',
+        }"
+        (action)="writeReview.emit()"
+      ></app-action-button>
+    }
   </div>
 }

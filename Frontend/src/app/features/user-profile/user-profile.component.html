@@ -178,6 +178,28 @@
 
     @if (currentUser()?.type === "BARBER") {
       <app-barber-schedule></app-barber-schedule>
+
+      <section
+        class="profile-section barber-ratings-section"
+        aria-labelledby="barber-ratings-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Client ratings</p>
+            <h2 id="barber-ratings-title">Ratings about you</h2>
+          </div>
+          <app-barber-rating-summary
+            [rating]="myRating()"
+            [ratingCount]="myRatingCount()"
+          ></app-barber-rating-summary>
+        </div>
+
+        <app-reviews-list
+          [reviews]="myReceivedRatingReviews()"
+          [showWriteAction]="false"
+          emptyMessage="No client ratings yet. Completed clients will be able to rate you after their appointment."
+        ></app-reviews-list>
+      </section>
     }
 
     <!-- Appointments table + edit/delete/request actions are delegated to app-appointments-list -->

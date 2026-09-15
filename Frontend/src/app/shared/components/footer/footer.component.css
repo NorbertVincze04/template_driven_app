@@ -68,6 +68,10 @@
   );
 }
 
+.report-bug-btn {
+  color: var(--tenant-secondary, var(--theme-muted));
+}
+
 .help-btn {
   font-size: 0.9rem;
   font-weight: 500;

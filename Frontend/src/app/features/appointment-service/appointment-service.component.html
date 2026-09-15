@@ -55,6 +55,24 @@
         }
       </form>
     </section>
+
+    <section
+      class="barber-reviews-panel"
+      aria-labelledby="barber-reviews-title"
+    >
+      <div class="reviews-heading">
+        <div>
+          <p class="eyebrow">Client ratings</p>
+          <h2 id="barber-reviews-title">Reviews for {{ profile.name }}</h2>
+        </div>
+      </div>
+
+      <app-reviews-list
+        [reviews]="barberRatingReviews()"
+        [showWriteAction]="false"
+        emptyMessage="No client ratings yet. Book a visit and come back after your appointment to share your experience."
+      ></app-reviews-list>
+    </section>
   } @else if (!loading) {
     <p class="state">{{ error }}</p>
   }

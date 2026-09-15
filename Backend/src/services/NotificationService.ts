@@ -120,18 +120,33 @@ export class NotificationService {
     shopId: string,
     details: { authorName: string; rating: number },
   ): Promise<void> {
-    const staffIds = await NotificationRepository.findStaffRecipientIds(shopId);
+    const adminIds = await NotificationRepository.findAdminRecipientIds(shopId);
     await Promise.all(
-      staffIds.map((recipientId) =>
+      adminIds.map((recipientId) =>
         safeCreate(
           shopId,
           recipientId,
           "REVIEW_RECEIVED",
           "New review received",
-          `${details.authorName} left you a ${details.rating}-star review.`,
+          `${details.authorName} left the shop a ${details.rating}-star review.`,
           "/user-profile",
         ),
       ),
+    );
+  }
+
+  static async notifyBarberRatingReceived(
+    shopId: string,
+    barberId: string,
+    details: { rating: number },
+  ): Promise<void> {
+    await safeCreate(
+      shopId,
+      barberId,
+      "BARBER_RATING_RECEIVED",
+      "New barber rating received",
+      `A client left you a ${details.rating}-star rating.`,
+      "/user-profile",
     );
   }
 

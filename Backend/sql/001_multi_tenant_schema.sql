@@ -93,7 +93,7 @@ VALUES (
       "showHeader": true, "showTopBar": false, "showFooter": true,
       "showHeroSection": true, "showContactDetails": true,
       "header": {"showAboutUs": true, "showPricing": true, "showThemeToggle": true},
-      "footer": {"showInstagram": true, "showFacebook": true, "showHelpCenter": true, "showTerms": true},
+      "footer": {"showInstagram": true, "showFacebook": true, "showHelpCenter": true, "showTerms": true, "showReportBug": true},
       "hero": {"variant": "profile-gallery", "showBadge": true, "showTitle": true, "showSubtitle": true, "showCtaButton": true, "showProfileGallery": true},
       "contactDetails": {"showEmail": true, "showPhone": true, "showAddress": true, "showSocialMediaLinks": true, "showMap": true, "showOperatingHours": true, "showCTAButton": true}
     }

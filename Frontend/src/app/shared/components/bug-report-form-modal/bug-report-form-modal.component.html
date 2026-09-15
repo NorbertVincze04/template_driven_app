@@ -1,0 +1,94 @@
+@if (isOpen) {
+  <div class="modal-backdrop" (click)="close()" role="presentation">
+    <div
+      class="modal-card"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-labelledby="bug-report-modal-title"
+      aria-modal="true"
+    >
+      <div class="modal-header">
+        <h3 id="bug-report-modal-title">Report a Bug</h3>
+        <button
+          type="button"
+          class="modal-close-btn"
+          aria-label="Close dialog"
+          (click)="close()"
+        >
+          &times;
+        </button>
+      </div>
+
+      <form (submit)="$event.preventDefault(); submit()" class="modal-form">
+        @if (localError || errorMessage) {
+          <div class="form-error-alert" role="alert">
+            {{ localError || errorMessage }}
+          </div>
+        }
+
+        <div class="form-group">
+          <label for="bug-reporter-name">Your Name (Optional)</label>
+          <input
+            id="bug-reporter-name"
+            type="text"
+            [(ngModel)]="reporterName"
+            name="reporterName"
+            placeholder="e.g. Jane Doe"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="bug-reporter-email">Email (Optional)</label>
+          <input
+            id="bug-reporter-email"
+            type="email"
+            [(ngModel)]="reporterEmail"
+            name="reporterEmail"
+            placeholder="e.g. jane@example.com"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="bug-page-url">Page (Optional)</label>
+          <input
+            id="bug-page-url"
+            type="text"
+            [(ngModel)]="pageUrl"
+            name="pageUrl"
+            placeholder="Where did it happen?"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="bug-description"
+            >Bug Description <span class="required">*</span></label
+          >
+          <textarea
+            id="bug-description"
+            [(ngModel)]="description"
+            name="description"
+            rows="5"
+            placeholder="What went wrong? What were you trying to do?"
+            required
+          ></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="close()">
+            Cancel
+          </button>
+          <app-action-button
+            [buttonType]="'submit'"
+            [isLoading]="saving"
+            [config]="{
+              label: 'Send Report',
+              loadingLabel: 'Sending...',
+              variant: 'primary',
+              size: 'md',
+            }"
+          ></app-action-button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

@@ -10,6 +10,15 @@ export interface BarberRatingRecord {
   createdAt: string;
 }
 
+export interface BarberReceivedRatingRecord {
+  id: string;
+  authorName: string;
+  authorAvatarUrl: string | null;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
 export interface BarberRatingSummary {
   rating: number | null;
   ratingCount: number;
@@ -121,6 +130,23 @@ export class BarberRatingRepository {
       [shopId, barberId, customerId, rating, comment],
     );
     return rows[0];
+  }
+
+  static async listForBarber(
+    shopId: string,
+    barberId: string,
+  ): Promise<BarberReceivedRatingRecord[]> {
+    const { rows } = await pool.query<BarberReceivedRatingRecord>(
+      `SELECT r.id, c.full_name AS "authorName",
+          c.profile_image_url AS "authorAvatarUrl", r.rating, r.comment,
+          r.created_at::date::text AS date
+       FROM barber_ratings r
+       JOIN users c ON c.id = r.customer_id AND c.shop_id = r.shop_id
+       WHERE r.shop_id = $1 AND r.barber_id = $2
+       ORDER BY r.created_at DESC`,
+      [shopId, barberId],
+    );
+    return rows;
   }
 
   static async remove(

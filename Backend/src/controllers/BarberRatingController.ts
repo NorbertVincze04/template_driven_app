@@ -1,7 +1,25 @@
 import type { Request, Response } from "express";
 import { BarberRatingRepository } from "../repositories/BarberRatingRepository.ts";
+import { NotificationService } from "../services/NotificationService.ts";
 
 export class BarberRatingController {
+  static async mineReceived(req: Request, res: Response): Promise<Response> {
+    if (req.user!.role !== "BARBER") {
+      return res.status(403).json({
+        success: false,
+        message: "Only barbers can view their received ratings.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      payload: await BarberRatingRepository.listForBarber(
+        req.shop!.id,
+        req.user!.id,
+      ),
+    });
+  }
+
   static async summary(req: Request, res: Response): Promise<Response> {
     const barberId = req.params.barberId;
     if (typeof barberId !== "string") {
@@ -12,6 +30,22 @@ export class BarberRatingController {
     return res.json({
       success: true,
       payload: await BarberRatingRepository.summary(req.shop!.id, barberId),
+    });
+  }
+
+  static async list(req: Request, res: Response): Promise<Response> {
+    const barberId = req.params.barberId;
+    if (typeof barberId !== "string") {
+      return res
+        .status(400)
+        .json({ success: false, message: "A barber is required." });
+    }
+    return res.json({
+      success: true,
+      payload: await BarberRatingRepository.listForBarber(
+        req.shop!.id,
+        barberId,
+      ),
     });
   }
 
@@ -67,6 +101,13 @@ export class BarberRatingController {
         req.user!.id,
         numericRating,
         comment.trim(),
+      );
+      await NotificationService.notifyBarberRatingReceived(
+        req.shop!.id,
+        barberId,
+        {
+          rating: rated.rating,
+        },
       );
       return res.status(201).json({ success: true, payload: rated });
     } catch (error) {

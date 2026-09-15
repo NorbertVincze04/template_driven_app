@@ -19,6 +19,9 @@ import { ActionButtonComponent } from '../action-button/action-button.component'
 export class ReviewsListComponent {
   // Reviews to display, already ordered by the parent (newest visitor reviews first).
   @Input() reviews: TenantReviewItem[] = [];
+  @Input() emptyMessage =
+    'No reviews yet. Be the first to share your experience!';
+  @Input() showWriteAction = true;
 
   // Fired when the visitor clicks "Write First Review" in the empty state.
   // The parent listens to this to open the review form modal.

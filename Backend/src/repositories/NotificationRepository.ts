@@ -21,11 +21,11 @@ export class NotificationRepository {
     );
   }
 
-  // Recipients for shop-wide events (e.g. a new review) rather than a single user.
-  static async findStaffRecipientIds(shopId: string): Promise<string[]> {
+  // Recipients for shop-wide admin events (e.g. a new shop review).
+  static async findAdminRecipientIds(shopId: string): Promise<string[]> {
     const { rows } = await pool.query<{ id: string }>(
       `SELECT id FROM users
-       WHERE shop_id = $1 AND role IN ('ADMIN', 'BARBER') AND is_active = TRUE`,
+       WHERE shop_id = $1 AND role = 'ADMIN' AND is_active = TRUE`,
       [shopId],
     );
     return rows.map((row) => row.id);

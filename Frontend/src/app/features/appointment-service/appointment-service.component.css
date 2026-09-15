@@ -31,6 +31,24 @@ h2 {
   max-width: 680px;
   margin: 2.5rem auto 0;
 }
+
+.barber-reviews-panel {
+  max-width: 680px;
+  margin: 2.5rem auto 0;
+}
+
+.reviews-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.reviews-heading h2 {
+  margin-bottom: 0;
+}
+
 label {
   display: grid;
   gap: 0.4rem;

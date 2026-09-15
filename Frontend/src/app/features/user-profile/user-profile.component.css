@@ -197,6 +197,10 @@ small,
   font-weight: 600;
 }
 
+.barber-ratings-section .section-heading {
+  align-items: center;
+}
+
 /* Appointments table/status/actions styles now live in app-appointments-list. */
 
 @media (max-width: 560px) {

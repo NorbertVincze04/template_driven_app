@@ -16,6 +16,7 @@ import {
   BarberRatingFormModalComponent,
   BarberRatingSubmission,
 } from '../barber-rating-form-modal/barber-rating-form-modal.component';
+import { SubmissionThankYouModalComponent } from '../submission-thank-you-modal/submission-thank-you-modal.component';
 
 /**
  * Orchestrates a logged-in customer's ability to rate a barber they've had a
@@ -32,6 +33,7 @@ import {
     ActionButtonComponent,
     BarberRatingSummaryComponent,
     BarberRatingFormModalComponent,
+    SubmissionThankYouModalComponent,
   ],
   templateUrl: './barber-rating-panel.component.html',
   styleUrl: './barber-rating-panel.component.css',
@@ -45,6 +47,7 @@ export class BarberRatingPanelComponent implements OnChanges {
   protected readonly status = signal<MyBarberRatingStatus | null>(null);
   protected loading = false;
   protected readonly modalOpen = signal(false);
+  protected readonly thankYouOpen = signal(false);
   protected saving = false;
   protected readonly error = signal<string | null>(null);
 
@@ -80,6 +83,10 @@ export class BarberRatingPanelComponent implements OnChanges {
     this.modalOpen.set(false);
   }
 
+  protected closeThankYouModal(): void {
+    this.thankYouOpen.set(false);
+  }
+
   protected submit(submission: BarberRatingSubmission): void {
     this.saving = true;
     this.barberApi
@@ -88,6 +95,7 @@ export class BarberRatingPanelComponent implements OnChanges {
         next: () => {
           this.saving = false;
           this.modalOpen.set(false);
+          this.thankYouOpen.set(true);
           this.load();
         },
         error: (err) => {

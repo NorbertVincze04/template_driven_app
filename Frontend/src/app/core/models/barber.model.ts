@@ -31,6 +31,15 @@ export interface MyBarberRating {
   createdAt: string;
 }
 
+export interface BarberReceivedRating {
+  id: string;
+  authorName: string;
+  authorAvatarUrl: string | null;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
 export interface MyBarberRatingStatus {
   rating: MyBarberRating | null;
   eligible: boolean;

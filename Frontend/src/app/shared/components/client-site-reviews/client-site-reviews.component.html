@@ -57,3 +57,10 @@
   (submitReview)="handleReviewSubmit($event)"
   (closeModal)="closeReviewModal()"
 ></app-review-form-modal>
+
+<app-submission-thank-you-modal
+  [isOpen]="isThankYouOpen()"
+  title="Thank you"
+  message="Thank you for taking the time to leave a review."
+  (closeModal)="closeThankYouModal()"
+></app-submission-thank-you-modal>

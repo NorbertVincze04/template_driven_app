@@ -13,9 +13,10 @@ import { AuthService } from '../../core/services/auth.service';
 import {
   Barber,
   BarberAvailability,
+  BarberReceivedRating,
   BarberService as ServiceOption,
 } from '../../core/models/barber.model';
-import { TenantConfig } from '../../core/models/tenant.model';
+import { TenantConfig, TenantReviewItem } from '../../core/models/tenant.model';
 import { TenantService } from '../../core/services/tenant.service';
 import { slugify } from '../../core/utils/slug.utils';
 import {
@@ -26,6 +27,7 @@ import { BarberProfileHeaderComponent } from '../../shared/components/barber-pro
 import { BarberRatingPanelComponent } from '../../shared/components/barber-rating-panel/barber-rating-panel.component';
 import { TimeSlotPickerComponent } from '../../shared/components/time-slot-picker/time-slot-picker.component';
 import { GuestDetailsFormComponent } from '../../shared/components/guest-details-form/guest-details-form.component';
+import { ReviewsListComponent } from '../../shared/components/reviews-list/reviews-list.component';
 
 function todayInBucharest(): string {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -62,6 +64,7 @@ function todayInBucharest(): string {
     BarberRatingPanelComponent,
     TimeSlotPickerComponent,
     GuestDetailsFormComponent,
+    ReviewsListComponent,
   ],
   templateUrl: './appointment-service.component.html',
   styleUrl: './appointment-service.component.css',
@@ -87,6 +90,18 @@ export class AppointmentServiceComponent {
   protected readonly auth = inject(AuthService);
   protected readonly barber = signal<Barber | null>(null);
   protected readonly services = signal<ServiceOption[]>([]);
+  protected readonly barberRatings = signal<BarberReceivedRating[]>([]);
+  protected readonly barberRatingReviews = computed((): TenantReviewItem[] =>
+    this.barberRatings().map((rating) => ({
+      id: rating.id,
+      authorName: rating.authorName,
+      authorRole: 'Client',
+      authorAvatarUrl: rating.authorAvatarUrl || undefined,
+      rating: rating.rating,
+      comment: rating.comment,
+      date: rating.date,
+    })),
+  );
   protected readonly availability = signal<BarberAvailability | null>(null);
   protected loading = true;
   protected selectedTime = '';
@@ -172,6 +187,7 @@ export class AppointmentServiceComponent {
         }
 
         this.barber.set(selected);
+        this.loadBarberRatings(selected.id);
         this.barberApi.listServices(selected.id).subscribe({
           next: (services) => {
             this.services.set(services);
@@ -209,6 +225,13 @@ export class AppointmentServiceComponent {
         this.error = 'Barbers could not be loaded.';
         this.loading = false;
       },
+    });
+  }
+
+  private loadBarberRatings(barberId: string): void {
+    this.barberApi.listRatingsForBarber(barberId).subscribe({
+      next: (ratings) => this.barberRatings.set(ratings),
+      error: () => this.barberRatings.set([]),
     });
   }
 

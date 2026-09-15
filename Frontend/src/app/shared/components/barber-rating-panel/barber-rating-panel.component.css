@@ -3,8 +3,9 @@
 }
 
 .barber-rating-panel {
+  max-width: 680px;
   padding: 1.5rem;
-  margin-top: 1.5rem;
+  margin: 1.5rem auto 0;
   background: var(--theme-card-bg);
   border: 1px solid var(--theme-border);
   border-radius: 1rem;

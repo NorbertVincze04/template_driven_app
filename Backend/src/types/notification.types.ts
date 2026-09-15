@@ -4,6 +4,7 @@ export type NotificationType =
   | "APPOINTMENT_CHANGE_REQUESTED"
   | "APPOINTMENT_CHANGE_RESOLVED"
   | "REVIEW_RECEIVED"
+  | "BARBER_RATING_RECEIVED"
   | "RATING_REMINDER";
 
 // structure of a notification record returned to the client.

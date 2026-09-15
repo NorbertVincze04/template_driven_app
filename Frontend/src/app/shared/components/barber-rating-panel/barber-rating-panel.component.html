@@ -52,3 +52,10 @@
   (submitRating)="submit($event)"
   (closeModal)="closeModal()"
 ></app-barber-rating-form-modal>
+
+<app-submission-thank-you-modal
+  [isOpen]="thankYouOpen()"
+  title="Thank you"
+  message="Thank you for taking the time to leave a rating."
+  (closeModal)="closeThankYouModal()"
+></app-submission-thank-you-modal>

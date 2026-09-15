@@ -26,6 +26,7 @@ export interface TenantFooterLayout {
   showFacebook?: boolean;
   showHelpCenter?: boolean;
   showTerms?: boolean;
+  showReportBug?: boolean;
 }
 
 export interface TenantHeroLayout {
