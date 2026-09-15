@@ -92,8 +92,13 @@ export class OwnerAdminComponent {
     this.plans.splice(index, 1);
   }
 
-  protected selectService(plan: EditablePricingPlan, serviceName: string): void {
-    plan.ctaLink = serviceName ? `/services/${slugify(serviceName)}` : '/services';
+  protected selectService(
+    plan: EditablePricingPlan,
+    serviceName: string,
+  ): void {
+    plan.ctaLink = serviceName
+      ? `/services/${slugify(serviceName)}`
+      : '/services';
   }
 
   protected savePricing(): void {
@@ -132,7 +137,8 @@ export class OwnerAdminComponent {
         },
         error: (error) => {
           this.saving = false;
-          this.error = error.error?.message || 'Home services could not be saved.';
+          this.error =
+            error.error?.message || 'Home services could not be saved.';
         },
       });
   }

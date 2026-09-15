@@ -36,9 +36,7 @@ export function verifyToken(token: string): UserPayload | null {
       typeof payload.shopSlug !== "string" ||
       typeof payload.fullName !== "string" ||
       typeof payload.email !== "string" ||
-      !["OWNER", "ADMIN", "BARBER", "CUSTOMER"].includes(
-        payload.role ?? "",
-      )
+      !["OWNER", "ADMIN", "BARBER", "CUSTOMER"].includes(payload.role ?? "")
     ) {
       return null;
     }

@@ -27,6 +27,9 @@ export interface UserRecord {
   roles: UserRole[];
 }
 
-export function hasRole(user: Pick<UserPayload, "role" | "roles">, role: UserRole): boolean {
+export function hasRole(
+  user: Pick<UserPayload, "role" | "roles">,
+  role: UserRole,
+): boolean {
   return user.role === role || user.roles.includes(role);
 }

@@ -35,13 +35,9 @@ function toPayload(appointment: AppointmentRecord) {
 
 export class AppointmentController {
   static async listMine(req: Request, res: Response): Promise<Response> {
-    const appointments =
-      hasRole(req.user!, "BARBER")
-        ? await AppointmentRepository.findForBarber(req.user!.id, req.shop!.id)
-        : await AppointmentRepository.findForCustomer(
-            req.user!.id,
-            req.shop!.id,
-          );
+    const appointments = hasRole(req.user!, "BARBER")
+      ? await AppointmentRepository.findForBarber(req.user!.id, req.shop!.id)
+      : await AppointmentRepository.findForCustomer(req.user!.id, req.shop!.id);
     return res.json({
       success: true,
       payload: appointments.map(toPayload),
