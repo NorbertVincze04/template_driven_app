@@ -13,6 +13,7 @@ import { AuthService } from '../../core/services/auth.service';
 import {
   Barber,
   BarberAvailability,
+  BarberGalleryPhoto,
   BarberReceivedRating,
   BarberService as ServiceOption,
 } from '../../core/models/barber.model';
@@ -28,6 +29,7 @@ import { BarberRatingPanelComponent } from '../../shared/components/barber-ratin
 import { TimeSlotPickerComponent } from '../../shared/components/time-slot-picker/time-slot-picker.component';
 import { GuestDetailsFormComponent } from '../../shared/components/guest-details-form/guest-details-form.component';
 import { ReviewsListComponent } from '../../shared/components/reviews-list/reviews-list.component';
+import { BarberPhotoGalleryComponent } from '../../shared/components/barber-photo-gallery/barber-photo-gallery.component';
 
 function todayInBucharest(): string {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -65,6 +67,7 @@ function todayInBucharest(): string {
     TimeSlotPickerComponent,
     GuestDetailsFormComponent,
     ReviewsListComponent,
+    BarberPhotoGalleryComponent,
   ],
   templateUrl: './appointment-service.component.html',
   styleUrl: './appointment-service.component.css',
@@ -90,6 +93,7 @@ export class AppointmentServiceComponent {
   protected readonly auth = inject(AuthService);
   protected readonly barber = signal<Barber | null>(null);
   protected readonly services = signal<ServiceOption[]>([]);
+  protected readonly galleryPhotos = signal<BarberGalleryPhoto[]>([]);
   protected readonly barberRatings = signal<BarberReceivedRating[]>([]);
   protected readonly barberRatingReviews = computed((): TenantReviewItem[] =>
     this.barberRatings().map((rating) => ({
@@ -187,6 +191,7 @@ export class AppointmentServiceComponent {
         }
 
         this.barber.set(selected);
+        this.loadGallery(selected.id);
         this.loadBarberRatings(selected.id);
         this.barberApi.listServices(selected.id).subscribe({
           next: (services) => {
@@ -232,6 +237,13 @@ export class AppointmentServiceComponent {
     this.barberApi.listRatingsForBarber(barberId).subscribe({
       next: (ratings) => this.barberRatings.set(ratings),
       error: () => this.barberRatings.set([]),
+    });
+  }
+
+  private loadGallery(barberId: string): void {
+    this.barberApi.listGalleryForBarber(barberId).subscribe({
+      next: (photos) => this.galleryPhotos.set(photos),
+      error: () => this.galleryPhotos.set([]),
     });
   }
 

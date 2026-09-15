@@ -37,7 +37,13 @@ h2 {
   margin: 2.5rem auto 0;
 }
 
-.reviews-heading {
+.barber-gallery-panel {
+  max-width: 680px;
+  margin: 2.5rem auto 0;
+}
+
+.reviews-heading,
+.gallery-heading {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -45,7 +51,8 @@ h2 {
   margin-bottom: 1.25rem;
 }
 
-.reviews-heading h2 {
+.reviews-heading h2,
+.gallery-heading h2 {
   margin-bottom: 0;
 }
 

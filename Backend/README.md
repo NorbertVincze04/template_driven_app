@@ -84,13 +84,16 @@ sql/013_notifications.sql
 sql/014_notification_read_at.sql
 sql/015_barber_ratings.sql
 sql/016_update_default_location_cluj_napoca.sql
+sql/017_barber_photo_gallery.sql
+sql/018_barber_gallery_photo_position.sql
 ```
 
 The later migrations create working hours, blocked periods, service prices,
 barber-owned services, guest booking fields, appointment overlap protection,
 Romanian local-time booking, shared-service compatibility, the default
 tenant content used by the frontend, customer cancel/reschedule requests,
-in-app notifications, and customer ratings of barbers.
+in-app notifications, customer ratings of barbers, barber photo galleries, and
+gallery photo preview positioning.
 
 The `shops.config` JSONB column stores the website configuration. To add another
 tenant, insert a shop and map one or more domains:

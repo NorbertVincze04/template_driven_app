@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { PublicController } from "../controllers/PublicController.ts";
 import { BarberRatingController } from "../controllers/BarberRatingController.ts";
+import { BarberGalleryController } from "../controllers/BarberGalleryController.ts";
 import { BugReportController } from "../controllers/BugReportController.ts";
 import { tenantMiddleware } from "../middleware/tenant.middleware.ts";
 import { authMiddleware } from "../middleware/auth.middleware.ts";
@@ -10,8 +11,22 @@ publicRouter.use(tenantMiddleware);
 publicRouter.get("/barbers", (req, res) =>
   PublicController.listBarbers(req, res),
 );
+publicRouter.get("/barbers/me/gallery", authMiddleware, (req, res) =>
+  BarberGalleryController.listMine(req, res),
+);
+publicRouter.post("/barbers/me/gallery", authMiddleware, (req, res) =>
+  BarberGalleryController.createMine(req, res),
+);
+publicRouter.delete(
+  "/barbers/me/gallery/:photoId",
+  authMiddleware,
+  (req, res) => BarberGalleryController.deleteMine(req, res),
+);
 publicRouter.get("/barbers/:barberId", (req, res) =>
   PublicController.getBarber(req, res),
+);
+publicRouter.get("/barbers/:barberId/gallery", (req, res) =>
+  BarberGalleryController.list(req, res),
 );
 publicRouter.get("/barbers/:barberId/rating", (req, res) =>
   BarberRatingController.summary(req, res),

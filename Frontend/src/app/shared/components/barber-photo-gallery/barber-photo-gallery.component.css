@@ -1,0 +1,371 @@
+:host {
+  display: block;
+}
+
+.gallery-upload {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.file-drop {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  border: 1px dashed var(--theme-border);
+  border-radius: 0.85rem;
+  background: var(--theme-card-bg);
+  color: var(--theme-text-soft);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.file-drop input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.file-drop img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.position-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.position-controls label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--theme-text-soft);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.position-controls input[type="range"] {
+  width: 100%;
+  accent-color: var(--tenant-primary);
+}
+
+.caption-field {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--theme-text-soft);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.caption-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-bg);
+  color: var(--theme-text);
+  font: inherit;
+}
+
+.caption-field input:focus {
+  outline: 2px solid color-mix(in srgb, var(--tenant-primary) 45%, transparent);
+  border-color: var(--tenant-primary);
+}
+
+.gallery-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.clear-btn,
+.delete-photo-btn {
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text-soft);
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.clear-btn {
+  padding: 0.55rem 0.9rem;
+}
+
+.gallery-grid {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 0.25rem 0.25rem 1.25rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--tenant-primary) 40%,
+      var(--theme-muted)
+    )
+    var(--theme-surface-alt, var(--theme-border-subtle));
+}
+
+.gallery-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.gallery-grid::-webkit-scrollbar-track {
+  background: var(--theme-surface-alt, var(--theme-border-subtle));
+  border-radius: 4px;
+}
+
+.gallery-grid::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--tenant-primary) 40%, var(--theme-muted));
+  border-radius: 4px;
+}
+
+.gallery-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--tenant-primary);
+}
+
+.gallery-item {
+  flex: 0 0 calc((100% - 2rem) / 3);
+  scroll-snap-align: start;
+  position: relative;
+  margin: 0;
+  min-height: 180px;
+  overflow: hidden;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.85rem;
+  background: var(--theme-card-bg);
+}
+
+.photo-open-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.photo-open-btn:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--tenant-primary) 55%, transparent);
+  outline-offset: -3px;
+}
+
+.photo-open-btn img {
+  display: block;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.gallery-item figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem;
+  color: #fff;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.delete-photo-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.45rem 0.75rem;
+  background: color-mix(in srgb, var(--theme-danger) 88%, #000);
+  color: #fff;
+  border-color: transparent;
+}
+
+.delete-photo-btn:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.empty-gallery {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  background: var(--theme-card-bg);
+  border: 1px dashed var(--theme-border);
+  border-radius: 1rem;
+  color: var(--theme-text-soft);
+}
+
+.empty-gallery p {
+  margin: 0;
+}
+
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.photo-lightbox-card {
+  position: relative;
+  width: min(100%, 980px);
+  max-height: 90vh;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, #fff 16%, transparent);
+  border-radius: 1rem;
+  background: var(--theme-card-bg);
+  box-shadow: var(--theme-shadow-lg);
+  animation: slideUp 0.24s ease-out;
+}
+
+.photo-lightbox-card img {
+  width: 100%;
+  max-height: calc(90vh - 5.5rem);
+  object-fit: contain;
+  border-radius: 0.7rem;
+  background: #000;
+}
+
+.photo-lightbox-card p {
+  margin: 0;
+  color: var(--theme-text);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid color-mix(in srgb, #fff 28%, transparent);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.lightbox-close-btn:hover {
+  background: rgba(0, 0, 0, 0.82);
+}
+
+.lightbox-nav-btn {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, #fff 34%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--theme-card-bg) 72%, #000);
+  color: #fff;
+  cursor: pointer;
+  transform: translateY(-50%);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.lightbox-nav-btn svg {
+  width: 1.55rem;
+  height: 1.55rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lightbox-nav-btn:hover {
+  border-color: color-mix(in srgb, var(--tenant-primary) 65%, #fff);
+  background: color-mix(in srgb, var(--tenant-primary) 46%, #000);
+  transform: translateY(-50%) scale(1.04);
+}
+
+.lightbox-nav-btn:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--tenant-primary) 55%, transparent);
+  outline-offset: 3px;
+}
+
+.lightbox-prev-btn {
+  left: 1.25rem;
+}
+
+.lightbox-next-btn {
+  right: 1.25rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .position-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-item {
+    flex-basis: clamp(220px, 78vw, 280px);
+  }
+
+  .lightbox-prev-btn {
+    left: 0.5rem;
+  }
+
+  .lightbox-next-btn {
+    right: 0.5rem;
+  }
+
+  .lightbox-nav-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .lightbox-nav-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}

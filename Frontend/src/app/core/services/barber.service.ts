@@ -10,6 +10,7 @@ import {
 import {
   Barber,
   BarberAvailability,
+  BarberGalleryPhoto,
   BarberReceivedRating,
   BarberService as ServiceOption,
   MyBarberRating,
@@ -143,6 +144,45 @@ export class BarberService {
 
   deleteService(id: string) {
     return this.http.delete(`${this.baseUrl}/services/${id}`, this.options());
+  }
+
+  listGalleryForBarber(barberId: string): Observable<BarberGalleryPhoto[]> {
+    if (environment.useLocalBarberFixtures) {
+      return of([]);
+    }
+    return this.http
+      .get<{
+        payload: BarberGalleryPhoto[];
+      }>(`${this.baseUrl}/barbers/${barberId}/gallery`, this.options())
+      .pipe(map((response) => response.payload));
+  }
+
+  listMyGallery(): Observable<BarberGalleryPhoto[]> {
+    return this.http
+      .get<{
+        payload: BarberGalleryPhoto[];
+      }>(`${this.baseUrl}/barbers/me/gallery`, this.options())
+      .pipe(map((response) => response.payload));
+  }
+
+  addGalleryPhoto(
+    imageData: string,
+    caption: string | null,
+    imagePositionX: number,
+    imagePositionY: number,
+  ) {
+    return this.http
+      .post<{
+        payload: BarberGalleryPhoto;
+      }>(`${this.baseUrl}/barbers/me/gallery`, { imageData, caption, imagePositionX, imagePositionY }, this.options())
+      .pipe(map((response) => response.payload));
+  }
+
+  deleteGalleryPhoto(photoId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.baseUrl}/barbers/me/gallery/${photoId}`,
+      this.options(),
+    );
   }
 
   // The logged-in customer's rating status for this barber: whether they're

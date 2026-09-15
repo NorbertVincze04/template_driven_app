@@ -199,6 +199,12 @@ small,
 
 .barber-ratings-section .section-heading {
   align-items: center;
+  margin-top: 2.5rem;
+}
+
+.gallery-error {
+  display: block;
+  margin: 1rem 0 0;
 }
 
 /* Appointments table/status/actions styles now live in app-appointments-list. */

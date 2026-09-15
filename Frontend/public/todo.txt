@@ -2,5 +2,3 @@
 services section updated by owner
 
 upgrade membership from user to barber by owner
-
-photo gallery for barbers

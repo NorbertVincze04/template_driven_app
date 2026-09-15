@@ -57,6 +57,23 @@
     </section>
 
     <section
+      class="barber-gallery-panel"
+      aria-labelledby="barber-gallery-title"
+    >
+      <div class="gallery-heading">
+        <div>
+          <p class="eyebrow">Photo gallery</p>
+          <h2 id="barber-gallery-title">Work by {{ profile.name }}</h2>
+        </div>
+      </div>
+
+      <app-barber-photo-gallery
+        [photos]="galleryPhotos()"
+        emptyMessage="No gallery photos yet."
+      ></app-barber-photo-gallery>
+    </section>
+
+    <section
       class="barber-reviews-panel"
       aria-labelledby="barber-reviews-title"
     >

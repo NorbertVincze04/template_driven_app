@@ -179,8 +179,30 @@
     @if (currentUser()?.type === "BARBER") {
       <app-barber-schedule></app-barber-schedule>
 
+      <section class="profile-section" aria-labelledby="barber-gallery-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Photo gallery</p>
+            <h2 id="barber-gallery-title">Your work</h2>
+          </div>
+        </div>
+        <app-barber-photo-gallery
+          [photos]="myGalleryPhotos()"
+          [editable]="true"
+          [uploading]="galleryUploading"
+          [deletingId]="galleryDeletingId"
+          emptyMessage="Upload photos of your work so clients can preview your style."
+          (uploadPhoto)="uploadGalleryPhoto($event)"
+          (deletePhoto)="deleteGalleryPhoto($event)"
+          (errorMessage)="galleryError = $event"
+        ></app-barber-photo-gallery>
+        @if (galleryError) {
+          <p class="error-message gallery-error">{{ galleryError }}</p>
+        }
+      </section>
+
       <section
-        class="profile-section barber-ratings-section"
+        class="barber-ratings-section"
         aria-labelledby="barber-ratings-title"
       >
         <div class="section-heading">

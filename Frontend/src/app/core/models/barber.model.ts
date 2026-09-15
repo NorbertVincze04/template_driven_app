@@ -40,6 +40,16 @@ export interface BarberReceivedRating {
   date: string;
 }
 
+export interface BarberGalleryPhoto {
+  id: string;
+  imageUrl: string;
+  imagePositionX: number;
+  imagePositionY: number;
+  caption: string | null;
+  displayOrder: number;
+  createdAt: string;
+}
+
 export interface MyBarberRatingStatus {
   rating: MyBarberRating | null;
   eligible: boolean;

@@ -14,6 +14,7 @@ import { Appointment, AuthService } from '../../core/services/auth.service';
 import { TenantService } from '../../core/services/tenant.service';
 import { BarberService } from '../../core/services/barber.service';
 import {
+  BarberGalleryPhoto,
   BarberReceivedRating,
   BarberService as ServiceOption,
 } from '../../core/models/barber.model';
@@ -24,6 +25,10 @@ import { AppointmentsListComponent } from '../../shared/components/appointments-
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { BarberRatingSummaryComponent } from '../../shared/components/barber-rating-summary/barber-rating-summary.component';
 import { ReviewsListComponent } from '../../shared/components/reviews-list/reviews-list.component';
+import {
+  BarberPhotoGalleryComponent,
+  GalleryPhotoSubmission,
+} from '../../shared/components/barber-photo-gallery/barber-photo-gallery.component';
 import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -46,6 +51,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ConfirmDialogComponent,
     BarberRatingSummaryComponent,
     ReviewsListComponent,
+    BarberPhotoGalleryComponent,
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
@@ -63,6 +69,7 @@ export class UserProfileComponent {
   protected readonly appointments = signal<Appointment[]>([]);
   // Only populated for barbers, to feed the appointments edit form's service dropdown.
   protected readonly services = signal<ServiceOption[]>([]);
+  protected readonly myGalleryPhotos = signal<BarberGalleryPhoto[]>([]);
   // Only populated for barbers, to show their own average rating below.
   protected readonly myRating = signal<number | null>(null);
   protected readonly myRatingCount = signal(0);
@@ -83,6 +90,9 @@ export class UserProfileComponent {
   protected profileSaved = false;
   protected profileSaving = false;
   protected profileDeleting = false;
+  protected galleryUploading = false;
+  protected galleryDeletingId = '';
+  protected galleryError = '';
   protected deleteDialogOpen = false;
   protected appointmentActionId = '';
   protected readonly editingProfile = signal(false);
@@ -133,6 +143,7 @@ export class UserProfileComponent {
         next: (services) => this.services.set(services),
         error: () => undefined,
       });
+      this.loadMyGallery();
       this.barberApi.getBarber(user.id!).subscribe({
         next: (barber) => {
           this.myRating.set(barber.rating ?? null);
@@ -148,6 +159,56 @@ export class UserProfileComponent {
     interval(15000)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.loadAppointments());
+  }
+
+  private loadMyGallery(): void {
+    this.barberApi.listMyGallery().subscribe({
+      next: (photos) => this.myGalleryPhotos.set(photos),
+      error: () => undefined,
+    });
+  }
+
+  protected uploadGalleryPhoto(submission: GalleryPhotoSubmission): void {
+    if (this.galleryUploading) return;
+    this.galleryUploading = true;
+    this.galleryError = '';
+    this.barberApi
+      .addGalleryPhoto(
+        submission.imageData,
+        submission.caption,
+        submission.imagePositionX,
+        submission.imagePositionY,
+      )
+      .subscribe({
+        next: (photo) => {
+          this.galleryUploading = false;
+          this.myGalleryPhotos.update((photos) => [...photos, photo]);
+        },
+        error: (error) => {
+          this.galleryUploading = false;
+          this.galleryError =
+            error.error?.message || 'Gallery photo could not be uploaded.';
+        },
+      });
+  }
+
+  protected deleteGalleryPhoto(photoId: string): void {
+    if (this.galleryDeletingId) return;
+    this.galleryDeletingId = photoId;
+    this.galleryError = '';
+    this.barberApi.deleteGalleryPhoto(photoId).subscribe({
+      next: () => {
+        this.galleryDeletingId = '';
+        this.myGalleryPhotos.update((photos) =>
+          photos.filter((photo) => photo.id !== photoId),
+        );
+      },
+      error: (error) => {
+        this.galleryDeletingId = '';
+        this.galleryError =
+          error.error?.message || 'Gallery photo could not be deleted.';
+      },
+    });
   }
 
   protected saveProfile(): void {
