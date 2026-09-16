@@ -1,0 +1,163 @@
+<main class="manage-page" [style]="tenantStyles()">
+  <div class="manage-content">
+    <p class="eyebrow">Owner management</p>
+    <h1>Manage barbers</h1>
+
+    <section class="manage-section" aria-labelledby="barber-table-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Team</p>
+          <h2 id="barber-table-title">Barbers</h2>
+        </div>
+        <input
+          class="search-input"
+          type="search"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+          placeholder="Search barbers..."
+          aria-label="Search barbers"
+        />
+      </div>
+
+      @if (error) {
+        <p class="error-message" role="alert">{{ error }}</p>
+      }
+      @if (loading) {
+        <p class="empty-message">Loading users...</p>
+      } @else if (!filteredUsers().length) {
+        <p class="empty-message">No users match your search.</p>
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Access</th>
+                <th>Private note</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of filteredUsers(); track user.id) {
+                <tr>
+                  <td>
+                    <strong>{{ user.fullName }}</strong>
+                    <span>{{ user.email }}</span>
+                    @if (user.phoneNumber) {
+                      <span>{{ user.phoneNumber }}</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="role-list">{{ user.roles.join(" / ") }}</span>
+                  </td>
+                  <td>
+                    <app-action-button
+                      [config]="{
+                        label: isBarber(user)
+                          ? 'Remove barber'
+                          : 'Promote to barber',
+                        loadingLabel: 'Saving...',
+                        variant: isBarber(user) ? 'danger' : 'secondary',
+                        size: 'sm',
+                      }"
+                      [isLoading]="savingId === user.id"
+                      (action)="toggleBarber(user)"
+                    ></app-action-button>
+                  </td>
+                  <td class="note-cell">
+                    <textarea
+                      [(ngModel)]="user.barberPrivateNote"
+                      [name]="'note-' + user.id"
+                      rows="2"
+                      maxlength="2000"
+                      placeholder="Private note about this barber"
+                    ></textarea>
+                    <button
+                      type="button"
+                      class="save-note-btn"
+                      [disabled]="savingId === user.id"
+                      (click)="saveNote(user)"
+                    >
+                      {{ savedId === user.id ? "Saved" : "Save note" }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      <div class="table-footer">
+        <button type="button" class="add-barber-btn" (click)="openAddBarber()">
+          Add barber
+        </button>
+      </div>
+    </section>
+  </div>
+</main>
+
+@if (addBarberOpen) {
+  <div class="modal-backdrop" (click)="closeAddBarber()" role="presentation">
+    <section
+      class="add-barber-modal"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-labelledby="add-barber-title"
+      aria-modal="true"
+    >
+      <div class="modal-header">
+        <div>
+          <p class="section-kicker">Team</p>
+          <h2 id="add-barber-title">Add barber</h2>
+        </div>
+        <button
+          type="button"
+          class="modal-close"
+          (click)="closeAddBarber()"
+          aria-label="Close dialog"
+        >
+          &times;
+        </button>
+      </div>
+
+      <label class="modal-search">
+        Search by name, phone, or email
+        <input
+          type="search"
+          [ngModel]="addSearch()"
+          (ngModelChange)="addSearch.set($event)"
+          placeholder="Search users..."
+        />
+      </label>
+
+      <label class="modal-role">
+        Role
+        <select [(ngModel)]="selectedRole" name="newBarberRole">
+          <option value="BARBER">Barber</option>
+        </select>
+      </label>
+
+      <div class="candidate-list">
+        @for (user of addCandidates(); track user.id) {
+          <div class="candidate-row">
+            <div>
+              <strong>{{ user.fullName }}</strong>
+              <span>{{ user.email }}</span>
+              @if (user.phoneNumber) {
+                <span>{{ user.phoneNumber }}</span>
+              }
+            </div>
+            <app-action-button
+              [config]="{ label: 'Add', variant: 'primary', size: 'sm' }"
+              [isLoading]="savingId === user.id"
+              (action)="addBarber(user)"
+            ></app-action-button>
+          </div>
+        } @empty {
+          <p class="empty-message">No matching users found.</p>
+        }
+      </div>
+    </section>
+  </div>
+}

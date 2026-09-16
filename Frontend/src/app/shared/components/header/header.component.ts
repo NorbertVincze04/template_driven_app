@@ -38,6 +38,9 @@ export class HeaderComponent {
   protected readonly showAdminButton = computed((): boolean =>
     this.authService.hasRole('ADMIN'),
   );
+  protected readonly showManageButton = computed((): boolean =>
+    this.authService.hasRole('OWNER'),
+  );
   protected readonly isDarkMode = this.tenantService.isDarkMode;
   protected readonly tenantConfig = computed((): TenantConfig | null =>
     this.tenantService.config(),
@@ -102,6 +105,11 @@ export class HeaderComponent {
   openAdmin(): void {
     this.profileMenuOpen = false;
     this.router.navigate(['/admin']);
+  }
+
+  openManage(): void {
+    this.profileMenuOpen = false;
+    this.router.navigate(['/manage']);
   }
 
   logout(): void {

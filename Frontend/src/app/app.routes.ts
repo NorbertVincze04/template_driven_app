@@ -11,6 +11,7 @@ import { AppointmentServiceComponent } from './features/appointment-service/appo
 import { ServicesComponent } from './features/barber-services/barber-services.component';
 import { BarbersPreviewComponent } from './features/barbers-preview/barbers-preview.component';
 import { OwnerAdminComponent } from './features/owner-admin/owner-admin.component';
+import { OwnerManageComponent } from './features/owner-manage/owner-manage.component';
 
 export const routes: Routes = [
   {
@@ -87,6 +88,12 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: OwnerAdminComponent,
+    canActivate: [AuthGuard],
+    data: { showBars: true },
+  },
+  {
+    path: 'manage',
+    component: OwnerManageComponent,
     canActivate: [AuthGuard],
     data: { showBars: true },
   },

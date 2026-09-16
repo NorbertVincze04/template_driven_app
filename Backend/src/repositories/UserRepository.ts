@@ -2,6 +2,22 @@ import type { UserRecord } from "../types/user.types.ts";
 import { pool } from "../db.ts";
 
 export class UserRepository {
+  static async findAuthState(
+    userId: string,
+    shopId: string,
+  ): Promise<{ role: UserRecord["role"]; roles: UserRecord["roles"] } | null> {
+    const { rows } = await pool.query<{
+      role: UserRecord["role"];
+      roles: UserRecord["roles"];
+    }>(
+      `SELECT role, roles
+       FROM users
+       WHERE id = $1 AND shop_id = $2 AND is_active = TRUE`,
+      [userId, shopId],
+    );
+    return rows[0] ?? null;
+  }
+
   static async listForOwner(shopId: string): Promise<
     Array<{
       id: string;
@@ -35,7 +51,11 @@ export class UserRepository {
       `UPDATE users
        SET roles = CASE
            WHEN $3 THEN ARRAY(SELECT DISTINCT unnest(roles || ARRAY['BARBER']::TEXT[]))
-           ELSE array_remove(roles, 'BARBER')
+           ELSE CASE
+             WHEN cardinality(array_remove(roles, 'BARBER')) = 0
+               THEN ARRAY['CUSTOMER']::TEXT[]
+             ELSE array_remove(roles, 'BARBER')
+           END
          END,
          role = CASE
            WHEN $3 THEN role
@@ -133,7 +153,7 @@ export class UserRepository {
       INSERT INTO users
         (shop_id, full_name, email, password_hash, role, roles, phone_number)
       VALUES
-        ($1, $2, $3, $4, $5, ARRAY[$5]::TEXT[], $6)
+        ($1, $2, $3, $4, $5::varchar, ARRAY[$5::text]::TEXT[], $6)
       RETURNING id, shop_id, full_name, email, phone_number, profile_image_url,
         password_hash, role, roles, barber_private_note
       `,

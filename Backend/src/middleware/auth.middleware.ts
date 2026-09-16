@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt.utils.ts";
 import type { UserPayload } from "../types/user.types.ts";
+import { UserRepository } from "../repositories/UserRepository.ts";
 
 declare global {
   namespace Express {
@@ -10,11 +11,11 @@ declare global {
   }
 }
 
-export function authMiddleware(
+export async function authMiddleware(
   req: Request,
   res: Response,
   next: NextFunction,
-): void | Response {
+): Promise<void | Response> {
   try {
     const authHeader = req.headers.authorization;
 
@@ -39,6 +40,20 @@ export function authMiddleware(
       return res.status(403).json({
         success: false,
         message: "Token does not belong to this salon.",
+      });
+    }
+
+    const authState = await UserRepository.findAuthState(user.id, req.shop.id);
+    const tokenRoles = [...user.roles].sort();
+    const databaseRoles = authState ? [...authState.roles].sort() : [];
+    const rolesChanged =
+      tokenRoles.length !== databaseRoles.length ||
+      tokenRoles.some((role, index) => role !== databaseRoles[index]);
+
+    if (!authState || authState.role !== user.role || rolesChanged) {
+      return res.status(401).json({
+        success: false,
+        message: "Your account permissions changed. Please log in again.",
       });
     }
 

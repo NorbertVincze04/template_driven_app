@@ -150,3 +150,7 @@ tenant config request and use the returned slug for auth. Do not accept a client
 supplied `shop_id`; only the server-resolved shop is trusted.
 
 Public registration creates a `CUSTOMER`. `ADMIN` and `BARBER` accounts should be provisioned by a trusted shop-management flow.
+
+Authenticated requests re-check the user's current `role` and `roles` values in
+the database. If either changes from the values in the JWT, the API returns `401`
+and the frontend clears the session, requiring the user to log in again.

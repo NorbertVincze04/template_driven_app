@@ -55,6 +55,12 @@
       </button>
     }
 
+    @if (showManageButton()) {
+      <button type="button" class="nav-link admin-link" (click)="openManage()">
+        Manage
+      </button>
+    }
+
     @if (tenantConfig()?.layout?.header?.showThemeToggle === true) {
       <button
         class="icon-btn"
