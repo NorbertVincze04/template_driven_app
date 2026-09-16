@@ -5,6 +5,9 @@ import { tenantMiddleware } from "../middleware/tenant.middleware.ts";
 
 export const managementRouter = Router();
 managementRouter.use(tenantMiddleware, authMiddleware);
+managementRouter.get("/analytics", (req, res) =>
+  ManagementController.analytics(req, res),
+);
 managementRouter.get("/users", (req, res) =>
   ManagementController.listUsers(req, res),
 );

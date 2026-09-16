@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ManagementUser } from '../../core/models/management-user.model';
+import { OwnerAnalytics } from '../../core/models/owner-analytics.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ManagementService } from '../../core/services/management.service';
 import { TenantService } from '../../core/services/tenant.service';
@@ -21,6 +22,7 @@ export class OwnerManageComponent {
   private readonly router = inject(Router);
 
   protected readonly users = signal<ManagementUser[]>([]);
+  protected readonly analytics = signal<OwnerAnalytics | null>(null);
   protected readonly search = signal('');
   protected readonly addSearch = signal('');
   protected addBarberOpen = false;
@@ -29,6 +31,7 @@ export class OwnerManageComponent {
   protected savingId = '';
   protected error = '';
   protected savedId = '';
+  protected analyticsLoading = true;
 
   protected readonly filteredUsers = computed(() => {
     const term = this.search().trim().toLocaleLowerCase();
@@ -71,6 +74,26 @@ export class OwnerManageComponent {
       return;
     }
     this.loadUsers();
+    this.loadAnalytics();
+  }
+
+  private loadAnalytics(): void {
+    this.managementService.getAnalytics().subscribe({
+      next: (analytics) => {
+        this.analytics.set(analytics);
+        this.analyticsLoading = false;
+      },
+      error: () => (this.analyticsLoading = false),
+    });
+  }
+
+  protected peakHourWidth(bookings: number): string {
+    const peak = Math.max(
+      ...(this.analytics()?.peakBookedHours.map((item) => item.bookings) || [
+        1,
+      ]),
+    );
+    return `${Math.max(8, Math.round((bookings / peak) * 100))}%`;
   }
 
   private loadUsers(): void {

@@ -1,8 +1,22 @@
 import type { Request, Response } from "express";
 import { UserRepository } from "../repositories/UserRepository.ts";
 import { hasRole } from "../types/user.types.ts";
+import { AnalyticsRepository } from "../repositories/AnalyticsRepository.ts";
 
 export class ManagementController {
+  static async analytics(req: Request, res: Response): Promise<Response> {
+    if (!hasRole(req.user!, "OWNER")) {
+      return res.status(403).json({
+        success: false,
+        message: "Only owners can view analytics.",
+      });
+    }
+    return res.json({
+      success: true,
+      payload: await AnalyticsRepository.getOwnerAnalytics(req.shop!.id),
+    });
+  }
+
   static async listUsers(req: Request, res: Response): Promise<Response> {
     if (!hasRole(req.user!, "OWNER")) {
       return res
@@ -23,12 +37,10 @@ export class ManagementController {
     }
     const userId = req.params.userId;
     if (typeof userId !== "string" || typeof req.body?.enabled !== "boolean") {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "A user and barber role state are required.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "A user and barber role state are required.",
+      });
     }
     const updated = await UserRepository.setBarberRole(
       req.shop!.id,
@@ -42,12 +54,10 @@ export class ManagementController {
 
   static async updateNote(req: Request, res: Response): Promise<Response> {
     if (!hasRole(req.user!, "OWNER")) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Only owners can manage barber notes.",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Only owners can manage barber notes.",
+      });
     }
     const userId = req.params.userId;
     const note = req.body?.note;

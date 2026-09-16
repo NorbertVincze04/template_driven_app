@@ -3,6 +3,117 @@
     <p class="eyebrow">Owner management</p>
     <h1>Manage barbers</h1>
 
+    <section class="analytics-section" aria-labelledby="analytics-title">
+      <div class="analytics-heading">
+        <div>
+          <p class="section-kicker">Overview</p>
+          <h2 id="analytics-title">Performance analytics</h2>
+        </div>
+        <span class="analytics-note"
+          >Based on {{ analytics()?.totalBookings || 0 }} total bookings</span
+        >
+      </div>
+
+      @if (analytics(); as summary) {
+        <div class="metric-grid">
+          <article class="metric-card metric-card-featured">
+            <span class="metric-label">Most popular service</span>
+            @if (summary.mostPopularService; as service) {
+              <strong>{{ service.name }}</strong>
+              <span>{{ service.bookings }} bookings</span>
+            } @else {
+              <strong>No bookings yet</strong>
+              <span>Service data will appear here</span>
+            }
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Customer retention</span>
+            <strong>{{ summary.retention.rate }}%</strong>
+            <span
+              >{{ summary.retention.returningCustomers }} returning of
+              {{ summary.retention.totalCustomers }} customers</span
+            >
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Top barber</span>
+            @if (summary.topBarbers[0]; as barber) {
+              <strong>{{ barber.name }}</strong>
+              <span
+                >{{ barber.completedAppointments }} completed appointments</span
+              >
+            } @else {
+              <strong>No data yet</strong>
+              <span>Completed appointments will appear here</span>
+            }
+          </article>
+        </div>
+
+        <div class="analytics-grid">
+          <article class="analytics-panel">
+            <div class="panel-heading">
+              <h3>Peak booked hours</h3>
+              <span>Bookings by start time</span>
+            </div>
+            @if (summary.peakBookedHours.length) {
+              <div class="hour-list">
+                @for (hour of summary.peakBookedHours; track hour.hour) {
+                  <div class="hour-row">
+                    <span class="hour-label">{{ hour.hour }}</span>
+                    <div class="bar-track">
+                      <span [style.width]="peakHourWidth(hour.bookings)"></span>
+                    </div>
+                    <strong>{{ hour.bookings }}</strong>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="empty-message">No booking data yet.</p>
+            }
+          </article>
+
+          <article class="analytics-panel">
+            <div class="panel-heading">
+              <h3>Top performing barbers</h3>
+              <span>Completed appointments</span>
+            </div>
+            @if (summary.topBarbers.length) {
+              <div class="top-barber-list">
+                @for (
+                  barber of summary.topBarbers;
+                  track barber.id;
+                  let index = $index
+                ) {
+                  <div class="top-barber-row">
+                    <span class="rank">{{ index + 1 }}</span>
+                    <div class="top-barber-info">
+                      <strong>{{ barber.name }}</strong>
+                      <span
+                        >{{
+                          barber.rating === null
+                            ? "No rating yet"
+                            : barber.rating + " / 5"
+                        }}
+                        · {{ barber.ratingCount }} ratings</span
+                      >
+                    </div>
+                    <strong class="appointment-count">{{
+                      barber.completedAppointments
+                    }}</strong>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="empty-message">No barber performance data yet.</p>
+            }
+          </article>
+        </div>
+      } @else if (analyticsLoading) {
+        <p class="empty-message">Loading analytics...</p>
+      } @else {
+        <p class="empty-message">No analytics data yet.</p>
+      }
+    </section>
+
     <section class="manage-section" aria-labelledby="barber-table-title">
       <div class="section-heading">
         <div>

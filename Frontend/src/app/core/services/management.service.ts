@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ManagementUser } from '../models/management-user.model';
+import { OwnerAnalytics } from '../models/owner-analytics.model';
 import { TenantService } from './tenant.service';
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +25,14 @@ export class ManagementService {
       .get<{
         payload: ManagementUser[];
       }>(`${this.baseUrl}/users`, this.options())
+      .pipe(map((response) => response.payload));
+  }
+
+  getAnalytics(): Observable<OwnerAnalytics> {
+    return this.http
+      .get<{
+        payload: OwnerAnalytics;
+      }>(`${this.baseUrl}/analytics`, this.options())
       .pipe(map((response) => response.payload));
   }
 
