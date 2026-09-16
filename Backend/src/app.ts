@@ -11,6 +11,7 @@ import { publicRouter } from "./routes/public.routes.ts";
 import { reviewRouter } from "./routes/review.routes.ts";
 import { notificationRouter } from "./routes/notification.routes.ts";
 import { apiRateLimiter } from "./middleware/rateLimit.middleware.ts";
+import { managementRouter } from "./routes/management.routes.ts";
 
 export function createApp() {
   const app = express(); // create express server
@@ -38,6 +39,7 @@ export function createApp() {
   app.use("/api/public", publicRouter);
   app.use("/api/reviews", reviewRouter);
   app.use("/api/notifications", notificationRouter);
+  app.use("/api/management", managementRouter);
   app.use(errorHandler);
 
   return app;

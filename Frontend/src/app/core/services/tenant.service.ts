@@ -63,6 +63,18 @@ export class TenantService {
       );
   }
 
+  updateContent(content: Partial<TenantConfig>): Observable<TenantConfig> {
+    return this.http
+      .patch<{
+        success: boolean;
+        payload: TenantConfig;
+      }>(`${environment.apiUrl}/tenant/content`, content, { headers: { 'X-Tenant-Slug': this.activeTenantId || 'default' } })
+      .pipe(
+        map((response) => response.payload),
+        tap((config) => this.setTenant(config)),
+      );
+  }
+
   setTenant(config: TenantConfig): void {
     this._config.set(config);
     this.activeTenantId = config.tenantId;

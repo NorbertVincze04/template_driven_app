@@ -42,4 +42,25 @@ export class ShopRepository {
     );
     return rows[0]?.config ?? {};
   }
+
+  static async updateContent(
+    shopId: string,
+    content: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> {
+    const { rows } = await pool.query<{ config: Record<string, unknown> }>(
+      `UPDATE shops
+       SET config = config
+         || jsonb_build_object(
+              'heroSection', COALESCE(config->'heroSection', '{}'::jsonb) || COALESCE($2::jsonb->'heroSection', '{}'::jsonb),
+              'aboutUs', COALESCE(config->'aboutUs', '{}'::jsonb) || COALESCE($2::jsonb->'aboutUs', '{}'::jsonb),
+              'contactDetails', COALESCE(config->'contactDetails', '{}'::jsonb) || COALESCE($2::jsonb->'contactDetails', '{}'::jsonb),
+              'pricing', COALESCE(config->'pricing', '{}'::jsonb) || COALESCE($2::jsonb->'pricing', '{}'::jsonb)
+            ),
+         updated_at = NOW()
+       WHERE id = $1 AND is_active = TRUE
+       RETURNING config`,
+      [shopId, JSON.stringify(content)],
+    );
+    return rows[0]?.config ?? {};
+  }
 }

@@ -26,14 +26,51 @@ tenantRouter.get("/config", tenantMiddleware, (req, res) => {
 });
 
 tenantRouter.patch(
+  "/content",
+  tenantMiddleware,
+  authMiddleware,
+  async (req, res) => {
+    if (!hasRole(req.user!, "ADMIN")) {
+      return res.status(403).json({
+        success: false,
+        message: "Only admins can update salon content.",
+      });
+    }
+
+    const body = req.body || {};
+    const sections: Record<string, unknown> = {};
+    for (const section of [
+      "heroSection",
+      "aboutUs",
+      "contactDetails",
+      "pricing",
+    ]) {
+      if (body[section] && typeof body[section] === "object") {
+        sections[section] = body[section];
+      }
+    }
+
+    const config = await ShopRepository.updateContent(req.shop!.id, sections);
+    return res.json({
+      success: true,
+      payload: {
+        ...config,
+        tenantId: req.shop!.slug,
+        name: config.name ?? req.shop!.name,
+      },
+    });
+  },
+);
+
+tenantRouter.patch(
   "/pricing",
   tenantMiddleware,
   authMiddleware,
   async (req, res) => {
-    if (!hasRole(req.user!, "OWNER") && req.user!.role !== "ADMIN") {
+    if (!hasRole(req.user!, "ADMIN")) {
       return res.status(403).json({
         success: false,
-        message: "Only owners can update home page services.",
+        message: "Only admins can update home page services.",
       });
     }
 

@@ -36,7 +36,7 @@ export class HeaderComponent {
     (): boolean => this.currentUser() !== null,
   );
   protected readonly showAdminButton = computed((): boolean =>
-    this.authService.hasRole('OWNER'),
+    this.authService.hasRole('ADMIN'),
   );
   protected readonly isDarkMode = this.tenantService.isDarkMode;
   protected readonly tenantConfig = computed((): TenantConfig | null =>

@@ -2,6 +2,66 @@ import type { UserRecord } from "../types/user.types.ts";
 import { pool } from "../db.ts";
 
 export class UserRepository {
+  static async listForOwner(shopId: string): Promise<
+    Array<{
+      id: string;
+      fullName: string;
+      email: string;
+      phoneNumber: string | null;
+      role: string;
+      roles: string[];
+      barberPrivateNote: string | null;
+      isActive: boolean;
+    }>
+  > {
+    const { rows } = await pool.query(
+      `SELECT id, full_name AS "fullName", email,
+          phone_number AS "phoneNumber", role, roles,
+          barber_private_note AS "barberPrivateNote", is_active AS "isActive"
+       FROM users
+       WHERE shop_id = $1 AND is_active = TRUE
+       ORDER BY full_name`,
+      [shopId],
+    );
+    return rows;
+  }
+
+  static async setBarberRole(
+    shopId: string,
+    userId: string,
+    enabled: boolean,
+  ): Promise<boolean> {
+    const result = await pool.query(
+      `UPDATE users
+       SET roles = CASE
+           WHEN $3 THEN ARRAY(SELECT DISTINCT unnest(roles || ARRAY['BARBER']::TEXT[]))
+           ELSE array_remove(roles, 'BARBER')
+         END,
+         role = CASE
+           WHEN $3 THEN role
+           WHEN role = 'BARBER' THEN 'CUSTOMER'
+           ELSE role
+         END,
+         updated_at = NOW()
+       WHERE id = $1 AND shop_id = $2 AND is_active = TRUE`,
+      [userId, shopId, enabled],
+    );
+    return result.rowCount === 1;
+  }
+
+  static async updateBarberNote(
+    shopId: string,
+    userId: string,
+    note: string | null,
+  ): Promise<boolean> {
+    const result = await pool.query(
+      `UPDATE users SET barber_private_note = $3, updated_at = NOW()
+       WHERE id = $1 AND shop_id = $2 AND is_active = TRUE`,
+      [userId, shopId, note],
+    );
+    return result.rowCount === 1;
+  }
+
   static async deleteProfile(userId: string, shopId: string): Promise<void> {
     const client = await pool.connect();
     try {
@@ -49,7 +109,7 @@ export class UserRepository {
             SELECT u.id, u.shop_id, s.slug AS shop_slug, u.full_name,
               u.email, u.phone_number, u.profile_image_url,
               u.profile_image_position_x, u.profile_image_position_y,
-              u.password_hash, u.role, u.roles
+              u.password_hash, u.role, u.roles, u.barber_private_note
             FROM users u
             INNER JOIN shops s ON s.id = u.shop_id
             WHERE u.shop_id = $1 AND u.email = $2 AND u.is_active = TRUE
@@ -75,7 +135,7 @@ export class UserRepository {
       VALUES
         ($1, $2, $3, $4, $5, ARRAY[$5]::TEXT[], $6)
       RETURNING id, shop_id, full_name, email, phone_number, profile_image_url,
-        password_hash, role, roles
+        password_hash, role, roles, barber_private_note
       `,
       [shopId, fullName, email, passwordHash, role, phoneNumber],
     );
@@ -101,7 +161,7 @@ export class UserRepository {
           profile_image_position_y = $8, updated_at = NOW()
       WHERE id = $1 AND shop_id = $2 AND is_active = TRUE
       RETURNING id, shop_id, full_name, email, phone_number, profile_image_url,
-        profile_image_position_x, profile_image_position_y, password_hash, role, roles
+        profile_image_position_x, profile_image_position_y, password_hash, role, roles, barber_private_note
       `,
       [
         userId,

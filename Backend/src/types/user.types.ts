@@ -25,6 +25,7 @@ export interface UserRecord {
   password_hash: string;
   role: UserRole;
   roles: UserRole[];
+  barber_private_note: string | null;
 }
 
 export function hasRole(

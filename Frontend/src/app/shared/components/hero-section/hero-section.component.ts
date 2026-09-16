@@ -63,7 +63,7 @@ export class HeroSectionComponent {
         ? this.barbers().map((barber) => ({
             id: barber.id,
             name: barber.name,
-            role: barber.roles?.includes('OWNER') ? 'Owner / Barber' : 'Barber',
+            role: barber.roles?.includes('ADMIN') ? 'Admin / Barber' : 'Barber',
             imageUrl: barber.profileImageUrl || '',
             tags: [],
           }))

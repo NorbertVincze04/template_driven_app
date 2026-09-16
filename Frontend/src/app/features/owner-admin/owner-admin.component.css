@@ -33,6 +33,36 @@ h1 {
   font-size: clamp(2rem, 5vw, 3.5rem);
 }
 
+.admin-save-bar {
+  position: sticky;
+  top: 64px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--theme-surface) 94%, transparent);
+  box-shadow: var(--theme-shadow-sm);
+  backdrop-filter: blur(10px);
+}
+
+.save-scope {
+  color: var(--theme-text-soft);
+  font-size: 0.82rem;
+}
+
+.save-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
 .admin-section {
   margin-top: 2rem;
   padding: 2rem;
@@ -146,7 +176,29 @@ select:focus {
 }
 
 .muted-section {
-  opacity: 0.65;
+  opacity: 1;
+}
+
+.automatic-note {
+  color: var(--theme-muted);
+  font-size: 0.8rem;
+}
+
+.subheading {
+  margin-top: 1.5rem;
+  color: var(--theme-text);
+  font-size: 1rem;
+}
+
+.repeat-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.repeat-row:has(input:nth-child(3)) {
+  grid-template-columns: 1fr 1fr 1fr auto;
 }
 
 @media (max-width: 720px) {
@@ -154,8 +206,18 @@ select:focus {
     padding: 1.25rem;
   }
 
+  .admin-save-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .save-actions {
+    justify-content: space-between;
+  }
+
   .intro-grid,
-  .editor-grid {
+  .editor-grid,
+  .repeat-row {
     grid-template-columns: 1fr;
   }
 }
