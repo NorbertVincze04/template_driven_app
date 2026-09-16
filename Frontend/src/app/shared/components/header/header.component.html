@@ -14,8 +14,8 @@
     </button>
   </div>
 
-  <!-- Right -->
-  <div class="header-right">
+  <!-- Nav links: collapse into a dropdown panel below the header on narrow screens -->
+  <nav class="header-nav" [class.open]="mobileMenuOpen">
     @if (tenantConfig()?.layout?.header?.showAboutUs !== false) {
       <button type="button" class="nav-link" (click)="scrollToSection('about')">
         About Us
@@ -60,7 +60,10 @@
         Manage
       </button>
     }
+  </nav>
 
+  <!-- Right -->
+  <div class="header-right">
     @if (tenantConfig()?.layout?.header?.showThemeToggle === true) {
       <button
         class="icon-btn"
@@ -192,5 +195,48 @@
         (action)="onLoginClick()"
       ></app-action-button>
     }
+
+    <button
+      type="button"
+      class="menu-toggle"
+      [attr.aria-expanded]="mobileMenuOpen"
+      aria-label="Toggle navigation menu"
+      (click)="$event.stopPropagation(); toggleMobileMenu()"
+    >
+      @if (mobileMenuOpen) {
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      } @else {
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M4 6h16" />
+          <path d="M4 12h16" />
+          <path d="M4 18h16" />
+        </svg>
+      }
+    </button>
   </div>
 </header>

@@ -97,3 +97,28 @@
   text-decoration: none;
   font-weight: 600;
 }
+
+@media (max-width: 720px) {
+  .footer {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1rem;
+    text-align: center;
+  }
+
+  .footer-right {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .footer {
+    padding: 1rem 0.75rem;
+  }
+
+  .help-btn {
+    padding: 0.5rem 0.65rem;
+  }
+}

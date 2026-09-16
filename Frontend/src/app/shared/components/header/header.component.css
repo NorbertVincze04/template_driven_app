@@ -53,6 +53,23 @@
   gap: 1.5rem;
 }
 
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--theme-text);
+  padding: 0.25rem;
+}
+
 .nav-link {
   font-size: 0.9rem;
   font-weight: 500;
@@ -237,5 +254,83 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Tablet: tighten spacing before the nav needs to collapse */
+@media (max-width: 900px) {
+  .header {
+    padding: 0 1.25rem;
+  }
+
+  .header-right {
+    gap: 1rem;
+  }
+
+  .header-nav {
+    gap: 1rem;
+  }
+}
+
+/* Phone/narrow tablet: collapse text nav links into a dropdown panel */
+@media (max-width: 720px) {
+  .header-nav {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--theme-surface);
+    border-bottom: 1px solid var(--theme-border);
+    box-shadow: var(--theme-shadow-md);
+    transition:
+      max-height 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .header-nav.open {
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .header-nav .nav-link {
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid var(--theme-border-subtle);
+  }
+
+  .header-nav .admin-link {
+    border-radius: 0;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .header-right {
+    gap: 0.5rem;
+  }
+
+  .logo-text {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .header {
+    padding: 0 0.85rem;
+  }
+
+  .logo-img {
+    height: 28px;
   }
 }

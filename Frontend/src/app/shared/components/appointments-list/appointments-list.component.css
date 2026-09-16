@@ -176,8 +176,32 @@
   color: var(--theme-text-soft);
 }
 
-@media (max-width: 560px) {
+@media (max-width: 720px) {
   .profile-section {
     padding: 1.25rem;
+  }
+
+  .section-heading {
+    flex-wrap: wrap;
+  }
+
+  .status-filter {
+    flex-wrap: wrap;
+  }
+
+  /* Grid-based rows get too cramped on phones; let the table scroll
+     sideways instead of squeezing every column unreadably small. */
+  .appointments-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-row {
+    min-width: 520px;
+  }
+
+  .table-row.barber-row,
+  .table-row.customer-row {
+    min-width: 760px;
   }
 }

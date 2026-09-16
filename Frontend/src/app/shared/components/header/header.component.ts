@@ -57,8 +57,14 @@ export class HeaderComponent {
   });
 
   protected profileMenuOpen = false;
+  protected mobileMenuOpen = false;
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
 
   scrollToSection(sectionId: string): void {
+    this.mobileMenuOpen = false;
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -104,25 +110,31 @@ export class HeaderComponent {
 
   openAdmin(): void {
     this.profileMenuOpen = false;
+    this.mobileMenuOpen = false;
     this.router.navigate(['/admin']);
   }
 
   openManage(): void {
     this.profileMenuOpen = false;
+    this.mobileMenuOpen = false;
     this.router.navigate(['/manage']);
   }
 
   logout(): void {
     this.profileMenuOpen = false;
+    this.mobileMenuOpen = false;
     this.authService.logout();
     this.router.navigate(['/login']);
   }
 
   @HostListener('document:click', ['$event'])
-  closeProfileMenu(event: Event): void {
+  closeMenus(event: Event): void {
     const target = event.target as HTMLElement;
     if (!target.closest('.profile-menu')) {
       this.profileMenuOpen = false;
+    }
+    if (!target.closest('.header-nav') && !target.closest('.menu-toggle')) {
+      this.mobileMenuOpen = false;
     }
   }
 
