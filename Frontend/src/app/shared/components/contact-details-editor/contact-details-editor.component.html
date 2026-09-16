@@ -1,0 +1,106 @@
+<section
+  class="admin-section muted-section"
+  aria-labelledby="contact-editor-title"
+>
+  <p class="section-kicker">Section 4</p>
+  <h2 id="contact-editor-title">Contact section</h2>
+  <div class="editor-grid">
+    <label
+      >Section label<input [(ngModel)]="model.sectionLabel" name="contactLabel"
+    /></label>
+    <label>Title<input [(ngModel)]="model.title" name="contactTitle" /></label>
+    <label class="wide-field"
+      >Description<textarea
+        [(ngModel)]="model.description"
+        name="contactDescription"
+        rows="4"
+      ></textarea>
+    </label>
+    <label>Email<input [(ngModel)]="model.email" name="contactEmail" /></label>
+    <label>Phone<input [(ngModel)]="model.phone" name="contactPhone" /></label>
+    <label
+      >CTA text<input [(ngModel)]="model.ctaText" name="contactCtaText"
+    /></label>
+    <label
+      >CTA link<input [(ngModel)]="model.ctaLink" name="contactCtaLink"
+    /></label>
+    <label class="wide-field"
+      >Map embed URL<input [(ngModel)]="model.mapEmbedUrl" name="contactMap"
+    /></label>
+  </div>
+
+  <h3 class="subheading">Address</h3>
+  <div class="editor-grid">
+    <label
+      >Line 1<input [(ngModel)]="model.addressLine1" name="addressLine1"
+    /></label>
+    <label
+      >Line 2<input [(ngModel)]="model.addressLine2" name="addressLine2"
+    /></label>
+    <label>City<input [(ngModel)]="model.city" name="addressCity" /></label>
+    <label>State<input [(ngModel)]="model.state" name="addressState" /></label>
+    <label
+      >Postal code<input [(ngModel)]="model.postalCode" name="addressPostal"
+    /></label>
+    <label
+      >Country<input [(ngModel)]="model.country" name="addressCountry"
+    /></label>
+  </div>
+
+  <h3 class="subheading">Social links</h3>
+  @for (link of model.socialLinks; track $index; let index = $index) {
+    <div class="repeat-row">
+      <input
+        [(ngModel)]="link.label"
+        [name]="'socialLabel-' + index"
+        placeholder="Label"
+      />
+      <input
+        [(ngModel)]="link.url"
+        [name]="'socialUrl-' + index"
+        placeholder="https://..."
+      />
+      <button
+        type="button"
+        class="remove-btn"
+        (click)="removeSocialLink(index)"
+      >
+        Remove
+      </button>
+    </div>
+  }
+  <button type="button" class="add-btn" (click)="addSocialLink()">
+    Add social link
+  </button>
+
+  <h3 class="subheading">Operating hours</h3>
+  @for (hour of model.operatingHours; track $index; let index = $index) {
+    <div class="repeat-row">
+      <input
+        [(ngModel)]="hour.days"
+        [name]="'hourDays-' + index"
+        placeholder="Mon - Fri"
+      />
+      <input
+        [(ngModel)]="hour.hours"
+        [name]="'hourTimes-' + index"
+        placeholder="09:00 - 18:00"
+      />
+      <input
+        [(ngModel)]="hour.timezone"
+        [name]="'hourZone-' + index"
+        placeholder="Timezone"
+      />
+      <button
+        type="button"
+        class="remove-btn"
+        (click)="removeOperatingHour(index)"
+      >
+        Remove
+      </button>
+    </div>
+  }
+  <button type="button" class="add-btn" (click)="addOperatingHour()">
+    Add operating hours
+  </button>
+</section>

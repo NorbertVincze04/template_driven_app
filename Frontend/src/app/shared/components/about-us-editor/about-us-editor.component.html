@@ -1,0 +1,34 @@
+<section
+  class="admin-section muted-section"
+  aria-labelledby="about-editor-title"
+>
+  <p class="section-kicker">Section 3</p>
+  <h2 id="about-editor-title">About Us section</h2>
+  <div class="editor-grid">
+    <label
+      >Section label<input [(ngModel)]="model.sectionLabel" name="aboutLabel"
+    /></label>
+    <label>Title<input [(ngModel)]="model.title" name="aboutTitle" /></label>
+    <label class="wide-field"
+      >Description<textarea
+        [(ngModel)]="model.description"
+        name="aboutDescription"
+        rows="4"
+      ></textarea>
+    </label>
+    <label class="wide-field"
+      >Highlights<textarea
+        [(ngModel)]="model.highlightsText"
+        name="aboutHighlights"
+        rows="4"
+        placeholder="One highlight per line"
+      ></textarea>
+    </label>
+    <label
+      >Image URL<input [(ngModel)]="model.imageUrl" name="aboutImage"
+    /></label>
+    <label
+      >Image alt text<input [(ngModel)]="model.imageAlt" name="aboutImageAlt"
+    /></label>
+  </div>
+</section>

@@ -1,0 +1,44 @@
+<section
+  class="admin-section muted-section"
+  aria-labelledby="hero-editor-title"
+>
+  <div class="section-heading">
+    <div>
+      <p class="section-kicker">Section 2</p>
+      <h2 id="hero-editor-title">Hero section</h2>
+    </div>
+    <span class="automatic-note">Barber profiles appear automatically.</span>
+  </div>
+  <div class="editor-grid">
+    <label
+      >Badge text<input [(ngModel)]="model.badgeText" name="heroBadge"
+    /></label>
+    <label>Title<input [(ngModel)]="model.title" name="heroTitle" /></label>
+    <label class="wide-field"
+      >Subtitle<textarea
+        [(ngModel)]="model.subtitle"
+        name="heroSubtitle"
+        rows="3"
+      ></textarea>
+    </label>
+    <label
+      >Button text<input [(ngModel)]="model.ctaText" name="heroCtaText"
+    /></label>
+    <label
+      >Button link<input
+        [(ngModel)]="model.ctaLink"
+        name="heroCtaLink"
+        placeholder="/services"
+    /></label>
+    <label
+      >Background image URL<input
+        [(ngModel)]="model.backgroundImageUrl"
+        name="heroImage"
+    /></label>
+    <label
+      >Background image alt text<input
+        [(ngModel)]="model.backgroundImageAlt"
+        name="heroImageAlt"
+    /></label>
+  </div>
+</section>

@@ -1,0 +1,126 @@
+.admin-section {
+  padding: 2rem;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-top: 3px solid var(--tenant-primary);
+  border-radius: 0.75rem;
+  box-shadow: var(--theme-shadow-sm);
+}
+
+.section-heading,
+.plan-editor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-kicker {
+  margin: 0 0 0.35rem;
+  color: var(--tenant-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h2,
+h3 {
+  margin: 0;
+  color: var(--theme-text);
+}
+
+.intro-grid,
+.editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--theme-text-soft);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.wide-field {
+  grid-column: 1 / -1;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-bg);
+  color: var(--theme-text);
+  font: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid color-mix(in srgb, var(--tenant-primary) 45%, transparent);
+  border-color: var(--tenant-primary);
+}
+
+.plan-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.plan-editor {
+  padding: 1.25rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.75rem;
+  background: var(--theme-card-bg);
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.checkbox-field input {
+  width: auto;
+}
+
+.add-btn,
+.remove-btn {
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-text);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.add-btn {
+  margin-top: 1rem;
+  padding: 0.7rem 1rem;
+}
+
+.remove-btn {
+  padding: 0.45rem 0.75rem;
+  color: var(--theme-danger);
+}
+
+@media (max-width: 720px) {
+  .admin-section {
+    padding: 1.25rem;
+  }
+
+  .intro-grid,
+  .editor-grid {
+    grid-template-columns: 1fr;
+  }
+}

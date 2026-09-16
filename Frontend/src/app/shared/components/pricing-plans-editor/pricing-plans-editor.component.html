@@ -1,0 +1,96 @@
+<section class="admin-section" aria-labelledby="home-services-title">
+  <div class="section-heading">
+    <div>
+      <p class="section-kicker">Section 1</p>
+      <h2 id="home-services-title">Home page services</h2>
+    </div>
+  </div>
+
+  <div class="intro-grid">
+    <label>
+      Section label
+      <input [(ngModel)]="model.sectionLabel" name="sectionLabel" />
+    </label>
+    <label>
+      Title
+      <input [(ngModel)]="model.title" name="title" />
+    </label>
+    <label class="wide-field">
+      Description
+      <textarea
+        [(ngModel)]="model.description"
+        name="description"
+        rows="3"
+      ></textarea>
+    </label>
+  </div>
+
+  <div class="plan-list">
+    @for (plan of model.plans; track $index; let index = $index) {
+      <article class="plan-editor">
+        <div class="plan-editor-header">
+          <h3>Service card {{ index + 1 }}</h3>
+          <button type="button" class="remove-btn" (click)="removePlan(index)">
+            Remove
+          </button>
+        </div>
+
+        <div class="editor-grid">
+          <label>
+            Name
+            <input [(ngModel)]="plan.name" [name]="'name-' + index" />
+          </label>
+          <label>
+            Price
+            <input [(ngModel)]="plan.price" [name]="'price-' + index" />
+          </label>
+          <label class="wide-field">
+            Description
+            <textarea
+              [(ngModel)]="plan.description"
+              [name]="'description-' + index"
+              rows="3"
+            ></textarea>
+          </label>
+          <label class="wide-field">
+            Bullet points
+            <textarea
+              [(ngModel)]="plan.featuresText"
+              [name]="'features-' + index"
+              rows="4"
+              placeholder="One bullet per line"
+            ></textarea>
+          </label>
+          <label>
+            Button text
+            <input [(ngModel)]="plan.ctaText" [name]="'ctaText-' + index" />
+          </label>
+          <label>
+            Link button to service
+            <select
+              #serviceSelect
+              (change)="selectService(plan, serviceSelect.value)"
+            >
+              <option value="">All services</option>
+              @for (service of services; track service.id) {
+                <option [value]="service.name">{{ service.name }}</option>
+              }
+            </select>
+          </label>
+          <label class="checkbox-field">
+            <input
+              type="checkbox"
+              [(ngModel)]="plan.featured"
+              [name]="'featured-' + index"
+            />
+            Most popular
+          </label>
+        </div>
+      </article>
+    }
+  </div>
+
+  <button type="button" class="add-btn" (click)="addPlan()">
+    Add service card
+  </button>
+</section>

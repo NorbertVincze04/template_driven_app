@@ -1,38 +1,44 @@
 import { Component, computed, effect, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  TenantAboutUsContent,
-  TenantContactDetailsContent,
-  TenantHeroSection,
-  TenantPricingPlan,
-} from '../../core/models/tenant.model';
 import { BarberService as ServiceOption } from '../../core/models/barber.model';
 import { AuthService } from '../../core/services/auth.service';
 import { BarberService } from '../../core/services/barber.service';
 import { TenantService } from '../../core/services/tenant.service';
-import { slugify } from '../../core/utils/slug.utils';
 import { ActionButtonComponent } from '../../shared/components/action-button/action-button.component';
+import {
+  PricingEditorModel,
+  PricingPlansEditorComponent,
+} from '../../shared/components/pricing-plans-editor/pricing-plans-editor.component';
+import {
+  HeroEditorModel,
+  HeroSectionEditorComponent,
+} from '../../shared/components/hero-section-editor/hero-section-editor.component';
+import {
+  AboutUsEditorModel,
+  AboutUsEditorComponent,
+} from '../../shared/components/about-us-editor/about-us-editor.component';
+import {
+  ContactEditorModel,
+  ContactDetailsEditorComponent,
+} from '../../shared/components/contact-details-editor/contact-details-editor.component';
 
-interface EditablePricingPlan extends TenantPricingPlan {
-  featuresText: string;
-}
-
-interface EditableOperatingHour {
-  days: string;
-  hours: string;
-  timezone: string;
-}
-
-interface EditableSocialLink {
-  label: string;
-  url: string;
-}
-
+/**
+ * Orchestrates the /admin page: loads the tenant's current content into
+ * editable models and saves them back. Each section's fields/markup live in
+ * a focused, reusable child (app-pricing-plans-editor, app-hero-section-editor,
+ * app-about-us-editor, app-contact-details-editor), which mutate the model
+ * objects passed to them in place.
+ */
 @Component({
   selector: 'app-owner-admin',
   standalone: true,
-  imports: [FormsModule, ActionButtonComponent],
+  imports: [
+    ActionButtonComponent,
+    PricingPlansEditorComponent,
+    HeroSectionEditorComponent,
+    AboutUsEditorComponent,
+    ContactDetailsEditorComponent,
+  ],
   templateUrl: './owner-admin.component.html',
   styleUrl: './owner-admin.component.css',
 })
@@ -42,22 +48,13 @@ export class OwnerAdminComponent {
   private readonly tenantService = inject(TenantService);
   private readonly router = inject(Router);
 
-  protected sectionLabel = '';
-  protected title = '';
-  protected description = '';
-  protected plans: EditablePricingPlan[] = [];
-  protected hero: Required<
-    Pick<
-      TenantHeroSection,
-      | 'badgeText'
-      | 'title'
-      | 'subtitle'
-      | 'ctaText'
-      | 'ctaLink'
-      | 'backgroundImageUrl'
-      | 'backgroundImageAlt'
-    >
-  > = {
+  protected pricing: PricingEditorModel = {
+    sectionLabel: '',
+    title: '',
+    description: '',
+    plans: [],
+  };
+  protected hero: HeroEditorModel = {
     badgeText: '',
     title: '',
     subtitle: '',
@@ -66,12 +63,7 @@ export class OwnerAdminComponent {
     backgroundImageUrl: '',
     backgroundImageAlt: '',
   };
-  protected about: Required<
-    Pick<
-      TenantAboutUsContent,
-      'sectionLabel' | 'title' | 'description' | 'imageUrl' | 'imageAlt'
-    >
-  > & { highlightsText: string } = {
+  protected about: AboutUsEditorModel = {
     sectionLabel: '',
     title: '',
     description: '',
@@ -79,28 +71,7 @@ export class OwnerAdminComponent {
     imageAlt: '',
     highlightsText: '',
   };
-  protected contact: Required<
-    Pick<
-      TenantContactDetailsContent,
-      | 'sectionLabel'
-      | 'title'
-      | 'description'
-      | 'email'
-      | 'phone'
-      | 'mapEmbedUrl'
-      | 'ctaText'
-      | 'ctaLink'
-    >
-  > & {
-    addressLine1: string;
-    addressLine2: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-    socialLinks: EditableSocialLink[];
-    operatingHours: EditableOperatingHour[];
-  } = {
+  protected contact: ContactEditorModel = {
     sectionLabel: '',
     title: '',
     description: '',
@@ -153,13 +124,15 @@ export class OwnerAdminComponent {
       const config = this.tenantService.config();
       const pricing = config?.pricing;
       if (!config || !pricing || this.initialized) return;
-      this.sectionLabel = pricing.sectionLabel || 'Services & pricing';
-      this.title = pricing.title || 'Care that meets you where you are.';
-      this.description = pricing.description || '';
-      this.plans = (pricing.plans || []).map((plan) => ({
-        ...plan,
-        featuresText: (plan.features || []).join('\n'),
-      }));
+      this.pricing = {
+        sectionLabel: pricing.sectionLabel || 'Services & pricing',
+        title: pricing.title || 'Care that meets you where you are.',
+        description: pricing.description || '',
+        plans: (pricing.plans || []).map((plan) => ({
+          ...plan,
+          featuresText: (plan.features || []).join('\n'),
+        })),
+      };
       const hero = config.heroSection || {};
       this.hero = {
         badgeText: hero.badgeText || '',
@@ -208,56 +181,10 @@ export class OwnerAdminComponent {
     });
   }
 
-  protected addPlan(): void {
-    this.plans.push({
-      name: '',
-      price: '',
-      description: '',
-      features: [],
-      featuresText: '',
-      ctaText: 'Choose a barber',
-      ctaLink: '/services',
-      featured: false,
-    });
-  }
-
-  protected removePlan(index: number): void {
-    this.plans.splice(index, 1);
-  }
-
-  protected selectService(
-    plan: EditablePricingPlan,
-    serviceName: string,
-  ): void {
-    plan.ctaLink = serviceName
-      ? `/services/${slugify(serviceName)}`
-      : '/services';
-  }
-
-  protected savePricing(): void {
-    this.saveContent();
-  }
-
-  protected addSocialLink(): void {
-    this.contact.socialLinks.push({ label: '', url: '' });
-  }
-
-  protected removeSocialLink(index: number): void {
-    this.contact.socialLinks.splice(index, 1);
-  }
-
-  protected addOperatingHour(): void {
-    this.contact.operatingHours.push({ days: '', hours: '', timezone: '' });
-  }
-
-  protected removeOperatingHour(index: number): void {
-    this.contact.operatingHours.splice(index, 1);
-  }
-
   protected saveContent(): void {
     this.saved = false;
     this.error = '';
-    const plans = this.plans.map((plan) => ({
+    const plans = this.pricing.plans.map((plan) => ({
       name: plan.name.trim(),
       price: plan.price.trim(),
       description: plan.description?.trim() || '',
@@ -315,9 +242,11 @@ export class OwnerAdminComponent {
           ),
         },
         pricing: {
-          sectionLabel: this.sectionLabel.trim() || 'Services & pricing',
-          title: this.title.trim() || 'Care that meets you where you are.',
-          description: this.description.trim(),
+          sectionLabel:
+            this.pricing.sectionLabel.trim() || 'Services & pricing',
+          title:
+            this.pricing.title.trim() || 'Care that meets you where you are.',
+          description: this.pricing.description.trim(),
           plans,
         },
       })
