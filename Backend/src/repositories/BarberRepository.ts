@@ -405,7 +405,8 @@ export class BarberRepository {
       const service = serviceResult.rows[0];
       if (!service) throw new Error("Service not found.");
       const barberResult = await client.query(
-        `SELECT id FROM users WHERE id = $1 AND shop_id = $2 AND role = 'BARBER' AND is_active = TRUE`,
+        `SELECT id FROM users
+         WHERE id = $1 AND shop_id = $2 AND 'BARBER' = ANY(roles) AND is_active = TRUE`,
         [input.barberId, input.shopId],
       );
       if (!barberResult.rowCount) throw new Error("Barber not found.");

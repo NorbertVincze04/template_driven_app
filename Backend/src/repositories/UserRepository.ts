@@ -58,7 +58,7 @@ export class UserRepository {
            END
          END,
          role = CASE
-           WHEN $3 THEN role
+           WHEN $3 AND role = 'CUSTOMER' THEN 'BARBER'
            WHEN role = 'BARBER' THEN 'CUSTOMER'
            ELSE role
          END,
