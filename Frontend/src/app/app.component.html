@@ -18,4 +18,11 @@
   @if (showFooter) {
     <app-footer></app-footer>
   }
+
+  <app-quick-rebook-modal
+    [isOpen]="quickRebookOpen"
+    [appointment]="quickRebookAppointment"
+    (rebook)="quickRebook()"
+    (dismiss)="dismissQuickRebook()"
+  ></app-quick-rebook-modal>
 }

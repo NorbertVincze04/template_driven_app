@@ -4,7 +4,6 @@
   }
   @if (barber(); as profile) {
     <app-barber-profile-header [barber]="profile"></app-barber-profile-header>
-    <app-barber-rating-panel [barberId]="profile.id"></app-barber-rating-panel>
     <section class="booking-panel" aria-labelledby="booking-title">
       <p class="eyebrow">Appointments</p>
       <h2 id="booking-title">Book a visit</h2>
@@ -90,6 +89,8 @@
         emptyMessage="No client ratings yet. Book a visit and come back after your appointment to share your experience."
       ></app-reviews-list>
     </section>
+
+    <app-barber-rating-panel [barberId]="profile.id"></app-barber-rating-panel>
   } @else if (!loading) {
     <p class="state">{{ error }}</p>
   }

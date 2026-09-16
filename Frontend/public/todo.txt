@@ -1,4 +1,0 @@
-
-upgrade membership from user to barber by owner
-
-general photo gallery set by owner

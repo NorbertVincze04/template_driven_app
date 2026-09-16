@@ -1,0 +1,37 @@
+@if (isOpen && appointment; as item) {
+  <div class="modal-backdrop" (click)="close()" role="presentation">
+    <section
+      class="modal-card"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-labelledby="quick-rebook-title"
+      aria-modal="true"
+    >
+      <button
+        type="button"
+        class="modal-close"
+        aria-label="Close dialog"
+        (click)="close()"
+      >
+        &times;
+      </button>
+      <p class="eyebrow">Welcome back</p>
+      <h2 id="quick-rebook-title">Book the same service again?</h2>
+      <p class="modal-message">
+        Your last completed appointment was with
+        <strong>{{ item.barberName || "your barber" }}</strong> for
+        <strong>{{ item.serviceName }}</strong
+        >.
+      </p>
+      <div class="modal-actions">
+        <app-action-button
+          [config]="{ label: 'Quick rebook', variant: 'primary' }"
+          (action)="rebook.emit()"
+        ></app-action-button>
+        <button type="button" class="later-btn" (click)="close()">
+          Maybe later
+        </button>
+      </div>
+    </section>
+  </div>
+}
