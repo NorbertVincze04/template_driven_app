@@ -62,6 +62,8 @@ export class AppComponent {
       )
         return;
 
+      if (tenant.layout?.showQuickRebook === false) return;
+
       const key = `quick-rebook:${tenant.tenantId}:${user.id}`;
       if (this.quickRebookCheckedKey === key) return;
       this.quickRebookCheckedKey = key;
@@ -108,6 +110,10 @@ export class AppComponent {
     return (
       this.showBars && (this.tenantService.config()?.layout?.showTopBar ?? true)
     );
+  }
+
+  get showQuickRebook(): boolean {
+    return this.tenantService.config()?.layout?.showQuickRebook ?? true;
   }
 
   get isLoading(): boolean {

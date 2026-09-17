@@ -36,10 +36,16 @@
           (timeSelected)="selectedTime = $event"
         ></app-time-slot-picker>
         @if (!auth.currentUserValue?.token) {
-          <app-guest-details-form
-            [group]="bookingForm.controls.guestDetails"
-            [submitted]="submitted"
-          ></app-guest-details-form>
+          @if (allowGuestBooking()) {
+            <app-guest-details-form
+              [group]="bookingForm.controls.guestDetails"
+              [submitted]="submitted"
+            ></app-guest-details-form>
+          } @else {
+            <p class="guest-booking-disabled">
+              Please <a routerLink="/login">sign in</a> to book an appointment.
+            </p>
+          }
         }
         <app-action-button
           buttonType="submit"
@@ -55,42 +61,48 @@
       </form>
     </section>
 
-    <section
-      class="barber-gallery-panel"
-      aria-labelledby="barber-gallery-title"
-    >
-      <div class="gallery-heading">
-        <div>
-          <p class="eyebrow">Photo gallery</p>
-          <h2 id="barber-gallery-title">Work by {{ profile.name }}</h2>
+    @if (showBarberGallery()) {
+      <section
+        class="barber-gallery-panel"
+        aria-labelledby="barber-gallery-title"
+      >
+        <div class="gallery-heading">
+          <div>
+            <p class="eyebrow">Photo gallery</p>
+            <h2 id="barber-gallery-title">Work by {{ profile.name }}</h2>
+          </div>
         </div>
-      </div>
 
-      <app-barber-photo-gallery
-        [photos]="galleryPhotos()"
-        emptyMessage="No gallery photos yet."
-      ></app-barber-photo-gallery>
-    </section>
+        <app-barber-photo-gallery
+          [photos]="galleryPhotos()"
+          emptyMessage="No gallery photos yet."
+        ></app-barber-photo-gallery>
+      </section>
+    }
 
-    <section
-      class="barber-reviews-panel"
-      aria-labelledby="barber-reviews-title"
-    >
-      <div class="reviews-heading">
-        <div>
-          <p class="eyebrow">Client ratings</p>
-          <h2 id="barber-reviews-title">Reviews for {{ profile.name }}</h2>
+    @if (showBarberRatings()) {
+      <section
+        class="barber-reviews-panel"
+        aria-labelledby="barber-reviews-title"
+      >
+        <div class="reviews-heading">
+          <div>
+            <p class="eyebrow">Client ratings</p>
+            <h2 id="barber-reviews-title">Reviews for {{ profile.name }}</h2>
+          </div>
         </div>
-      </div>
 
-      <app-reviews-list
-        [reviews]="barberRatingReviews()"
-        [showWriteAction]="false"
-        emptyMessage="No client ratings yet. Book a visit and come back after your appointment to share your experience."
-      ></app-reviews-list>
-    </section>
+        <app-reviews-list
+          [reviews]="barberRatingReviews()"
+          [showWriteAction]="false"
+          emptyMessage="No client ratings yet. Book a visit and come back after your appointment to share your experience."
+        ></app-reviews-list>
+      </section>
 
-    <app-barber-rating-panel [barberId]="profile.id"></app-barber-rating-panel>
+      <app-barber-rating-panel
+        [barberId]="profile.id"
+      ></app-barber-rating-panel>
+    }
   } @else if (!loading) {
     <p class="state">{{ error }}</p>
   }

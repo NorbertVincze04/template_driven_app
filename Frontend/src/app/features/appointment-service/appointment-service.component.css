@@ -124,6 +124,16 @@ select option {
   font-weight: 600;
 }
 
+.guest-booking-disabled {
+  margin: 0;
+  color: var(--theme-text-soft);
+}
+
+.guest-booking-disabled a {
+  color: var(--tenant-primary);
+  font-weight: 700;
+}
+
 .error {
   margin-top: 1rem;
   color: var(--theme-danger);

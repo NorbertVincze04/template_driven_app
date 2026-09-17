@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   AbstractControl,
   FormControl,
@@ -61,6 +61,7 @@ function todayInBucharest(): string {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterLink,
     ActionButtonComponent,
     BarberProfileHeaderComponent,
     BarberRatingPanelComponent,
@@ -88,6 +89,19 @@ export class AppointmentServiceComponent {
         : 'inherit',
     };
   });
+  // Per-tenant feature toggles for the booking page (default to enabled).
+  protected readonly allowGuestBooking = computed(
+    (): boolean =>
+      this.tenantService.config()?.layout?.booking?.allowGuestBooking ?? true,
+  );
+  protected readonly showBarberGallery = computed(
+    (): boolean =>
+      this.tenantService.config()?.layout?.booking?.showBarberGallery ?? true,
+  );
+  protected readonly showBarberRatings = computed(
+    (): boolean =>
+      this.tenantService.config()?.layout?.booking?.showBarberRatings ?? true,
+  );
   private readonly route = inject(ActivatedRoute);
   private readonly barberApi = inject(BarberService);
   protected readonly auth = inject(AuthService);
@@ -324,6 +338,10 @@ export class AppointmentServiceComponent {
     }
     const accountBooking = !!this.auth.currentUserValue?.token;
     if (!accountBooking) {
+      if (!this.allowGuestBooking()) {
+        this.error = 'Please sign in to book an appointment.';
+        return;
+      }
       const guestName = this.bookingForm.get('guestDetails.guestName');
       const guestEmail = this.bookingForm.get('guestDetails.guestEmail');
       const guestPhone = this.bookingForm.get('guestDetails.guestPhone');

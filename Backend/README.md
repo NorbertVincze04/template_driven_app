@@ -88,6 +88,7 @@ sql/017_barber_photo_gallery.sql
 sql/018_barber_gallery_photo_position.sql
 sql/019_owner_roles.sql
 sql/020_barber_management_notes.sql
+sql/021_layout_feature_toggles.sql
 ```
 
 The later migrations create working hours, blocked periods, service prices,
@@ -95,7 +96,8 @@ barber-owned services, guest booking fields, appointment overlap protection,
 Romanian local-time booking, shared-service compatibility, the default
 tenant content used by the frontend, customer cancel/reschedule requests,
 in-app notifications, customer ratings of barbers, barber photo galleries, and
-gallery photo preview positioning, multi-role accounts, and private barber management notes.
+gallery photo preview positioning, multi-role accounts, private barber management notes,
+and the quick-rebook/notifications/booking-page feature toggles.
 
 To promote a user to admin for a tenant by email, run:
 

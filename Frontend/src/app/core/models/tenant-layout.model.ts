@@ -7,10 +7,12 @@ export interface TenantLayout {
   showAboutUsSection?: boolean;
   showReviewsSection?: boolean;
   showContactDetails?: boolean;
+  showQuickRebook?: boolean;
   header?: TenantHeaderLayout;
   footer?: TenantFooterLayout;
   hero?: TenantHeroLayout;
   contactDetails?: TenantContactDetailsLayout;
+  booking?: TenantBookingLayout;
 }
 
 export interface TenantHeaderLayout {
@@ -19,6 +21,13 @@ export interface TenantHeaderLayout {
   showReviews?: boolean;
   showThemeToggle?: boolean;
   showContact?: boolean;
+  showNotifications?: boolean;
+}
+
+export interface TenantBookingLayout {
+  allowGuestBooking?: boolean;
+  showBarberRatings?: boolean;
+  showBarberGallery?: boolean;
 }
 
 export interface TenantFooterLayout {

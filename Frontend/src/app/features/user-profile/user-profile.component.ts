@@ -146,6 +146,16 @@ export class UserProfileComponent {
     this.isBarberUser() ? 'BARBER' : this.currentUser()?.type || '',
   );
 
+  // Per-tenant feature toggles, shared with the booking page (default enabled).
+  protected readonly showBarberGallery = computed(
+    (): boolean =>
+      this.tenantService.config()?.layout?.booking?.showBarberGallery ?? true,
+  );
+  protected readonly showBarberRatings = computed(
+    (): boolean =>
+      this.tenantService.config()?.layout?.booking?.showBarberRatings ?? true,
+  );
+
   constructor() {
     const user = this.currentUser();
     this.profileForm.patchValue({
@@ -162,18 +172,22 @@ export class UserProfileComponent {
         next: (services) => this.services.set(services),
         error: () => undefined,
       });
-      this.loadMyGallery();
-      this.barberApi.getBarber(user.id!).subscribe({
-        next: (barber) => {
-          this.myRating.set(barber.rating ?? null);
-          this.myRatingCount.set(barber.ratingCount ?? 0);
-        },
-        error: () => undefined,
-      });
-      this.barberApi.listMyReceivedRatings().subscribe({
-        next: (ratings) => this.myReceivedRatings.set(ratings),
-        error: () => undefined,
-      });
+      if (this.showBarberGallery()) {
+        this.loadMyGallery();
+      }
+      if (this.showBarberRatings()) {
+        this.barberApi.getBarber(user.id!).subscribe({
+          next: (barber) => {
+            this.myRating.set(barber.rating ?? null);
+            this.myRatingCount.set(barber.ratingCount ?? 0);
+          },
+          error: () => undefined,
+        });
+        this.barberApi.listMyReceivedRatings().subscribe({
+          next: (ratings) => this.myReceivedRatings.set(ratings),
+          error: () => undefined,
+        });
+      }
     }
     interval(15000)
       .pipe(takeUntilDestroyed(this.destroyRef))

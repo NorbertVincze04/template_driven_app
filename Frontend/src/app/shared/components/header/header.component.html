@@ -119,7 +119,9 @@
     }
 
     @if (isLoggedIn()) {
-      <app-notification-menu></app-notification-menu>
+      @if (tenantConfig()?.layout?.header?.showNotifications !== false) {
+        <app-notification-menu></app-notification-menu>
+      }
       <div class="profile-menu">
         <button
           class="profile-btn"

@@ -75,6 +75,15 @@ export class PublicController {
   }
 
   static async createGuestAppointment(req: Request, res: Response) {
+    const layout = req.shop!.config?.["layout"] as
+      | Record<string, any>
+      | undefined;
+    if (layout?.["booking"]?.["allowGuestBooking"] === false) {
+      return res.status(403).json({
+        success: false,
+        message: "Guest booking is disabled. Please sign in to book.",
+      });
+    }
     const {
       barberId,
       serviceId,

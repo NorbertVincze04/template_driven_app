@@ -154,12 +154,14 @@
     "showAboutUsSection": true,
     "showReviewsSection": true,
     "showContactDetails": true,
+    "showQuickRebook": true,
     "header": {
       "showAboutUs": true,
       "showPricing": true,
       "showReviews": true,
       "showThemeToggle": true,
-      "showContact": true
+      "showContact": true,
+      "showNotifications": true
     },
     "footer": {
       "showInstagram": true,
@@ -184,6 +186,11 @@
       "showMap": true,
       "showOperatingHours": true,
       "showCTAButton": true
+    },
+    "booking": {
+      "allowGuestBooking": true,
+      "showBarberRatings": true,
+      "showBarberGallery": true
     }
   }
 }
