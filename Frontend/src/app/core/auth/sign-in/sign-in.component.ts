@@ -89,7 +89,9 @@ export class SignInComponent {
     this.router.navigate(['/register']);
   }
 
-  onForgotPassword() {}
+  onForgotPassword() {
+    this.router.navigate(['/forgot-password']);
+  }
 
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;

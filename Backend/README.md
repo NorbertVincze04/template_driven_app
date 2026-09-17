@@ -89,6 +89,8 @@ sql/018_barber_gallery_photo_position.sql
 sql/019_owner_roles.sql
 sql/020_barber_management_notes.sql
 sql/021_layout_feature_toggles.sql
+sql/022_password_reset_codes.sql
+sql/023_password_reset_tokens.sql
 ```
 
 The later migrations create working hours, blocked periods, service prices,
@@ -97,7 +99,25 @@ Romanian local-time booking, shared-service compatibility, the default
 tenant content used by the frontend, customer cancel/reschedule requests,
 in-app notifications, customer ratings of barbers, barber photo galleries, and
 gallery photo preview positioning, multi-role accounts, private barber management notes,
-and the quick-rebook/notifications/booking-page feature toggles.
+the quick-rebook/notifications/booking-page feature toggles, and email-based
+password reset codes.
+
+## Password reset emails
+
+Forgot-password codes are sent through `MailService`, which uses SMTP when configured
+via these optional `.env` variables:
+
+```env
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your_smtp_username
+SMTP_PASS=your_smtp_password
+SMTP_FROM=no-reply@yoursalon.com
+SMTP_SECURE=false
+```
+
+If `SMTP_HOST` is not set, the reset code is logged to the console instead of
+emailed, so local development works without SMTP credentials.
 
 To promote a user to admin for a tenant by email, run:
 

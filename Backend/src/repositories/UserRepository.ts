@@ -214,4 +214,17 @@ export class UserRepository {
 
     return rows.length > 0;
   }
+
+  static async updatePasswordHash(
+    userId: string,
+    shopId: string,
+    passwordHash: string,
+  ): Promise<boolean> {
+    const result = await pool.query(
+      `UPDATE users SET password_hash = $3, updated_at = NOW()
+       WHERE id = $1 AND shop_id = $2 AND is_active = TRUE`,
+      [userId, shopId, passwordHash],
+    );
+    return result.rowCount === 1;
+  }
 }

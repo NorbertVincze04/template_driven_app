@@ -184,6 +184,61 @@ export class AuthService {
     }
   }
 
+  requestPasswordReset(email: string): Observable<void> {
+    return this.http
+      .post<any>(
+        `${this.authUrl}/forgot-password`,
+        { email },
+        {
+          headers: {
+            'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+          },
+        },
+      )
+      .pipe(
+        map(() => undefined),
+        this.throwApiError(),
+      );
+  }
+
+  verifyResetCode(email: string, code: string): Observable<string> {
+    return this.http
+      .post<any>(
+        `${this.authUrl}/verify-reset-code`,
+        { email, code },
+        {
+          headers: {
+            'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+          },
+        },
+      )
+      .pipe(
+        map((response) => response.payload.resetToken as string),
+        this.throwApiError(),
+      );
+  }
+
+  resetPassword(
+    email: string,
+    resetToken: string,
+    newPassword: string,
+  ): Observable<void> {
+    return this.http
+      .post<any>(
+        `${this.authUrl}/reset-password`,
+        { email, resetToken, newPassword },
+        {
+          headers: {
+            'X-Tenant-Slug': this.tenantService.config()?.tenantId || 'default',
+          },
+        },
+      )
+      .pipe(
+        map(() => undefined),
+        this.throwApiError(),
+      );
+  }
+
   updateProfile(profile: {
     fullName: string;
     email: string;

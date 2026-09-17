@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 import { UserRepository } from "../repositories/UserRepository.ts";
+import { PasswordResetRepository } from "../repositories/PasswordResetRepository.ts";
+import { MailService } from "./MailService.ts";
 import { generateToken } from "../utils/jwt.utils.ts";
 import type { UserPayload } from "../types/user.types.ts";
 import type { ShopRecord } from "../types/tenant.types.ts";
@@ -111,5 +113,79 @@ export class AuthService {
       profileImagePositionY: user.profile_image_position_y,
       token,
     };
+  }
+
+  // Always resolves without error, even if the email doesn't exist, so
+  // callers never leak which emails are registered on this tenant.
+  static async requestPasswordReset(
+    email: string,
+    shop: ShopRecord,
+  ): Promise<void> {
+    const user = await UserRepository.findByEmail(
+      shop.id,
+      email.trim().toLowerCase(),
+    );
+    if (!user) return;
+
+    const code = await PasswordResetRepository.createCode(shop.id, user.id);
+
+    await MailService.send({
+      to: user.email,
+      subject: `${shop.name} password reset code`,
+      text: `Your password reset code is ${code}. It expires in 15 minutes. If you did not request this, you can ignore this email.`,
+      html: `<p>Your password reset code is <strong>${code}</strong>.</p><p>It expires in 15 minutes. If you did not request this, you can ignore this email.</p>`,
+    });
+  }
+
+  static async verifyResetCode(
+    email: string,
+    code: string,
+    shop: ShopRecord,
+  ): Promise<string> {
+    const user = await UserRepository.findByEmail(
+      shop.id,
+      email.trim().toLowerCase(),
+    );
+    if (!user) {
+      throw new Error("Invalid or expired code.");
+    }
+
+    const resetToken = await PasswordResetRepository.verifyCode(
+      shop.id,
+      user.id,
+      code.trim(),
+    );
+    if (!resetToken) {
+      throw new Error("Invalid or expired code.");
+    }
+
+    return resetToken;
+  }
+
+  static async resetPassword(
+    email: string,
+    resetToken: string,
+    newPassword: string,
+    shop: ShopRecord,
+  ): Promise<void> {
+    const user = await UserRepository.findByEmail(
+      shop.id,
+      email.trim().toLowerCase(),
+    );
+    if (!user) {
+      throw new Error("Invalid or expired reset session.");
+    }
+
+    const isValid = await PasswordResetRepository.consumeResetToken(
+      shop.id,
+      user.id,
+      resetToken.trim(),
+    );
+    if (!isValid) {
+      throw new Error("Invalid or expired reset session.");
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await UserRepository.updatePasswordHash(user.id, shop.id, passwordHash);
   }
 }
